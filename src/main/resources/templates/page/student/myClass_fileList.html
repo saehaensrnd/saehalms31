@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+
+
+<style type="text/css">
+.titleDiv {
+    text-align: center;
+    font-size: 21px;
+    font-weight: 600;
+    background: rgb(240, 243, 248);
+    height: 40px;
+    line-height: 40px;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 20px !important; ">
+	
+
+	<!--  컨테이너 -->		
+	<div style="width:95%; margin:0 auto;">		
+		<div class="titleDiv" th:text="|${study_date} Record File|"></div>
+			
+		<div class="timeTable" style="margin-top:10px;">
+			<div class="table-wrap">
+				<table class="result-table02" style="table-layout: fixed; overflow-wrap: break-word;">
+					<colgroup>
+						<col width="*%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>녹화파일 재생 URL</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${recordList.size()} == 0">
+							<td>There is no data.</td>
+						</tr>
+						<tr th:each="item : ${recordList}">
+							<td>
+								<a class="link" th:name="${item.url}" th:text="${item.url}" onclick="playVideo(this)"></a>
+							</td>							
+						</tr>								
+					</tbody>
+				</table>					
+			</div>
+		</div>  	
+		<!--  		
+		<div class="recordList" th:if="${recordList.size()} > 0" th:each="item : ${recordList}" style="border-bottom: 1px solid; font-size:18px; padding: 5px;">
+			<a class="link" th:name="${item.url}" th:text="${item.url}" onclick="playVideo(this)"></a>			
+		</div>				
+		<div class="recordList" th:unless="${recordList.size()} > 0" style="border-bottom: 1px solid; font-size:18px; padding: 5px;">No Infomation</div>
+		-->
+	</div>
+	<!-- 컨테이너 // -->
+	
+	
+<script th:inline="javascript">
+	let class_score_no = /*[[${class_score_no}]]*/ null;
+</script>
+<script type="text/javascript" th:src="@{/js/teacher/teacher_todaySchedule_fileList.js}"></script>
+</body>
+
+</html>

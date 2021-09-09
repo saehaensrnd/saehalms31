@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/admin/admin_classStudent.js}"></script> 
+
+<style type ="text/css">
+	
+    
+    .search-div {width:100%; display: inline-flex;}
+	.search-div input {display: inline-block; width: 100%;}
+	
+	.btn-box {float: right;}
+	.btn-box button {width: 100px; height: 35px;}
+	
+	.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+	       text-align: left;       
+	       padding: 7px 20px;
+	}
+	
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table" style="margin-bottom:7px;">
+		<div class="tr">
+			<div class="th">사이트</div>
+			<div class="td" style="max-width:303px;">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 10}' id="searchSite" name="searchSite">
+				   			<option value="all" th:selected="${cri.searchSite == 'all'}">전체</option>
+							<option th:each="siteList : ${siteList}" th:text="${siteList.site_name}" th:value="${siteList.site_no}" th:selected="${cri.searchSite} == ${siteList.site_no}"></option>
+				   		</select>
+					</div>	
+				</div>
+			</div>	
+			
+			<div class="th">구분</div>			
+			<div class="td" style="max-width:200px;">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchType" name="searchType" >
+				   			<option value="all" th:selected="${cri.searchType == 'all'}">전체</option>													
+							<option value="student_name" th:selected="${cri.searchType == 'student_name'}">회원명</option>							
+							<option value="student_phone" th:selected="${cri.searchType == 'student_phone'}">회원연락처</option>
+							<option value="teacher_id" th:selected="${cri.searchType == 'teacher_id'}">강사아이디</option>
+							<option value="teacher_name" th:selected="${cri.searchType == 'teacher_name'}">강사명</option>
+							<option value="room_no" th:selected="${cri.searchType == 'room_no'}">수업번호</option>						
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			
+			<div class="th">검색어</div>
+			<div class="td" style="border-right:0px;">
+				<div class="search-div">
+					<input type="text" id="keyword" name="keyword" th:value="${cri.keyword}" autocomplete="off">
+				</div>				
+			</div>	
+		</div>
+		
+		<div class="tr">
+			<div class="th">언어</div>
+			<div class="td" style="max-width:303px;">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 10}' id="searchLanguage" name="searchLanguage" onchange="languageChange(this)">
+				   			<option value="all" th:selected="${cri.searchLanguage == 'all'}">전체</option>
+				   			<option value="English" th:selected="${cri.searchLanguage == 'English'}">English</option>
+				   			<option value="Chinese" th:selected="${cri.searchLanguage == 'Chinese'}">Chinese</option>				   			
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			  
+			<div class="th">수강과정</div>
+			<div class="td" style="max-width:200px;">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 10}' id="searchStudy" name="searchStudy">
+				   			<option value="all" th:selected="${cri.searchStudy == 'all'}">전체</option>
+				   			<option th:each="studyList : ${studyList}" th:text="${studyList.study_name}" th:value="${studyList.study_no}" th:selected="${cri.searchStudy} == ${studyList.study_no}"></option>
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			
+			<div class="th">수강상품</div>
+			<div class="td">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 10}' id="searchProduct" name="searchProduct" >
+				   			<option value="all" th:selected="${cri.searchProduct == 'all'}">전체</option>
+				   			<option th:each="productList : ${productList}" th:text="${productList.product_name}" th:value="${productList.product_no}" th:selected="${cri.searchProduct} == ${productList.product_no}"></option>
+				   		</select>
+					</div>	
+				</div>
+			</div>
+		</div>
+		
+		<div class="tr">
+			<div class="th">수업구분</div>
+			<div class="td" style="max-width:303px;">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 10}' id="searchClassType" name="searchClassType">
+				   			<option value="all" th:selected="${cri.searchClassType == 'all'}">전체</option>
+				   			<option value="regular class" th:selected="${cri.searchClassType == 'regular class'}">regular class</option>
+				   			<option value="level test" th:selected="${cri.searchClassType == 'level test'}">level test</option>				   			
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			  
+			<div class="th">수업상태</div>
+			<div class="td" style="max-width:200px;">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 10}' id="searchStatus" name="searchStatus">
+				   			<option value="all" th:selected="${cri.searchStatus == 'all'}">전체</option>
+				   			<option value="wating" th:selected="${cri.searchStatus == 'wating'}">대기</option>
+				   			<option value="on class" th:selected="${cri.searchStatus == 'on class'}">학습중</option>	
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			
+			<div class="th">수업시작일</div>
+			<div class="td">
+				<div class="search-div">
+					<div class="fx-box">
+	                  <input type="" id="searchClassStart_SDT" name="searchClassStart_SDT" class="fx-item dateitem2" th:value="${cri.searchClassStart_SDT}" autocomplete="off" style="width:100px;"> <em>~</em> <input type="" id="searchClassStart_EDT" name="searchClassStart_EDT" class="fx-item dateitem2" th:value="${cri.searchClassStart_EDT}" autocomplete="off" >
+	                </div>
+				</div>				
+			</div>
+		</div>		
+		  
+		<div class="tr">
+			<div class="th">수업종료일</div>
+			<div class="td">
+				<div class="search-div" style="width:auto;">
+					<div class="fx-box">
+	                  <input type="" id=searchClassEnd_SDT name="searchClassEnd_SDT" class="fx-item dateitem2" th:value="${cri.searchClassEnd_SDT}" autocomplete="off" style="width:100px;"> <em>~</em> <input type="" id="searchClassEnd_EDT" name="searchClassEnd_EDT" class="fx-item dateitem2" th:value="${cri.searchClassEnd_EDT}" autocomplete="off" >
+	                </div>
+				</div>	
+				
+				<div class="selecter-wrap search-div" style="width:110px; float:right">
+					<select id="perPageNum" name="perPageNum" class="form-control" style="min-width:80px; width:80px; float:right;">
+						<option value="10" th:selected="${cri.perPageNum eq 10}">10</option>
+						<option value="50" th:selected="${cri.perPageNum == 50}">50</option>
+						<option value="100" th:selected="${cri.perPageNum == 100}">100</option>
+					</select>
+				</div>				
+			</div>						
+		</div>		
+	</div>
+	
+	<div class ="btnDiv" style="width:100%; margin-bottom:80px;">
+		<div class="searchBtn" style="background-color:rgb(239, 239, 239); color:black; float:right;" onclick="searchCancel()">검색취소</div>		
+		<div class="searchBtn" onclick="search()" style="float:right; margin-right:0px;">검색</div>
+	</div>
+
+	<div class="table-wrap">
+		<div class="table-item">
+			<span class="total" th:text="'Total : ' +${classStudentCnt}"></span>
+			<div class="btn-box">
+				<button type="button" class="btn" th:onclick="excelDownBtn([[${cri}]])">Excel</button>
+			</div>
+		</div>
+		<table>
+			<colgroup>
+				<col width="5%">
+				<col width="10%">
+				<col width="10%">
+				<col width="10%">
+				<col width="10%">
+				<col width="*%">
+				<col width="20%">
+				<col width="10%">
+			</colgroup>
+			<thead>
+				<tr>					
+					<th>NO</th>
+					<th>Site</th>				
+					<th>Name</th>
+					<th>Land line</th>
+					<th>Cell phone</th>
+					<th>수업</th>
+					<th>apply term</th>
+					<th>condition</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${classStudentCnt} == 0">
+					<td colspan="8">There is no data.</td>				
+				</tr>
+				<tr th:each="cs : ${class_student}">
+					<td th:text="${#numbers.formatInteger(cs.num, 0)}"></td>
+					<td th:text="${cs.site_name}"></td>
+					<td>
+						<a class="link" th:if="${cs.student_blacklist_status} == '0' " th:onclick="openUserDetail([[${cs.user_student_no}]])" th:text="${cs.student_name}"></a>						
+						<a class="redLink" th:unless="${cs.student_blacklist_status} == '0' " th:onclick="openUserDetail([[${cs.user_student_no}]])" th:text="${cs.student_name}"></a>
+					</td>
+					
+					<td th:if="${#maps.containsKey(cs, 'student_tel')}" th:text="${cs.student_tel}"></td>
+					<td th:unless="${#maps.containsKey(cs, 'student_tel')}"></td>
+					
+					<td th:if="${#maps.containsKey(cs, 'student_phone')}" th:text="${cs.student_phone}"></td>
+					<td th:unless="${#maps.containsKey(cs, 'student_phone')}"></td>
+					
+					<td th:text="${cs.product_name}"></td>
+					
+					<td th:if="${#maps.containsKey(cs, 'end_date')}" th:text="|${#dates.format(cs.start_date, 'yyyy-MM-dd')} ~ ${#dates.format(cs.end_date, 'yyyy-MM-dd')}|"></td>
+					<td th:unless="${#maps.containsKey(cs, 'end_date')}" th:text="|${#dates.format(cs.start_date, 'yyyy-MM-dd')} ~|"></td>
+					
+					<td><span class="state" th:text="${cs.status}" th:classappend="${cs.status} == 'on class' ? ing"></span></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<th:block th:if="${classStudentCnt > 0}">
+			<ul class="pagenate">
+				<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+					<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/admin/classStudentMng(page=1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType =${cri.searchType}, searchSite =${cri.searchSite}, searchLanguage =${cri.searchLanguage}, searchStudy =${cri.searchStudy}, searchProduct =${cri.searchProduct}, searchClassType =${cri.searchClassType}, searchStatus =${cri.searchStatus}, searchClassStart_SDT =${cri.searchClassStart_SDT}, searchClassStart_EDT =${cri.searchClassStart_EDT}, searchClassEnd_SDT =${cri.searchClassEnd_SDT}, searchClassEnd_EDT =${cri.searchClassEnd_EDT} )}"></a>
+				</li>
+				<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+					<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/admin/classStudentMng(page=${cri.page}-1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType =${cri.searchType}, searchSite =${cri.searchSite}, searchLanguage =${cri.searchLanguage}, searchStudy =${cri.searchStudy}, searchProduct =${cri.searchProduct}, searchClassType =${cri.searchClassType}, searchStatus =${cri.searchStatus}, searchClassStart_SDT =${cri.searchClassStart_SDT}, searchClassStart_EDT =${cri.searchClassStart_EDT}, searchClassEnd_SDT =${cri.searchClassEnd_SDT}, searchClassEnd_EDT =${cri.searchClassEnd_EDT} )}">　</a>
+				</li>
+				
+				<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+					<a class="page-link" th:href="@{/admin/classStudentMng(page=${idx}, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType =${cri.searchType}, searchSite =${cri.searchSite}, searchLanguage =${cri.searchLanguage}, searchStudy =${cri.searchStudy}, searchProduct =${cri.searchProduct}, searchClassType =${cri.searchClassType}, searchStatus =${cri.searchStatus}, searchClassStart_SDT =${cri.searchClassStart_SDT}, searchClassStart_EDT =${cri.searchClassStart_EDT}, searchClassEnd_SDT =${cri.searchClassEnd_SDT}, searchClassEnd_EDT =${cri.searchClassEnd_EDT} )}" th:text="${idx}"></a>
+				</li>	
+											 				
+				<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+					<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/admin/classStudentMng(page=${cri.page}+1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType =${cri.searchType}, searchSite =${cri.searchSite}, searchLanguage =${cri.searchLanguage}, searchStudy =${cri.searchStudy}, searchProduct =${cri.searchProduct}, searchClassType =${cri.searchClassType}, searchStatus =${cri.searchStatus}, searchClassStart_SDT =${cri.searchClassStart_SDT}, searchClassStart_EDT =${cri.searchClassStart_EDT}, searchClassEnd_SDT =${cri.searchClassEnd_SDT}, searchClassEnd_EDT =${cri.searchClassEnd_EDT} )}">　</a>														
+				</li>				
+				<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+					<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/admin/classStudentMng(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType =${cri.searchType}, searchSite =${cri.searchSite}, searchLanguage =${cri.searchLanguage}, searchStudy =${cri.searchStudy}, searchProduct =${cri.searchProduct}, searchClassType =${cri.searchClassType}, searchStatus =${cri.searchStatus}, searchClassStart_SDT =${cri.searchClassStart_SDT}, searchClassStart_EDT =${cri.searchClassStart_EDT}, searchClassEnd_SDT =${cri.searchClassEnd_SDT}, searchClassEnd_EDT =${cri.searchClassEnd_EDT} )}">　</a>
+				</li>
+			</ul>
+		</th:block>	
+		
+	</div>
+</th:block>
+</body>
+
+</html>

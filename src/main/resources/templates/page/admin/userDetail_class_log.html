@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+.divTitle {
+	height: 35px;
+    line-height: 35px;
+    padding-left: 10px;
+    margin: 5px 0px 3px 0px;
+    background-color: #85b8a6;
+}
+
+.btn {
+   	line-height: 30px;
+    height: 30px;
+    width: 120px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #E6E6E6;
+}
+
+#time_checkbox_div input[type='checkbox'] {
+	vertical-align: middle;
+}
+
+#search_div {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#search_div .move {
+	cursor: pointer;
+	color: blue;
+	font-weight: bold;
+	margin: 0 10px;
+}
+
+#class_log_table tr td {
+	padding: 10px;
+}
+	
+.btn_play {
+    background: url("../img/icon/btn_file_play.png" ) no-repeat;
+    border: none;
+    width: 32px !important;
+    height: 32px;
+    cursor: pointer;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 0px !important; ">
+<th:block layout:fragment="userContent">
+		
+	<!-- 수강목록 -->
+	<div class="divTitle">
+		<span style="font-weight: 600;" th:text="|수강상세정보 - ${info.study_name} / ${info.product_name}|" th:if="${info.flag} == 'class'"></span>
+		<span style="font-weight: 600;" th:text="|수강상세정보 - ${info.leveltest_language} 레벨테스트|" th:if="${info.flag} == 'leveltest'"></span>
+		<div class="btn" style="text-align:center; float: right; margin-right: 10px; margin-top: 3px;" th:onclick="userDetail_setTutor([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">배정내역</div>
+		<div class="btn" style="text-align:center; float: right; margin-right: 5px; margin-top: 3px;" th:onclick="userDetail_classLog([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">학습현황</div>
+		<div class="btn" style="text-align:center; float: right; margin-right: 5px; margin-top: 3px;" th:onclick="userDetail_info([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">수강상세정보</div>
+	</div>
+	<div id="btn_div">
+		<button class="btn" type="button" th:onclick="changeCancel([[${info.flag}]])">cancel</button>
+		<button class="btn" type="button" style="float: right;" th:if="${info.flag} == 'class'" th:onclick="makeUpClass([[${info.no}]], [[${info.user_student_no}]])">make up</button>
+	</div>
+	<div id="search_div"><a th:href="@{/userDetail/userDetail_classLog(flag=${paramMap.flag}, no=${paramMap.no}, user_student_no=${paramMap.user_student_no}, search_date=${paramMap.prev_date})}" class="move">&lt;</a><span th:text="|${paramMap.search_date} Lesson|"></span><a th:href="@{/userDetail/userDetail_classLog(flag=${paramMap.flag}, no=${paramMap.no}, user_student_no=${paramMap.user_student_no}, search_date=${paramMap.next_date})}" class="move">&gt;</a></div>
+	<form id="setTutorForm" method="post">
+		<table id="class_log_table">
+			<colgroup>
+				<col width="3%;">
+				<col width="20%;">
+				<col width="10%;">
+				<col width="5%;">
+				<col width="32%;">
+				<col width="5%;">
+				<col width="10%;">
+				<col width="5%;">
+				<col width="10%;">
+			</colgroup>
+			<tr>
+				<th><input type="checkbox" class="chk allCheck" id="all_check"></th>
+				<th>수업일</th>
+				<th>수업시간</th>
+				<th>타입</th>
+				<th>진도</th>
+				<th>출석</th>
+				<th>선생님</th>
+				<th>수업파일</th>
+				<th>관리</th>
+			</tr>
+			<th:block th:if="${info.flag} == 'class'">
+				<tr th:each="cld : ${class_log_done}" th:if="${class_log_done.size() > 0}">
+					<td>-</td>
+					<td th:text="${cld.study_date}"></td>
+					<td th:text="|${cld.start_time}~${cld.end_time}|"></td>
+					
+					<td th:if="${cld.class_type} == 0">regular</td>
+					<td th:if="${cld.class_type} == 1">make-up</td>
+					
+					<td th:text="|${cld.textbook_name}_${cld.topic_name}_${cld.slide_number}|"></td>
+					
+					<td th:if="${cld.study_status} == 1">
+						<div th:if="${cld.present} == 0">대기</div>
+						<div th:if="${cld.present} == 1">출석</div>
+						<div th:if="${cld.present} == 2">결석</div>
+					</td>
+					<td th:unless="${cld.study_status} == 1">
+						<div th:if="${cld.study_status} == 2">Cancel</div>
+						<div th:if="${cld.study_status} == 3">Makeup</div>
+					</td>
+					
+					<td th:text="|[${cld.center_name}] ${cld.teacher_name} ${cld.class_phone}|"></td>
+					
+					<td><input type="button" class="btn_play" th:onclick="fileBtn([[${cld}]])"></td>
+					
+					<td>
+						<button th:if="${cld.study_status} == 2" class="btn" type="button" th:onclick="deleteClass([[${cld.class_score_no}]])">Delete</button>
+						<button th:unless="${cld.study_status} == 2" class="btn" type="button" th:onclick="changeProgress([[${cld.class_log_no}]], [[${info.user_student_no}]])">진도</button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="9" style="padding: 0; height: 10px;"></td>
+				</tr>
+				<tr th:if="${class_log.size() <= 0} and ${class_log_done.size() <= 0}">
+					<td colspan="9">해당 자료가 없습니다.</td>
+				</tr>
+				<tr th:each="cl : ${class_log}">
+					<td><input type="checkbox" class="chk rowCheck" th:name="${cl.class_score_no}"></td>
+					<td th:text="${cl.study_date}"></td>
+					<td th:text="|${cl.start_time}~${cl.end_time}|"></td>
+					
+					<td th:if="${cl.class_type} == 0">regular</td>
+					<td th:if="${cl.class_type} == 1">make-up</td>
+					<td th:if="${cl.class_type} == 2">make-up</td>
+					
+					<td th:text="|${cl.textbook_name}_${cl.topic_name}_${cl.slide_number}|"></td>
+					
+					<td>Standby</td>
+					
+					<td th:text="|[${cl.center_name}] ${cl.teacher_name} ${cl.class_phone}|"></td>
+					
+					<td></td>
+					
+					<td>
+						<button class="btn" type="button" th:onclick="changeProgress([[${cl.class_log_no}]], [[${info.user_student_no}]])">진도</button>
+						<button class="btn" type="button" th:onclick="modifyClass([[${cl.class_log_no}]], [[${info.no}]], [[${info.user_student_no}]])">Modify</button>
+					</td>
+				</tr>
+			</th:block>
+			<th:block th:if="${info.flag} == 'leveltest'">
+				<tr th:if="${class_log_done}">
+					<td>-</td>
+					<td th:text="${class_log_done.study_date}"></td>
+					<td th:text="|${class_log_done.start_time}~${class_log_done.end_time}|"></td>
+					
+					<td>leveltest</td>
+					
+					<td>__</td>
+					
+					<td th:if="${class_log_done.study_status} == 1">
+						<div th:if="${class_log_done.present} == 0">대기</div>
+						<div th:if="${class_log_done.present} == 1">출석</div>
+						<div th:if="${class_log_done.present} == 2">결석</div>
+					</td>
+					<td th:unless="${class_log_done.study_status} == 1">
+						<div th:if="${class_log_done.study_status} == 0">Standby</div>
+						<div th:if="${class_log_done.study_status} == 2">Cancel</div>
+					</td>
+					
+					<td th:if="${#maps.containsKey(class_log_done, 'center_name')}" th:text="|[${class_log_done.center_name}] ${class_log_done.teacher_name} ${class_log_done.teacher_phone}|"></td>
+					<th:block th:unless="${#maps.containsKey(class_log_done, 'center_name')}">
+						<td th:if="${#maps.containsKey(class_log_done, 'teacher_group_name')}" th:text="|[${class_log_done.teacher_group_name}] ${class_log_done.teacher_name} ${class_log_done.teacher_phone}|"></td>
+						<td th:unless="${#maps.containsKey(class_log_done, 'teacher_group_name')}" th:text="|[] ${class_log_done.teacher_name} ${class_log_done.teacher_phone}|"></td>
+					</th:block>
+					
+					<td></td>
+					
+					<td>
+						<button class="btn" type="button" th:if="${class_log_done.study_status} == 0" th:onclick="modifyLeveltest([[${class_log_done.leveltest_no}]], [[${info.user_student_no}]])">Modify</button>
+						<button class="btn" type="button" th:if="${class_log_done.study_status} == 2" th:onclick="deleteLeveltest([[${class_log_done.leveltest_no}]])">Delete</button>
+					</td>
+				</tr>
+				<tr th:unless="${class_log_done}">
+					<td colspan="9" th:unless="${class_log}">해당 자료가 없습니다.</td>
+				</tr>
+				<tr th:if="${class_log}">
+					<td><input type="checkbox" class="chk rowCheck" th:name="${class_log.leveltest_no}"></td>
+					<td th:text="${class_log.study_date}"></td>
+					<td th:text="|${class_log.start_time}~${class_log.end_time}|"></td>
+					
+					<td>leveltest</td>
+					
+					<td>__</td>
+					
+					<td th:if="${class_log.study_status} == 1">
+						<div th:if="${class_log.present} == 0">대기</div>
+						<div th:if="${class_log.present} == 1">출석</div>
+						<div th:if="${class_log.present} == 2">결석</div>
+					</td>
+					<td th:unless="${class_log.study_status} == 1">
+						<div th:if="${class_log.study_status} == 0">Standby</div>
+						<div th:if="${class_log.study_status} == 2">Cancel</div>
+					</td>
+					
+					<td th:if="${#maps.containsKey(class_log, 'center_name')}" th:text="|[${class_log.center_name}] ${class_log.teacher_name} ${class_log.teacher_phone}|"></td>
+					<th:block th:unless="${#maps.containsKey(class_log, 'center_name')}">
+						<td th:if="${#maps.containsKey(class_log, 'teacher_group_name')}" th:text="|[${class_log.teacher_group_name}] ${class_log.teacher_name} ${class_log.teacher_phone}|"></td>
+						<td th:unless="${#maps.containsKey(class_log, 'teacher_group_name')}" th:text="|[] ${class_log.teacher_name} ${class_log.teacher_phone}|"></td>
+					</th:block>
+					
+					<td></td>
+					
+					<td>
+						<button class="btn" type="button" th:onclick="modifyLeveltest([[${class_log.leveltest_no}]], [[${info.user_student_no}]])">Modify</button>
+					</td>
+				</tr>
+			</th:block>
+		</table>
+	</form>
+	
+<script th:inline="javascript">
+</script>
+<script type="text/javascript" th:src="@{/js/admin/userDetail_class_log.js}"></script>
+</th:block>
+</body>
+
+</html>

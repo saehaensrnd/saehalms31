@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorator="layout/layout">
+<head>
+<title></title>
+
+
+<style type ="text/css">
+   .left-head-table.report .tr .th, .left-head-table.report .tr .td {
+       text-align: left;
+       /* padding: 7px 40px; */
+       padding: 7px 20px;
+   }
+
+  
+   .selecter-wrap .jcf-unselectable {       
+       margin-bottom: 0px;
+   }
+   
+   .btn-box {
+   	   width: 100%;   	   
+   	   text-align: right;	
+   }
+	
+	input[type="checkbox"] {
+		width: 20px;
+    	height: 20px;
+	}
+	
+	.tdTitle {
+		float: left;
+		width: 8%;
+		line-height:45px;
+	}
+	
+	.tdContent {
+		float: left;
+		/* width: 80% !important; */
+	}
+	
+	.padding {
+		padding-bottom: 55px;
+	}
+	
+	.radioBtn {
+	    display: inline-block;
+	    background: black;	    
+	    min-width : 100px !important;
+	    height: 20px;
+	    margin-top: -1px;
+	    vertical-align: middle;	   
+	}
+	
+   
+</style>
+
+
+
+</head>
+<body>
+<th:block layout:fragment="content">
+  	<th:block th:if="${flag == 'insert'}">	
+  		<form id="insertForm" method="post" enctype="multipart/form-data">  
+  				
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">코드 <span class="red">*</span></div>
+				   <div class="td">(자동생성)</div>
+				
+				   <div class="th">등록일</div>
+				   <div class="td">(자동생성)</div>               
+				</div>
+				<div class="tr">
+				   <div class="th">이름 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_name"  name="center_name" required autocomplete="off">
+				   </div>
+				
+				   <div class="th">법인명 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">
+				   			<input type="text" class="form-control" id="center_corporate_name"  name="center_corporate_name" required autocomplete="off" placeholder="* Ex) 주식회사 xxx">					   				
+				   		</div>	
+				   </div>             
+				</div>
+				
+				<div class="tr">
+				   <div class="th">대표이사</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_ceo"  name="center_ceo" autocomplete="off">
+				   </div>
+				
+				   <div class="th">사업자등록번호</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_registration_number"  name="center_registration_number" autocomplete="off">
+				   </div>             
+				</div>
+				
+				
+				<div class="tr">
+				   <div class="th">통신판매업신고번호</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_telecommunication_number"  name="center_telecommunication_number" autocomplete="off">
+				   </div>
+				
+				   <div class="th">대표연락처 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_ceo_phone"  name="center_ceo_phone" autocomplete="off" oninput="removeChar(event)" required placeholder="'-'없이 숫자만 입력하세요.">
+				   </div>             
+				</div>
+				
+				<div class="tr">
+				   <div class="th">대표이메일</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_ceo_email"  name="center_ceo_email" autocomplete="off">
+				   </div>
+				
+				   <div class="th">대표FAX</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_ceo_fax"  name="center_ceo_fax" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요.">
+				   </div>             
+				</div>
+				
+				
+				<div class="tr">
+				   <div class="th">주소</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_address"  name="center_address" autocomplete="off">
+				   </div>
+				
+				   <div class="th">담당자이름</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_manager_name"  name="center_manager_name" autocomplete="off">
+				   </div>             
+				</div>
+				
+				<div class="tr">
+				   <div class="th">담당자연락처</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_manager_phone"  name="center_manager_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요.">
+				   </div>
+				
+				   <div class="th">담당자이메일</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_manager_email"  name="center_manager_email" autocomplete="off">
+				   </div>             
+				</div>
+				
+				<!-- 고객센터 -->
+				<div class="tr">
+				   <div class="th" style="line-height: 235px;">고객센터</div>
+				   <div class="td">
+				   		<div class="padding"><span class="tdTitle">연락처:</span> <input type="text" style="width:40%;" class="form-control tdContent" id="center_service_center_phone"  name="center_service_center_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요."> </div>
+				   						   		
+				   		<div class="padding"><span class="tdTitle">평일시간:</span>
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_service_normal_hour" name="start_service_normal_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_service_normal_min" name="start_service_normal_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;"> ~ </div>
+					   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_service_normal_hour" name="end_service_normal_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_service_normal_min" name="end_service_normal_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>
+				   		</div>
+				   		
+				   		
+				   		<div class="padding"><span class="tdTitle">점심시간:</span>
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_service_lunch_hour" name="start_service_lunch_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_service_lunch_min" name="start_service_lunch_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;"> ~ </div>
+					   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_service_lunch_hour" name="end_service_lunch_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_service_lunch_min" name="end_service_lunch_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>
+				   		</div>
+				   		
+				   		<div class="padding"><span class="tdTitle">간단 문구:</span> <input type="text" style="width:40%;" class="form-control tdContent" id="center_service_center_explain"  name="center_service_center_explain" autocomplete="off"> </div>
+				   </div>   
+				</div>
+				
+				<!-- 원격지원센터 -->
+				<div class="tr">
+				   <div class="th" style="line-height: 235px;">원격지원센터</div>
+				   <div class="td">
+				   		<div class="padding"><span class="tdTitle">연락처:</span> <input type="text" style="width:40%;" class="form-control tdContent" id="center_remote_center_phone"  name="center_remote_center_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요."> </div>
+				   						   		
+				   		<div class="padding"><span class="tdTitle">평일시간:</span>
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_remote_normal_hour" name="start_remote_normal_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_remote_normal_min" name="start_remote_normal_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;"> ~ </div>
+					   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_remote_normal_hour" name="end_remote_normal_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_remote_normal_min" name="end_remote_normal_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>
+				   		</div>
+				   		
+				   		
+				   		<div class="padding"><span class="tdTitle">점심시간:</span>
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_remote_lunch_hour" name="start_remote_lunch_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_remote_lunch_min" name="start_remote_lunch_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;"> ~ </div>
+					   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_remote_lunch_hour" name="end_remote_lunch_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_remote_lunch_min" name="end_remote_lunch_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>
+				   		</div>
+				   		
+				   		<div class="padding"><span class="tdTitle">간단 문구:</span> <input type="text" style="width:40%;" class="form-control tdContent" id="center_remote_center_explain"  name="center_remote_center_explain" autocomplete="off"> </div>
+				   </div>   
+				</div>
+				
+				
+				<div class="tr">
+				   <div class="th">상태</div>
+				   <div class="td">
+				   		<!-- <input type="radio" class="radioBtn" name="status" id="status0" value="0" th:checked="${inquiry.status} == 0"><label for="status0">사용</label> -->
+				   		<input type="radio" class="radioBtn" name="center_status" id="status1" value="1" checked><label for="status1">사용</label>
+						<input type="radio" class="radioBtn" name="center_status" id="status0" value="0"><label for="status0">중지</label>
+				   </div>       
+				</div>
+				
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<div class="btn" th:onclick="goList([[${cri}]])">취소</div>
+				<button class="btn add" type="button" id="insertBtn">저장</button>
+			</div>	
+   		</form>
+   </th:block>
+   
+   
+   
+   
+   <th:block th:if="${flag == 'update'}">	
+  		<form id="updateForm" method="post" enctype="multipart/form-data">  
+  			<input type="hidden" id="center_no" name="center_no" th:value="${item.center_no}">
+  				
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">코드 <span class="red">*</span></div>
+				   <div class="td" th:text="${item.center_code}"></div>
+				
+				   <div class="th">등록일</div>
+				   <div class="td" th:text="${#dates.format(item.center_regdate, 'yyyy-MM-dd')}"></div>               
+				</div>
+				<div class="tr">
+				   <div class="th">이름 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_name"  name="center_name" th:value="${item.center_name}" required autocomplete="off">
+				   </div>
+				
+				   <div class="th">법인명 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">
+				   			<input type="text" class="form-control" id="center_corporate_name"  name="center_corporate_name" th:value="${item.center_corporate_name}" required autocomplete="off" placeholder="* Ex) 주식회사 xxx">					   				
+				   		</div>	
+				   </div>             
+				</div>
+				
+				<div class="tr">
+				   <div class="th">대표이사</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_ceo"  name="center_ceo" autocomplete="off" th:if="${#maps.containsKey(item, 'center_ceo')}" th:value="${item.center_ceo}">
+				   		<input type="text" class="form-control" id="center_ceo"  name="center_ceo" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_ceo')}">
+				   </div>
+				
+				   <div class="th">사업자등록번호</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_registration_number"  name="center_registration_number" autocomplete="off" th:if="${#maps.containsKey(item, 'center_registration_number')}" th:value="${item.center_registration_number}">
+				   		<input type="text" class="form-control" id="center_registration_number"  name="center_registration_number" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_registration_number')}">				   		
+				   </div>             
+				</div>
+				
+				
+				<div class="tr">
+				   <div class="th">통신판매업신고번호</div>
+				   <div class="td">				   		
+				   		<input type="text" class="form-control" id="center_telecommunication_number"  name="center_telecommunication_number" autocomplete="off" th:if="${#maps.containsKey(item, 'center_telecommunication_number')}" th:value="${item.center_telecommunication_number}">
+				   		<input type="text" class="form-control" id="center_telecommunication_number"  name="center_telecommunication_number" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_telecommunication_number')}">
+				   </div>
+				
+				   <div class="th">대표연락처 <span class="red">*</span></div>
+				   <div class="td">				   		
+				   		<input type="text" class="form-control" id="center_ceo_phone"  name="center_ceo_phone" autocomplete="off" oninput="removeChar(event)" required placeholder="'-'없이 숫자만 입력하세요." th:if="${#maps.containsKey(item, 'center_ceo_phone')}" th:value="${item.center_ceo_phone}">
+				   		<input type="text" class="form-control" id="center_ceo_phone"  name="center_ceo_phone" autocomplete="off" oninput="removeChar(event)" required placeholder="'-'없이 숫자만 입력하세요." th:unless="${#maps.containsKey(item, 'center_ceo_phone')}">
+				   </div>             
+				</div>
+				
+				<div class="tr">
+				   <div class="th">대표이메일</div>
+				   <div class="td">				   		
+				   		<input type="text" class="form-control" id="center_ceo_email"  name="center_ceo_email" autocomplete="off" th:if="${#maps.containsKey(item, 'center_ceo_email')}" th:value="${item.center_ceo_email}">
+				   		<input type="text" class="form-control" id="center_ceo_email"  name="center_ceo_email" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_ceo_email')}">
+				   </div>
+				
+				   <div class="th">대표FAX</div>
+				   <div class="td">				   		
+				   		<input type="text" class="form-control" id="center_ceo_fax"  name="center_ceo_fax" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요." th:if="${#maps.containsKey(item, 'center_ceo_fax')}" th:value="${item.center_ceo_fax}">
+				   		<input type="text" class="form-control" id="center_ceo_fax"  name="center_ceo_fax" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요." th:unless="${#maps.containsKey(item, 'center_ceo_fax')}">
+				   </div>             
+				</div>
+				
+				
+				<div class="tr">
+				   <div class="th">주소</div>
+				   <div class="td">				   		
+				   		<input type="text" class="form-control" id="center_address"  name="center_address" autocomplete="off" th:if="${#maps.containsKey(item, 'center_address')}" th:value="${item.center_address}">
+				   		<input type="text" class="form-control" id="center_address"  name="center_address" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_address')}">
+				   </div>
+				
+				   <div class="th">담당자이름</div>
+				   <div class="td">				   		
+				   		<input type="text" class="form-control" id="center_manager_name"  name="center_manager_name" autocomplete="off" th:if="${#maps.containsKey(item, 'center_manager_name')}" th:value="${item.center_manager_name}">
+				   		<input type="text" class="form-control" id="center_manager_name"  name="center_manager_name" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_manager_name')}">
+				   </div>             
+				</div>
+				
+				<div class="tr">
+				   <div class="th">담당자연락처</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_manager_phone"  name="center_manager_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요." th:if="${#maps.containsKey(item, 'center_manager_phone')}" th:value="${item.center_manager_phone}">
+				   		<input type="text" class="form-control" id="center_manager_phone"  name="center_manager_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요." th:unless="${#maps.containsKey(item, 'center_manager_phone')}">
+				   </div>
+				
+				   <div class="th">담당자이메일</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="center_manager_email"  name="center_manager_email" autocomplete="off" th:if="${#maps.containsKey(item, 'center_manager_email')}" th:value="${item.center_manager_email}">
+				   		<input type="text" class="form-control" id="center_manager_email"  name="center_manager_email" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_manager_email')}">
+				   </div>             
+				</div>
+				
+				<!-- 고객센터 -->
+				<div class="tr">
+				   <div class="th" style="line-height: 235px;">고객센터</div>
+				   <div class="td">
+				   		<div class="padding"><span class="tdTitle">연락처:</span>
+				   			<input type="text" style="width:40%;" class="form-control tdContent" id="center_service_center_phone"  name="center_service_center_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요." th:if="${#maps.containsKey(item, 'center_service_center_phone')}" th:value="${item.center_service_center_phone}">
+				   			<input type="text" style="width:40%;" class="form-control tdContent" id="center_service_center_phone"  name="center_service_center_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요." th:unless="${#maps.containsKey(item, 'center_service_center_phone')}"> 
+				   		</div>
+				   						   		
+				   		<div class="padding"><span class="tdTitle">평일시간:</span>
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_service_normal_hour" name="start_service_normal_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:if="${#maps.containsKey(item, 'start_service_normal_hour')}" th:selected="${hourList} == ${item.start_service_normal_hour}"></option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:unless="${#maps.containsKey(item, 'start_service_normal_hour')}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_service_normal_min" name="start_service_normal_min" >
+						   			<option value="" >선택</option>						   			
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:if="${#maps.containsKey(item, 'start_service_normal_min')}" th:selected="${minList} == ${item.start_service_normal_min}"></option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:unless="${#maps.containsKey(item, 'start_service_normal_min')}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;"> ~ </div>
+					   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_service_normal_hour" name="end_service_normal_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:if="${#maps.containsKey(item, 'end_service_normal_hour')}" th:selected="${hourList} == ${item.end_service_normal_hour}"></option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:unless="${#maps.containsKey(item, 'end_service_normal_hour')}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_service_normal_min" name="end_service_normal_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:if="${#maps.containsKey(item, 'end_service_normal_min')}" th:selected="${minList} == ${item.end_service_normal_min}"></option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:unless="${#maps.containsKey(item, 'end_service_normal_min')}"></option>			   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>
+				   		</div>
+				   		
+				   		
+				   		<div class="padding"><span class="tdTitle">점심시간:</span>
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_service_lunch_hour" name="start_service_lunch_hour" >
+						   			<option value="" >선택</option>						   				
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:if="${#maps.containsKey(item, 'start_service_lunch_hour')}" th:selected="${hourList} == ${item.start_service_lunch_hour}"></option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:unless="${#maps.containsKey(item, 'start_service_lunch_hour')}"></option>			   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_service_lunch_min" name="start_service_lunch_min" >
+						   			<option value="" >선택</option>						   				
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:if="${#maps.containsKey(item, 'start_service_lunch_min')}" th:selected="${minList} == ${item.start_service_lunch_min}"></option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:unless="${#maps.containsKey(item, 'start_service_lunch_min')}"></option>				   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;"> ~ </div>
+					   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_service_lunch_hour" name="end_service_lunch_hour" >
+						   			<option value="" >선택</option>						   				
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:if="${#maps.containsKey(item, 'end_service_lunch_hour')}" th:selected="${hourList} == ${item.end_service_lunch_hour}"></option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:unless="${#maps.containsKey(item, 'end_service_lunch_hour')}"></option>				   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_service_lunch_min" name="end_service_lunch_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:if="${#maps.containsKey(item, 'end_service_lunch_min')}" th:selected="${minList} == ${item.end_service_lunch_min}"></option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:unless="${#maps.containsKey(item, 'end_service_lunch_min')}"></option>				   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>
+				   		</div>
+				   		
+				   		<div class="padding"><span class="tdTitle">간단 문구:</span>
+				   			<input type="text" style="width:40%;" class="form-control tdContent" id="center_service_center_explain"  name="center_service_center_explain" autocomplete="off" th:if="${#maps.containsKey(item, 'center_service_center_explain')}" th:value="${item.center_service_center_explain}">
+				   			<input type="text" style="width:40%;" class="form-control tdContent" id="center_service_center_explain"  name="center_service_center_explain" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_service_center_explain')}"> 
+				   		</div>
+				   </div>   
+				</div>
+				
+				<!-- 원격지원센터 -->
+				<div class="tr">
+				   <div class="th" style="line-height: 235px;">원격지원센터</div>
+				   <div class="td">
+				   		<div class="padding"><span class="tdTitle">연락처:</span>
+				   			<input type="text" style="width:40%;" class="form-control tdContent" id="center_remote_center_phone"  name="center_remote_center_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요." th:if="${#maps.containsKey(item, 'center_remote_center_phone')}" th:value="${item.center_remote_center_phone}">
+				   			<input type="text" style="width:40%;" class="form-control tdContent" id="center_remote_center_phone"  name="center_remote_center_phone" autocomplete="off" oninput="removeChar(event)" placeholder="'-'없이 숫자만 입력하세요." th:unless="${#maps.containsKey(item, 'center_remote_center_phone')}"> 
+				   		</div>
+				   						   		
+				   		<div class="padding"><span class="tdTitle">평일시간:</span>
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_remote_normal_hour" name="start_remote_normal_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:if="${#maps.containsKey(item, 'start_remote_normal_hour')}" th:selected="${hourList} == ${item.start_remote_normal_hour}"></option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:unless="${#maps.containsKey(item, 'start_remote_normal_hour')}"></option>				   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_remote_normal_min" name="start_remote_normal_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:if="${#maps.containsKey(item, 'start_remote_normal_min')}" th:selected="${minList} == ${item.start_remote_normal_min}"></option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:unless="${#maps.containsKey(item, 'start_remote_normal_min')}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;"> ~ </div>
+					   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_remote_normal_hour" name="end_remote_normal_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:if="${#maps.containsKey(item, 'end_remote_normal_hour')}" th:selected="${hourList} == ${item.end_remote_normal_hour}"></option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:unless="${#maps.containsKey(item, 'end_remote_normal_hour')}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_remote_normal_min" name="end_remote_normal_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:if="${#maps.containsKey(item, 'end_remote_normal_min')}" th:selected="${minList} == ${item.end_remote_normal_min}"></option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:unless="${#maps.containsKey(item, 'end_remote_normal_min')}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>
+				   		</div>
+				   		
+				   		
+				   		<div class="padding"><span class="tdTitle">점심시간:</span>
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_remote_lunch_hour" name="start_remote_lunch_hour" >
+						   			<option value="" >선택</option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:if="${#maps.containsKey(item, 'start_remote_lunch_hour')}" th:selected="${hourList} == ${item.start_remote_lunch_hour}"></option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:unless="${#maps.containsKey(item, 'start_remote_lunch_hour')}"></option>					   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="start_remote_lunch_min" name="start_remote_lunch_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:if="${#maps.containsKey(item, 'start_remote_lunch_min')}" th:selected="${minList} == ${item.start_remote_lunch_min}"></option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:unless="${#maps.containsKey(item, 'start_remote_lunch_min')}"></option>				   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;"> ~ </div>
+					   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_remote_lunch_hour" name="end_remote_lunch_hour" >
+						   			<option value="" >선택</option>						   				
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:if="${#maps.containsKey(item, 'end_remote_lunch_hour')}" th:selected="${hourList} == ${item.end_remote_lunch_hour}"></option>
+						   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:unless="${#maps.containsKey(item, 'end_remote_lunch_hour')}"></option>				   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">H</div>				   		
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+					   						   		
+					   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+						   		<select data-jcf='{"maxVisibleItems": 7}' id="end_remote_lunch_min" name="end_remote_lunch_min" >
+						   			<option value="" >선택</option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:if="${#maps.containsKey(item, 'end_remote_lunch_min')}" th:selected="${minList} == ${item.end_remote_lunch_min}"></option>
+						   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:unless="${#maps.containsKey(item, 'end_remote_lunch_min')}"></option>					   								   								   			 						   							
+						   		</select>
+					   		</div>
+					   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">M</div>
+				   		</div>
+				   		
+				   		<div class="padding"><span class="tdTitle">간단 문구:</span>
+				   			<input type="text" style="width:40%;" class="form-control tdContent" id="center_remote_center_explain"  name="center_remote_center_explain" autocomplete="off" th:if="${#maps.containsKey(item, 'center_remote_center_explain')}" th:value="${item.center_remote_center_explain}">
+				   			<input type="text" style="width:40%;" class="form-control tdContent" id="center_remote_center_explain"  name="center_remote_center_explain" autocomplete="off" th:unless="${#maps.containsKey(item, 'center_remote_center_explain')}"> 
+				   		</div>
+				   </div>   
+				</div>
+				
+				
+				<div class="tr">
+				   <div class="th">상태</div>
+				   <div class="td">				   		
+				   		<input type="radio" class="radioBtn" name="center_status" id="status1" value="1" th:checked="${item.center_status} == 1"><label for="status1">사용</label>
+						<input type="radio" class="radioBtn" name="center_status" id="status0" value="0" th:checked="${item.center_status} == 0"><label for="status0">중지</label>
+				   </div>       
+				</div>
+				
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<div class="btn" th:onclick="goList([[${cri}]])">취소</div>
+				<button class="btn add" type="button" id="updateBtn">저장</button>
+			</div>	
+   		</form>
+   </th:block>
+   
+   
+   
+   
+
+<script th:inline="javascript">	
+</script>
+<script type="text/javascript" th:src="@{/js/admin/admin_center_detail.js}"></script>
+
+</th:block>
+</body>
+
+</html>

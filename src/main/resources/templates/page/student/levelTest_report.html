@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+<link rel="stylesheet" type="text/css" th:href="@{/css/myClass_report.css}"/>
+<!-- <link rel="stylesheet" type="text/css" th:href="@{/css/graph.min.css}"/> -->	<!-- 파일없음 -->
+<link rel="stylesheet" type="text/css" th:href="@{/css/billboard.css}"/>
+
+<script type="text/javascript" th:src="@{/js/student/billboard.js}"></script>
+<script type="text/javascript" th:src="@{/js/student/billboard.pkgd.js}"></script>
+
+
+<style type="text/css">
+
+
+</style>
+
+</head>
+<body style="padding-top: 20px !important; ">
+	
+
+	<!--  컨테이너 -->		
+	<div style="width:95%; margin:0 auto;" id="printDiv">		
+		
+		
+		<header>
+	        <div>
+	            <h2 style="margin-left:20px !important;">LEVEL TEST REPORT</h2>
+	            <span class="close" onclick="javascript:window.close()">X</span>
+	        </div>
+	    </header>
+	    <div class="container_levelResult">
+	        <div>
+	            <table class="mt40" id="table1">
+	                <tr>
+	                    <th>Student's Name</th>
+	                    <td><span th:text="${info.student_name}">testtest</span></td>
+	                    <th>Teach's Name</th>
+	                    <td>
+	                    	<span th:if="${#maps.containsKey(info, 'teacher_name')}" th:text="${info.teacher_name}"></span>
+	                    	<span th:unless="${#maps.containsKey(info, 'teacher_name')}"></span>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th>Request Date</th>
+	                    <td>	                    	
+	                    	<span th:if="${#maps.containsKey(info, 'leveltest_regdate')}" th:text="${#dates.format(info.leveltest_regdate, 'yyyy-MM-dd')}"></span>
+	                    	<span th:unless="${#maps.containsKey(info, 'leveltest_regdate')}"></span>
+	                    </td>
+	                    <th>Free Class Date</th>
+	                    <td>
+	                    	<span th:if="${#maps.containsKey(info, 'study_date')}" th:text="${info.study_date}"></span>
+	                    	<span th:unless="${#maps.containsKey(info, 'study_date')}"></span>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <th>Test Time</th>
+	                    <td>
+	                    	<span th:if="${#maps.containsKey(info, 'class_time')}" th:text="|${info.class_time} ~ ${info.class_endTime}|"></span>
+	                    	<span th:unless="${#maps.containsKey(info, 'class_time')}"></span>
+	                    </td>
+	                    <th>Student's Level(Result)</th>
+	                    <td>
+	                    	<span th:text="${info.level_name}"></span>
+	                    </td>
+	                </tr>
+	            </table>
+	        </div>
+	        <div>
+	            <table class="mt40" id="table2">
+	                <tr>
+	                    <th>Grammar</th>
+	                    <th>Speaking</th>
+	                    <th>Listenning</th>
+	                    <th>Pronunciation</th>
+	                    <th>Vocabulary</th>
+	                    <th>Average</th>
+	                    
+	                </tr>
+	                <tr>
+	                    <td><span th:text="${info.grammer}">0</span><span>/</span><span>7</span></td>
+	                    <td><span th:text="${info.speaking_fluency}">0</span><span>/</span><span>7</span></td>
+	                    <td><span th:text="${info.listening_comprehension}">0</span><span>/</span><span>7</span></td>
+	                    <td><span th:text="${info.pronunciation_intonation}">0</span><span>/</span><span>7</span></td>
+	                    <td><span th:text="${info.vocabulary}">0</span><span>/</span><span>7</span></td>
+	                    <td><span th:text="${info.avg}">3.3</span><span>/</span><span>7</span></td>
+	                </tr>
+	            </table>
+	        </div>
+	        <div class="mt40"><div id="chart"></div></div>
+	    </div>
+	
+	        <div class="headerBox">
+	            <span style="margin-left: 20px;">TEACHER'S COMMENT</span>
+	        </div>
+	        <div class="container_levelResult">
+	            <div class="mt40">
+	                <table  id="table3">
+	                    <tr>
+	                        <th><div>Recommended Level</div><div>(추천진도)</div></th>
+	                        <td><pre th:text="${info.comment_level}">No comment</pre></td>
+	                    </tr>
+	                    <tr>
+	                        <th class="textFixed"><div>Grammar & Vocalbulary</div><div>(문법&어휘)</div></th>
+	                        <td><pre th:text="${info.comment_grammer_vocabulary}">No comment</pre></td>
+	                    </tr>
+	                    <tr>
+	                        <th class="textFixed"><div>Pronunciation</div><div>(발음)</div></th>
+	                        <td><pre th:text="${info.comment_pronun_intonation}">No comment</pre></td>
+	                    </tr>
+	                    <tr>
+	                        <th><div>Listening</div><div>(듣기)</div></th>
+	                        <td><pre th:text="${info.comment_listening}">No comment</pre></td>
+	                    </tr>
+	                    <tr>
+	                        <th><div>Evaluation</div><div>(총평)</div></th>
+	                        <td><pre th:text="${info.evaluation}">No comment</pre></td>
+	                    </tr>
+	                </table>
+	            </div>
+	            <div class="btnArea mt40"><span class="blackBox" style="cursor: pointer;" onclick="printBtn()">프린트</span><span class="emptyBox"></span><span class="blackBox" style="cursor: pointer;" onclick="closeBtn()">닫기</span></div>
+	    </div>
+		
+		
+		
+	</div>
+	<!-- 컨테이너 // -->
+	
+	
+<script th:inline="javascript">
+	let info = /*[[${info}]]*/ null;
+	
+	
+	 $(document).ready(function(){
+         bb.generate({
+	         bindto: "#chart",
+	         data: {
+		         x:"x",
+		         columns: [
+		             ["x","Average", "Grammar","Speaking","Listenning","Prounciation","Vocabulary"],
+		             ["data1", info.avg, info.grammer, info.speaking_fluency, info.listening_comprehension, info.pronunciation_intonation, info.vocabulary]
+		             /* ["data1", 30, 200, 100, 170, 150, 250] */
+		             
+		         ],
+		         types: {
+		         	data1: "radar"
+		         },
+		         colors: {
+		         	data1: "#000"
+		         },
+	         }, //end of data
+	         radar: {
+	     	    axis: {
+	     	      max: 7
+	     	    },
+	     	    level: {
+	     	      depth: 7
+	     	    },
+	     	    direction: {
+	     	      clockwise: true
+	     	    }
+	     	 },
+         });
+
+     });
+	 
+	 
+	 function closeBtn(){
+		 window.close();
+	 }
+	 
+	 
+	 var printDiv;
+	 var initBody;
+
+	 function printBtn(){
+	 	printDiv = document.getElementById('printDiv');
+	 	
+	 	window.onbeforeprint = beforePrint();
+	 	window.onafterprint = afterPrint();
+	 	
+	 	setTimeout(function() {		
+	 		window.print();
+	 		$('.btnArea').show();
+	 	}, 250);
+	 }
+
+	 function beforePrint(){	
+	 	$('.btnArea').hide();
+	 	
+	 	
+	 	initBody = document.body.innerHTML;
+	 	document.body.innerHTML = printDiv.innerHTML;
+	 }
+
+	 function afterPrint(){
+	 	document.body.innerHTML = initBody;
+	 }
+</script>
+<!-- <script type="text/javascript" th:src="@{/js/teacher/teacher_todaySchedule_fileList.js}"></script> -->
+</body>
+
+</html>

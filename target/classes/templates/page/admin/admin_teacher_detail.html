@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorator="layout/layout">
+<head>
+<title></title>
+
+
+<style type ="text/css">
+   .left-head-table.report .tr .th, .left-head-table.report .tr .td {
+       text-align: left;
+       /* padding: 7px 40px; */
+       padding: 7px 20px;
+   }
+   
+   .selecter-wrap .jcf-unselectable {       
+       margin-bottom: 0px;
+   }
+   
+   .btn-box {
+   	   width: 100%;   	   
+   	   text-align: right;	
+   }
+	
+	input[type="checkbox"] {
+		width: 20px;
+    	height: 20px;
+	}
+	
+	.radioBtn {
+	    display: inline-block;
+	    background: black;	    
+	    min-width : 100px !important;
+	    height: 20px;
+	    margin-top: -1px;
+	    vertical-align: middle;	   
+	}
+	
+	.cke_inner{
+		height: 200px !important;
+	}
+	
+	#cke_1_contents{
+		height: 140px !important;
+	}
+	
+	
+   
+</style>
+
+
+
+</head>
+<body>
+<th:block layout:fragment="content">
+  	<th:block th:if="${flag == 'insert'}">	
+  		<form id="insertForm" method="post" enctype="multipart/form-data">  
+  				
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">티칭센터 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="center_no" name="center_no" > 
+					   			<option value="">-- 선택 --</option>
+					   			<option th:each="centerList : ${centerList}" th:text="${centerList.center_name}" th:value="${centerList.center_no}"></option>					         						   								   			 						   							
+					   		</select>
+				   		</div>
+				   </div>
+				
+				   <div class="th">언어 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">		
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="teacher_language_type" name="teacher_language_type">
+					   			<option value="">-- 선택 --</option>
+					   			<option value="English">English</option>
+					   			<option value="Chinese">Chinese</option>
+					   		</select>		
+				   		</div>	
+				   </div>      
+				</div>
+				
+				<div class="tr">
+				   <div class="th">아이디 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="id"  name="id" required autocomplete="off">
+				   </div>
+				
+				   <div class="th">수업용 이름 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="teacher_nickname"  name="teacher_nickname" required autocomplete="off">
+				   </div>		                  
+				</div>				
+				
+				<div class="tr">
+				   <div class="th">비밀번호 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="password" class="form-control" style="width:100%" id="pwd"  name="pwd" required autocomplete="off">
+				   </div>
+				
+				   <div class="th">선생님 전체이름 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="teacher_name"  name="teacher_name" required autocomplete="off">
+				   </div>
+				</div>
+				
+				<div class="tr">
+				   <div class="th">수업구분 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="teacher_class_type" name="teacher_class_type" > 
+					   			<option value="">-- 선택 --</option>
+					   			<option value="regular class">regular class</option>
+					   			<option value="level test">level test</option>		
+					   			<option value="regular class/level test">regular class/level test</option>			         						   								   			 						   							
+					   		</select>
+				   		</div>
+				   </div>
+				
+				   <div class="th">국적 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">		
+					   		<select data-jcf='{"maxVisibleItems": 10}' id="teacher_national" name="teacher_national">
+					   			<option value="">-- 선택 --</option>
+					   			<option th:each="nationList : ${nationList}" th:text="${nationList}" th:value="${nationList}"></option>					   			
+					   		</select>		
+				   		</div>	
+				   </div>      
+				</div>
+				
+				<div class="tr">
+				   <div class="th">회원등급 </div>
+				   <div class="td">
+				   		<div class="selecter-wrap">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="teacher_grade" name="teacher_grade" > 
+					   			<option value="">선생님</option>					   								         						   								   			 						   							
+					   		</select>
+				   		</div>
+				   </div>
+				
+				   <div class="th">휴대폰 </div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="teacher_phone"  name="teacher_phone" autocomplete="off" oninput="removeChar(event)" required placeholder="'-' 없이 숫자만 입력하세요." maxlength="11">	
+				   </div>      
+				</div>
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<div class="btn" th:onclick="goList([[${cri}]])">취소</div>
+				<button class="btn add" type="button" id="insertBtn">저장</button>
+			</div>	
+   		</form>
+   </th:block>
+   
+   
+   
+   <th:block th:if="${flag == 'update'}">	
+  		<form id="updateForm" method="post" enctype="multipart/form-data">  
+  			<input type="hidden" id="user_teacher_no"  name="user_teacher_no" th:value="${teacher.user_teacher_no}">
+  			<input type="hidden" id="user_no"  name="user_no" th:value="${teacher.user_no}">
+  		
+		   	<div class="left-head-table custom02-table report mb10">				
+				<div class="tr">
+				   <div class="th">아이디 <span class="red">*</span></div>
+				   <div class="td" th:text="${teacher.id}"></div>				
+				   <div class="th">비밀번호 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="password" class="form-control" style="width:100%" id="pwd"  name="pwd" th:value="${teacher.pwd}" required autocomplete="off">
+				   </div>               
+				</div>
+				<div class="tr">
+				   <div class="th">수업용 이름 <span class="red">*</span></div>
+				   <div class="td">				   		
+				   		<input type="text" class="form-control" id="teacher_nickname"  name="teacher_nickname" th:if="${#maps.containsKey(teacher, 'teacher_nickname')}" th:value="${teacher.teacher_nickname}" autocomplete="off">
+				   		<input type="text" class="form-control" id="teacher_nickname"  name="teacher_nickname" th:unless="${#maps.containsKey(teacher, 'teacher_nickname')}" autocomplete="off">
+				   </div> 
+				
+				   <div class="th">언어 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">		
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="teacher_language_type" name="teacher_language_type">
+					   			<option value="English" th:selected="${teacher.teacher_language_type} == 'English' ">English</option>
+					   			<option value="Chinese" th:selected="${teacher.teacher_language_type} == 'Chinese' ">Chinese</option>
+					   		</select>		
+				   		</div>	
+				   </div>                 
+				</div>				
+				<div class="tr">
+				   <div class="th">전체이름 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div>
+				   		<textarea name="teacher_name" id="teacher_name" rows="10" cols="80" required="required" style="width:100%;" th:if="${#maps.containsKey(teacher, 'teacher_name')}" th:text="${teacher.teacher_name}"></textarea>
+				   		<textarea name="teacher_name" id="teacher_name" rows="10" cols="80" required="required" style="width:100%;" th:unless="${#maps.containsKey(teacher, 'teacher_name')}"></textarea>
+				   		</div>
+				   </div>     
+				</div>
+				
+				<div class="tr">	
+				   <div class="th">노출여부</div>
+				   <div class="td">				   		
+				   		<input type="radio" class="radioBtn" name="teacher_open_status" id="teacher_open_status1" value="1" th:checked="${teacher.teacher_open_status} == 1"><label for="teacher_open_status1">노출됨</label>
+						<input type="radio" class="radioBtn" name="teacher_open_status" id="teacher_open_status0" value="0" th:checked="${teacher.teacher_open_status} == 0"><label for="teacher_open_status0">노출안됨</label>
+				   </div>
+				   
+				   <div class="th">상태 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="teacher_status" name="teacher_status" > 
+					   			<option value="">-- 선택 --</option>
+					   			<option value="1" th:selected="${teacher.teacher_status} == '1'">사용</option>
+					   			<option value="2" th:selected="${teacher.teacher_status} == '2'">일시중지</option>
+					   			<option value="0" th:selected="${teacher.teacher_status} == '0'">중지</option>					         						   								   			 						   							
+					   		</select>
+				   		</div>
+				   </div>
+				</div>
+				
+				<div class="tr">
+				   <div class="th">수업구분 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="teacher_class_type" name="teacher_class_type" > 
+					   			<option value="">-- 선택 --</option>
+					   			<option value="regular class" th:selected="${teacher.teacher_class_type} == 'regular class'">regular class</option>
+					   			<option value="level test" th:selected="${teacher.teacher_class_type} == 'level test'">level test</option>
+					   			<option value="regular class/level test" th:selected="${teacher.teacher_class_type} == 'regular class/level test'">regular class/level test</option>					         						   								   			 						   							
+					   		</select>
+				   		</div>
+				   </div>
+				
+				   <div class="th">국적 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap">		
+					   		<select data-jcf='{"maxVisibleItems": 10}' id="teacher_national" name="teacher_national">
+					   			<option value="">-- 선택 --</option>
+					   			<option th:each="nationList : ${nationList}" th:text="${nationList}" th:value="${nationList}" th:selected="${nationList} == ${teacher.teacher_national}"></option>					   			
+					   		</select>		
+				   		</div>	
+				   </div>      
+				</div>				
+				
+				<div class="tr">
+				   <div class="th">배정시간 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="start_hour" name="start_hour" > 
+					   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:selected="${hourList} == ${teacher.start_hour} "></option>					         						   								   			 						   							
+					   		</select>
+				   		</div>
+				   		
+				   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+				   						   		
+				   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="start_min" name="start_min" > 
+					   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:selected="${minList} == ${teacher.start_min} " ></option>					         						   								   			 						   							
+					   		</select>
+				   		</div>
+				   		
+				   		<div style="float:left; width: 50px; text-align: center; line-height: 45px;">~</div>
+				   		
+				   		
+				   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="end_hour" name="end_hour" > 
+					   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}" th:selected="${hourList} == ${teacher.end_hour} "></option>					   								   			 						   							
+					   		</select>
+				   		</div>
+				   		
+				   		<div style="float:left; width: 20px; text-align: center; line-height: 45px;">:</div>
+				   						   		
+				   		<div class="selecter-wrap" style="min-width:110px; width:110px; float:left;">
+					   		<select data-jcf='{"maxVisibleItems": 7}' id="end_min" name="end_min" > 
+					   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}" th:selected="${minList} == ${teacher.end_min} " ></option>					   								   			 						   							
+					   		</select>
+				   		</div>
+				   </div>         
+				</div>
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<div class="btn" th:onclick="goList([[${cri}]])">취소</div>
+				<button class="btn add" type="button" id="updateBtn">저장</button>
+			</div>	
+   		</form>
+   		
+   		
+   		<!-- 근무가능 시간표 -->
+   		<form id="timeTableForm" method="post">
+   			<input type="hidden" name="user_teacher_no" th:value="${teacher.user_teacher_no}">
+   		
+   			<p style="margin:100px 0px 30px 0px;  font-weight: 600;">근무시간</p>
+   			
+   			<div class="btn-box">
+   				<div class="btn" th:onclick="allCheck()" style="float:left">주간 전체선택</div>		  		
+				<button class="btn add" type="button" id="timeUpdateBtn" style="float:left; margin-left:5px;">저장</button>
+			</div>
+			
+   			<div class="timeTable" style="margin-top:90px;">
+   				<div class="table-wrap">
+					<table class="result-table02">
+						<colgroup>
+							<col width="*%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+						</colgroup>
+						<thead>
+							<tr>
+								<th>수업시간</th>
+								<th><a class="link" onclick="allCheck_col(0)">일</a></th>
+								<th><a class="link" onclick="allCheck_col(1)">월</a></th>
+								<th><a class="link" onclick="allCheck_col(2)">화</a></th>
+								<th><a class="link" onclick="allCheck_col(3)">수</a></th>
+								<th><a class="link" onclick="allCheck_col(4)">목</a></th>
+								<th><a class="link" onclick="allCheck_col(5)">금</a></th>
+								<th><a class="link" onclick="allCheck_col(6)">토</a></th>			
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:if="${timeTableList.size()} == 0">
+								<td colspan="8">There is no data.</td>
+							</tr>
+							<tr th:each="item : ${timeTableList}">
+								<td th:if="${#maps.containsKey(item, 'time')}" th:text="${item.time}"></td>
+								<!-- th:classappend="${item.checked} == true ? checked" -->								
+								<td><input type="checkbox" th:name="|weekTime${item.d0}|" class="day0" th:value=${item.d0} th:checked="${item.isCheck0} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d1}|" class="check day1" th:value=${item.d1} th:checked="${item.isCheck1} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d2}|" class="check day2" th:value=${item.d2} th:checked="${item.isCheck2} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d3}|" class="check day3" th:value=${item.d3} th:checked="${item.isCheck3} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d4}|" class="check day4" th:value=${item.d4} th:checked="${item.isCheck4} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d5}|" class="check day5" th:value=${item.d5} th:checked="${item.isCheck5} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d6}|" class="day6" th:value=${item.d6} th:checked="${item.isCheck6} == 1 "></td>								
+							</tr>								
+						</tbody>
+					</table>					
+				</div>
+   				
+   				
+   			</div>
+   			
+   			<!-- <div class="btn-box" style="margin-top: 20px;">		  		
+				<button class="btn add" type="button" id="timeUpdateBtn">저장</button>
+			</div> -->	
+   		</form>
+   		
+   </th:block>
+   
+   
+   
+
+<script th:inline="javascript">
+	let timeTableList = /*[[${timeTableList}]]*/ null;
+	let flag = /*[[${flag}]]*/ null;
+</script>
+
+<!-- 참고 : https://docs.ckeditor.com/ckeditor4/docs/#!/guide/dev_installation -->
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+<script type="text/javascript" th:src="@{/js/admin/admin_teacher_detail.js}"></script>
+
+</th:block>
+</body>
+
+</html>

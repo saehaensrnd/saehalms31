@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.edutem.lms.mapper.TeacherMapper">
+	<select id="selectTodaySchedule" parameterType="hashmap" resultType="hashmap">
+		select t.* from ( 
+ 
+		   select @rownum:=@rownum+1 as rownum, sub.*  from (  
+		
+			  select base.* 
+				from ( select * from (
+
+							select c.room_no, 'class' as flag, c.class_no as no, c.class_status
+								 , case when a.class_type = 0 then 'Regular' else 'Make-up' end day_type
+								 , c.class_no, l.class_log_no , a.class_score_no, 0 as leveltest_no, s.student_name, s.student_eng_name, s.id as student_id, s.student_blacklist_status
+								 , txt.study_name, p.product_name, p.product_running_time as running_time								 
+								 , if(ifnull(cs.class_phone, s.student_phone) = '', s.student_phone, ifnull(cs.class_phone, s.student_phone)) as class_phone
+								 , txt.textbook_name, txt.textbook_download
+								 , l.study_date, p.product_type
+								 , l.user_teacher_no, cs.user_student_no, a.present, a.study_status
+								 , case ifnull(a.study_status, 0) when 0 then 'Before'
+																  when 1 then 'Complete' 
+																  when 2 then 'cancel' else 'Makeup' end log_status
+								 , if((select count(*) from class_video_student_log where class_score_no = a.class_score_no) > 0, 'O', 'X') as student_status
+								 , if((select count(*) from class_video_teacher_log where class_log_no = l.class_log_no) > 0, 'O', 'X') as teacher_status
+								 
+								 , l.start_time as class_time
+							     , substring_index(l.start_time, ':', 1) as class_start_hour
+							     , substring_index(l.start_time, ':', -1) as class_start_min
+							     
+							     , case when substring_index(l.start_time, ':', -1) + p.product_running_time >= 60 
+							            then substring_index(l.start_time, ':', 1) + 1
+							            else substring_index(l.start_time, ':', 1) end as class_end_hour
+							     , case when substring_index(l.start_time, ':', -1) + p.product_running_time >= 60 
+							            then (substring_index(l.start_time, ':', -1) + p.product_running_time) - 60
+							            else substring_index(l.start_time, ':', -1) + p.product_running_time end as class_end_min
+							from class_score a
+							inner join class_log l on a.class_log_no = l.class_log_no
+							inner join class c on l.class_no = c.class_no
+							inner join class_student cs on a.class_student_no = cs.class_student_no
+							inner join (select ia.*, ib.id 
+										from user_student ia 
+										inner join user ib on ia.user_no = ib.user_no) s on cs.user_student_no = s.user_student_no
+							inner join (select ia.*, ic.study_name 
+										from textbook ia 
+										inner join study_level ib on ia.study_level_no = ib.study_level_no
+										inner join study ic on ib.study_no = ic.study_no) txt on c.textbook_no = txt.textbook_no
+							inner join product p on c.product_no = p.product_no
+							
+							union all
+							
+							select l.room_no, 'leveltest' as flag, l.leveltest_no as no, l.leveltest_status as class_status
+								 , 'LevelTest' as day_type
+								 , 0 as class_no, 0 as class_log_no, 0 as class_score_no, l.leveltest_no, s.student_name, s.student_eng_name, s.id as student_id, s.student_blacklist_status
+								 , '' as study_name, concat(l.leveltest_language, ' 레벨 테스트') as product_name, 10 as running_time
+								 , if(ifnull(l.class_phone, s.student_phone) = '',  s.student_phone, ifnull(l.class_phone, s.student_phone)) as class_phone
+								 , '' as textbook_name, '' as textbook_download
+								 , l.study_date, l.leveltest_type as product_type
+								 , l.user_teacher_no, l.user_student_no, l.present, l.study_status
+								 , case ifnull(l.study_status, 0) when 0 then 'Before'
+															  	  when 1 then 'Complete' else 'cancel' end log_status
+								 , '' student_status, '' teacher_status
+								 
+								 , l.class_time
+							     , substring_index(l.class_time, ':', 1) as class_start_hour
+							     , substring_index(l.class_time, ':', -1) as class_start_min
+							     
+							     , case when substring_index(l.class_time, ':', -1) + 10 >= 60 
+							            then substring_index(l.class_time, ':', 1) + 1
+							            else substring_index(l.class_time, ':', 1) end as class_end_hour
+							     , case when substring_index(l.class_time, ':', -1) + 10 >= 60 
+							            then (substring_index(l.class_time, ':', -1) + 10) - 60
+							            else substring_index(l.class_time, ':', -1) + 10 end as class_end_min 
+							from leveltest l
+							inner join (select ia.*, ib.id 
+										from user_student ia 
+										inner join user ib on ia.user_no = ib.user_no) s on l.user_student_no = s.user_student_no
+						            
+						) z				
+			   ) base
+			   where 1=1
+			   and class_status not in (0, 2)     <!-- 수업상태 0대기, 1수업중, 2취소 -> 대기나 취소상태인것들 조회 안되도록 -->
+			   and user_teacher_no = #{user_teacher_no}		
+			   and study_date = #{searchDate}				  
+			   <if test="keyword != null and keyword != ''">
+					<choose>
+						<when test="searchType == 'all' or searchType == ''">
+							AND ( student_id Like CONCAT('%', TRIM(#{keyword}), '%')
+							   or student_name Like CONCAT('%', TRIM(#{keyword}), '%')																			
+							)
+						</when>
+						<when test="searchType == 'student_id'">AND student_id Like CONCAT('%', TRIM(#{keyword}), '%')</when>
+						<when test="searchType == 'student_name'">AND student_name Like CONCAT('%', TRIM(#{keyword}), '%')</when>
+					</choose>
+				</if>
+		   ) sub
+		   where (@rownum := 0) = 0
+		   order by sub.class_time
+			
+		) t
+		order by t.rownum desc
+		limit #{cri.pageStart}, #{cri.perPageNum}
+	</select>
+	<select id="countTodaySchedule" parameterType="hashmap" resultType="int">
+		  select count(*) 
+			from ( select c.room_no, 'class' as flag, c.class_status
+					     , c.class_no , a.class_score_no, 0 as leveltest_no, s.student_name, s.student_eng_name, s.id as student_id
+						 , txt.study_name, p.product_name, cs.class_phone, txt.textbook_name
+						 , l.study_date, c.class_time, p.product_type
+					     , l.user_teacher_no, cs.user_student_no
+					     , case ifnull(a.study_status, 0) when 0 then if(l.study_date > current_date(), 'Before', 'Complete')
+					                                      when 1 then '취소' else '보충' end log_status
+						 , if((select count(*) from class_video_student_log where class_score_no = a.class_score_no) > 0, 'O', 'X') as student_status
+					     , if((select count(*) from class_video_teacher_log where class_log_no = l.class_log_no) > 0, 'O', 'X') as teacher_status
+					from class_score a
+					inner join class_log l on a.class_log_no = l.class_log_no
+					inner join class c on l.class_no = c.class_no
+					inner join class_student cs on a.class_student_no = cs.class_student_no
+					inner join (select ia.*, ib.id 
+					            from user_student ia 
+					            inner join user ib on ia.user_no = ib.user_no) s on cs.user_student_no = s.user_student_no
+					inner join (select ia.*, ic.study_name 
+					            from textbook ia 
+					            inner join study_level ib on ia.study_level_no = ib.study_level_no
+					            inner join study ic on ib.study_no = ic.study_no) txt on c.textbook_no = txt.textbook_no
+					inner join product p on c.product_no = p.product_no
+					
+					union all
+					
+					select l.room_no, 'leveltest' as flag, l.leveltest_status as class_status
+					     , 0 as class_no, 0 as class_score_no, l.leveltest_no, s.student_name, s.student_eng_name, s.id as student_id
+					     , '' as study_name, concat(l.leveltest_language, ' 레벨 테스트') as product_name, l.class_phone, '' as textbook_name
+					     , l.study_date, l.class_time, l.leveltest_type as product_type
+					     , l.user_teacher_no, l.user_student_no
+					     , case ifnull(l.study_status, 0) when 0 then if(l.study_date > current_date(), 'Before', 'Complete')
+					                                      when 1 then '취소' else '보충' end log_status
+					     , '' student_status, '' teacher_status
+					from leveltest l
+					inner join (select ia.*, ib.id 
+					            from user_student ia 
+					            inner join user ib on ia.user_no = ib.user_no) s on l.user_student_no = s.user_student_no	
+		  ) base
+		  where 1=1
+		  and class_status not in (0, 2)     <!-- 수업상태 0대기, 1수업중, 2취소 -> 대기나 취소상태인것들 조회 안되도록 -->
+		  and user_teacher_no = #{user_teacher_no}	
+		  and study_date = #{searchDate}
+		  <if test="keyword != null and keyword != ''">
+				<choose>
+					<when test="searchType == 'all' or searchType == ''">
+						AND ( student_id Like CONCAT('%', TRIM(#{keyword}), '%')
+						   or student_name Like CONCAT('%', TRIM(#{keyword}), '%')																			
+						)
+					</when>
+					<when test="searchType == 'student_id'">AND student_id Like CONCAT('%', TRIM(#{keyword}), '%')</when>
+					<when test="searchType == 'student_name'">AND student_name Like CONCAT('%', TRIM(#{keyword}), '%')</when>
+				</choose>
+		  </if>
+	</select>
+	
+	<select id="getVideoClassInfo" parameterType="hashmap" resultType="hashmap">
+		  select c.room_no, c.class_no, l.class_log_no, a.class_score_no
+			     , cs.user_student_no, s.student_name, s.student_eng_name
+			     , l.study_date, l.start_time as class_time, p.product_name
+			     , ifnull(txt.textbook_download, '') as textbook_download     
+		  from class_score a
+		  inner join class_log l on a.class_log_no = l.class_log_no
+		  inner join class c on l.class_no = c.class_no
+		  inner join class_student cs on a.class_student_no = cs.class_student_no
+		  inner join user_student s on cs.user_student_no = s.user_student_no
+		  inner join user u on s.user_no = u.user_no
+		  inner join product p on c.product_no = p.product_no
+		  left join textbook txt on c.textbook_no = txt.textbook_no
+		  where a.class_score_no = #{class_score_no}     <!-- #{class_score_no} 0723 수정  레벨테스트 추가 관련-->
+	</select>
+	<select id="getVideoClassLevelInfo" parameterType="hashmap" resultType="hashmap">
+		  select l.room_no, l.leveltest_no
+		       , concat(l.leveltest_language, ' 레벨 테스트') as product_name, l.study_date, ifnull(l.class_time, '') class_time, '' as textbook_download
+		  from leveltest l
+		  where l.leveltest_no = #{leveltest_no}
+	</select>
+	
+	<select id="selectLastAIClassVideoTeacherLog" resultType="int">
+		  select auto_increment from information_schema.tables where table_name = 'class_video_teacher_log' and table_schema = 'SAEHALMSver31'
+	</select>
+	
+	<select id="selectLastAIClassVideoLevelLog" resultType="int">
+		  select auto_increment from information_schema.tables where table_name = 'level_video_log' and table_schema = 'SAEHALMSver31'
+	</select>
+	
+	<insert id="insertClassVideoTeacherLog" parameterType="hashmap">
+		  insert into class_video_teacher_log(class_log_no, login_no, in_time)
+		  values(#{class_log_no}, #{login_no}, now())
+	</insert>
+	<update id="updateClassVideoTeacherLog" parameterType="hashmap">
+		  update class_video_teacher_log
+		  set out_time = now()
+		  where class_video_teacher_log_no = #{class_video_teacher_log_no}
+	</update>
+	
+	<insert id="insertClassVideoLevelLog" parameterType="hashmap">
+		  insert into level_video_log(leveltest_no, login_no, in_time) 
+		  values(#{leveltest_no}, #{login_no}, now())
+	</insert>
+	<update id="updateClassVideoLevelLog" parameterType="hashmap">
+		  update level_video_log
+		  set out_time = now()
+		  where level_video_log_no = #{level_video_log_no}
+	</update>
+	
+	<select id="selectClassVideoLogList" parameterType="hashmap" resultType="hashmap">
+		select * from (
+			select a.class_log_no, u.role, u.id as login_id
+			     , a.in_time, a.out_time
+			from class_video_teacher_log a
+			inner join user u on a.login_no = u.user_no
+			where a.class_log_no = #{class_log_no}
+			
+			union all
+			
+			select l.class_log_no, u.role, u.id as login_id
+				 , a.in_time, a.out_time
+			from class_video_student_log a
+			inner join class_score s on a.class_score_no = s.class_score_no
+			inner join class_log l on l.class_log_no = s.class_log_no
+			inner join user u on a.login_no = u.user_no
+			where l.class_log_no = #{class_log_no}
+		) z
+		order by z.in_time desc 
+	</select>
+	<select id="selectLevelVideoLogList" parameterType="hashmap" resultType="hashmap">
+		select a.leveltest_no, u.role, u.id as login_id
+		     , a.in_time, a.out_time
+		from level_video_log a 
+		inner join user u on a.login_no = u.user_no
+		where leveltest_no = #{leveltest_no}
+	</select>
+	
+	
+	<select id="selectTodayScheduleExcel" parameterType="hashmap" resultType="hashmap">
+		select t.* from ( 
+ 
+		   select @rownum:=@rownum+1 as rownum, sub.*  from (  
+		
+			  select * from (
+
+				select c.room_no, 'class' as flag, c.class_status
+				     , case when a.class_type = 0 then 'Regular' else 'Make-up' end day_type	
+				     , st.site_name , cs.user_student_no, s.student_name, s.student_eng_name, s.id as student_id
+					 , p.product_type, p.product_name, c.start_date, c.end_date, l.study_date
+					 , if(ifnull(cs.class_phone, s.student_phone) = '', s.student_phone, ifnull(cs.class_phone, s.student_phone)) as class_phone
+				     , s.student_tel, s.student_phone, s.student_parent_phone, txt.textbook_name
+				     , l.start_time as class_time, p.product_running_time as running_time
+				     , case ifnull(a.study_status, 0) when 0 then 'Before'
+													  when 1 then 'Complete' 
+													  when 2 then 'cancel' else 'Makeup' end log_status
+				     , if(a.present = 1, 'Present', if(a.present = 2, 'Absent', '')) as present
+				     , cs.class_phone as real_class_phone
+				     , l.user_teacher_no, t.teacher_name, t.center_name, t.id as teacher_id
+				     , '' as result_level, p.product_type as web_classType
+				from class_score a
+				inner join class_log l on a.class_log_no = l.class_log_no
+				inner join class c on l.class_no = c.class_no
+				inner join class_student cs on a.class_student_no = cs.class_student_no
+				inner join (select ia.*, ib.id 
+				            from user_student ia inner join user ib on ia.user_no = ib.user_no) s on cs.user_student_no = s.user_student_no
+				inner join site st on s.site_no = st.site_no
+				inner join product p on c.product_no = p.product_no
+				left join textbook txt on c.textbook_no = txt.textbook_no
+				left join (select ia.*, ib.id, ic.center_name
+				           from user_teacher ia 
+				           inner join user ib on ia.user_no = ib.user_no
+				           inner join center ic on ia.center_no = ic.center_no) t on l.user_teacher_no = t.user_teacher_no
+				           
+				union all
+				
+				select a.room_no, 'leveltest' as flag, 'LevelTest' as day_type, a.leveltest_status as class_status 
+				     , st.site_name , a.user_student_no, s.student_name, s.student_eng_name, s.id as student_id
+				     , a.leveltest_type as product_type, concat(a.leveltest_language, ' 레벨 테스트') as product_name, a.study_date as start_date, a.study_date as end_date, a.study_date
+				     , if(ifnull(a.class_phone, s.student_phone) = '', s.student_phone, ifnull(a.class_phone, s.student_phone)) as class_phone
+				     , s.student_tel, s.student_phone, s.student_parent_phone, '' as textbook_name
+				     , a.class_time as class_time, 10 as running_time
+				     , case ifnull(a.study_status, 0) when 0 then 'Before'
+												      when 1 then 'Complete' else 'cancel' end log_status
+					 , if(a.present = 1, 'Present', if(a.present = 2, 'Absent', '')) as present
+				     , a.class_phone as real_class_phone
+				     , a.user_teacher_no, t.teacher_name, t.center_name, t.id as teacher_id
+				     , ifnull(sl.level_name, '') as result_level, a.leveltest_type as  web_classType
+				from leveltest a
+				inner join (select ia.*, ib.id 
+				            from user_student ia inner join user ib on ia.user_no = ib.user_no) s on a.user_student_no = s.user_student_no
+				inner join site st on s.site_no = st.site_no
+				left join (select ia.*, ib.id, ic.center_name
+				           from user_teacher ia 
+				           inner join user ib on ia.user_no = ib.user_no
+				           inner join center ic on ia.center_no = ic.center_no) t on a.user_teacher_no = t.user_teacher_no
+				left join study_level sl on a.study_level_no = sl.study_level_no
+				
+				) base
+				where 1=1 
+				and class_status not in (0, 2)     <!-- 수업상태 0대기, 1수업중, 2취소 -> 대기나 취소상태인것들 조회 안되도록 -->
+				<if test="flag == 'teacher' ">
+					and user_teacher_no = #{user_teacher_no}	
+				</if>				
+					and study_date = #{searchDate}
+				<if test="keyword != null and keyword != ''">
+					<choose>
+						<when test="searchType == 'all' or searchType == ''">
+							AND ( student_id Like CONCAT('%', TRIM(#{keyword}), '%')
+							   or student_name Like CONCAT('%', TRIM(#{keyword}), '%')																			
+							)
+						</when>
+						<when test="searchType == 'student_id'">AND student_id Like CONCAT('%', TRIM(#{keyword}), '%')</when>
+						<when test="searchType == 'student_name'">AND student_name Like CONCAT('%', TRIM(#{keyword}), '%')</when>
+					</choose>
+				</if>
+			   	 
+		   ) sub
+		   where (@rownum := 0) = 0
+		   order by sub.start_date 
+			
+		) t
+		order by t.rownum desc
+	</select>
+	
+	<!-- 강사 회원상세보기 팝업 -->
+	<update id="updateEngNameByTeacherUserDetail" parameterType="hashmap">
+		  update user_student
+		  set student_eng_name = #{student_eng_name}
+		  where user_student_no = #{user_student_no}
+	</update>
+	
+	<!-- 화상API 입장 시 교재 PDF 연결 관련 - 가장 최근 진도 토픽[Unit]단위 PDF를 불러온다. 최초 수업이라 최근 진도가 없다면 unit 1번 교재를 가져옴 -->
+	<select id="getTopic" parameterType="hashmap" resultType="hashmap">
+		  select a.class_score_no, a.class_log_no, a.class_student_no, a.study_status
+			     , l.class_no, l.slide_number, c.textbook_no  
+			     , ifnull ((select ia.textbook_topic_no
+					from class_log ia 
+					where ia.class_no = c.class_no
+					and ia.study_date <![CDATA[<=]]>  l.study_date
+					and ia.textbook_topic_no is not null
+					order by ia.study_date desc
+					limit 1), 0)  as log_topic_no         
+				 , ifnull ((select ia.textbook_topic_no
+					from textbook_topic ia
+					where ia.textbook_no = c.textbook_no
+					and ia.unit = 1), 0) as class_topic_no     
+			from class_score a
+			inner join class_log l on a.class_log_no = l.class_log_no
+			inner join class c on l.class_no = c.class_no
+			where a.class_score_no = #{class_score_no}
+	</select>
+	
+	<select id="getTextbookTopic" parameterType="hashmap" resultType="hashmap">
+		  select ifnull(pdf_file, "") as pdf_file
+		  from textbook_topic
+		  where textbook_topic_no = #{topic_no}
+	</select>
+
+</mapper>

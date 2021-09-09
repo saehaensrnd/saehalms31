@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorator="layout/layout">
+<head>
+<title></title>
+
+
+<style type ="text/css">
+   .left-head-table.report .tr .th, .left-head-table.report .tr .td {
+       text-align: left;       
+       padding: 7px 20px;
+   }
+   .selecter-wrap .jcf-unselectable {       
+       margin-bottom: 0px;
+   }
+   
+   .btn-box {
+   	   width: 100%;   	   
+   	   text-align: right;	
+   }
+</style>
+
+
+
+</head>
+<body>
+<th:block layout:fragment="content">
+  	<th:block th:if="${flag == 'insert'}">	
+  		<p style="font-weight:600; margin-bottom:10px;">일반 등록</p>  	
+  		<form id="insertForm" method="post">
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">language <span class="red">*</span></div>
+				   <div class="td">
+						<div class="selecter-wrap">				
+							<div class="search-div">
+								<select data-jcf='{"maxVisibleItems": 7}' id="language_type" name="language_type" >
+						   			<option value="">-- 선택 --</option>													
+									<option value="English">English</option>
+									<option value="Chinese">Chinese</option>							
+						   		</select>
+							</div>	
+						</div>
+				   </div>
+				   
+				   <div class="th">holiday name</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="holiday_name"  name="holiday_name" required autocomplete="off">
+				   </div>
+				   				   
+				</div>
+				<div class="tr">				
+				   <div class="th">holiday <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="holiday_date" name="holiday_date" class="fx-item dateitem" style="width: 492px; min-width: 200px;" autocomplete="off">
+				   </div>	
+				</div>
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<div class="btn" th:onclick="goList([[${cri}]])">취소</div>
+				<button class="btn add" type="button" id="insertBtn">저장</button>
+			</div>	
+   		</form>
+   		
+   		
+   		<p style="font-weight:600; margin:100px 0px 10px 0px;">엑셀 등록</p>  	
+  		<form th:action="@{/holidayExcel}" id="excelInsertForm" method="post" enctype="multipart/form-data">
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">language <span class="red">*</span></div>
+				   <div class="td">
+						<div class="selecter-wrap">				
+							<div class="search-div">
+								<select data-jcf='{"maxVisibleItems": 7}' id="language_type_excel" name="language_type" >
+						   			<option value="">-- 선택 --</option>													
+									<option value="English">English</option>
+									<option value="Chinese">Chinese</option>							
+						   		</select>
+							</div>	
+						</div>
+				   </div>
+				   
+				   <div class="th">Sample EXCEL</div>
+				   <div class="td">
+				   		<a href="javascript:void(0);" onclick="downloadExcelFile();" class="link">Sample excel</a>
+				   </div>
+				   				   
+				</div>
+				<div class="tr">				
+				   <div class="th">file <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="file" accept="apsplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="input_img" id="holidayExcel" name="mfile">				   		
+				   </div>	
+				</div>
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<div class="btn" th:onclick="goList([[${cri}]])">취소</div>
+				<!-- <button class="btn add" type="submit" id="excelInsertBtn">저장</button> -->
+				<button class="btn add" type="button" id="excelInsertBtn">저장</button>
+			</div>	
+   		</form>
+   		
+   </th:block>
+   
+   
+   <th:block th:if="${flag == 'update'}">	
+  		<form id="updateForm" method="post">
+  			<input type="hidden" id="holiday_no"  name="holiday_no" th:value="${item.holiday_no}">
+  			<input type="hidden" id="old_holiday_date"  name="old_holiday_date" th:value="${#dates.format(item.holiday_date, 'yyyy.MM.dd')}">
+  			<input type="hidden" id="language_type"  name="language_type" th:value="${item.language_type}">
+  		
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">language</div>
+				   <div class="td" th:text="${item.language_type}"></div>
+				   
+				   <div class="th">holiday name</div>
+				   <div class="td">
+				   		<input type="text" class="form-control" id="holiday_name"  name="holiday_name" th:if="${#maps.containsKey(item, 'holiday_name')}" th:value="${item.holiday_name}" autocomplete="off">				   		
+				   		<input type="text" class="form-control" id="holiday_name"  name="holiday_name" th:unless="${#maps.containsKey(item, 'holiday_name')}" autocomplete="off">
+				   </div>
+				   
+				   
+				</div>
+				<div class="tr">				
+				   <div class="th">holiday <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="holiday_date" name="holiday_date" class="fx-item dateitem" th:value="${#dates.format(item.holiday_date, 'yyyy.MM.dd')}" style="width: 492px; min-width: 200px;" autocomplete="off">
+				   </div>			   
+				   
+				   
+				</div>
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<div class="btn" th:onclick="goList([[${cri}]])">취소</div>
+				<button class="btn add" type="button" id="updateBtn">저장</button>
+			</div>	
+   		</form>
+   </th:block>
+   
+   
+   
+
+<script th:inline="javascript">
+	//let company_code = /*[[${company_code}]]*/ null;
+</script>
+<script type="text/javascript" th:src="@{/js/admin/admin_holiday_detail.js}"></script>
+
+</th:block>
+</body>
+
+</html>

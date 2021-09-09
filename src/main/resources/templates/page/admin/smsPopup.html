@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+
+
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+
+.left-head-table .tr .td input, .left-head-table .tr .td select {
+    min-width: 65px;
+}
+
+.radioBtn {
+    display: inline-block;
+    background: black;
+    width: 65px;
+    height: 20px;
+    margin-top: -1px;
+    vertical-align: middle;   
+}
+
+.checkbox {
+	width: 60px;
+	height: 20px;
+	position: relative;
+	/* left: 12px; */
+}
+.chkLabel {
+	position: relative;
+	bottom: 4px;
+}
+
+
+</style>
+
+</head>
+<body style="padding-top: 20px !important; overflow:hidden; ">
+	
+
+	<!--  컨테이너 -->		
+	<div style="width:95%; margin:0 auto;">
+			
+				
+		<!-- 회원기본정보 -->		
+		<div class="smsDiv">
+			<p style="font-weight: 600; margin-bottom: 10px; font-size: 18px;">SMS 발송</p>
+			<form id="smsForm" method="post" enctype="multipart/form-data">  
+	  			<input type="hidden" id="selectedArr"  name="selectedArr" th:value="${paramMap.selectedArr}">
+	  		
+			   	<div class="left-head-table custom02-table report mb10">
+			   		<div class="tr">
+					   <div class="th">전송방법</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="type" id="type1" value="sms" checked><label class="radioLabel" for="type1">SMS</label>
+							<input type="radio" class="radioBtn" name="type" id="type2" value="lms"><label class="radioLabel" for="type2">LMS</label>	
+					   </div>					                  
+					</div>					
+					<div class="tr">
+					   <div class="th">내용</div>
+					   <div class="td" style="padding-bottom:0px;">
+					   		<textarea class="form-control" id="text" name="text" style="width: 100%; height: 200px; padding: 10px;" onKeyup="fnChkByte(this)"></textarea>
+					   		<span style="color:#aaa;" id="counter">(0 byte)</span>	
+					   </div>					                  
+					</div>
+					  
+					<div class="tr">
+					   <div class="th">예약</div>
+					   <div class="td">					   		
+					   		<input type="checkbox" class="checkbox" name="reserve_yn" id="reserve_yn" onchange="reserveChange(this)"><label class="chkLabel" for="reserve">예약</label>
+					   		<div class="reserveDiv" style="display:none;">
+					   			<input type="" id="reserve_dt" name="reserve_dt" class="fx-item dateitem" style="width:37%; min-width:37%; float:left; margin-right:10px;" autocomplete="off" th:value="${#calendars.format(#calendars.createNow(), 'yyyy.MM.dd')}">
+					   			
+					   			<div class="selecter-wrap" style="min-width:80px; width:84px; float:left;">
+							   		<select data-jcf='{"maxVisibleItems": 7}' id="reserve_hour" name="reserve_hour" > 
+							   			<option value="">시</option>
+							   			<option th:each="hourList : ${hourList}" th:text="${hourList}" th:value="${hourList}"></option>					         						   								   			 						   							
+							   		</select>
+						   		</div>
+						   		
+						   		<div style="float:left; width: 10px; text-align: center; line-height: 45px;">:</div>
+						   						   		
+						   		<div class="selecter-wrap" style="min-width:80px; width:84px; float:left;">
+							   		<select data-jcf='{"maxVisibleItems": 7}' id="reserve_min" name="reserve_min" >
+							   			<option value="">분</option> 
+							   			<option th:each="minList : ${minList}" th:text="${minList}" th:value="${minList}"></option>					         						   								   			 						   							
+							   		</select>
+						   		</div>					   			
+					   		</div>					   		
+					   </div>					     
+					</div>
+					
+					<div class="tr">
+					   <div class="th">수신자</div>
+					   <div class="td" th:text="|${size}명|"></div>     
+					</div>					
+					
+					<div class="tr">
+					   <div class="th">발신번호</div>
+					   <div class="td">
+					   		<input type="text" name="send_number" id="send_number" value="18993430">
+					   </div>					       
+					</div>
+					
+			   	</div>
+				<div class="btn-box" style="text-align:center;">			  		
+			  		<!-- <div class="btn btn_black" th:onclick="goList([[${cri}]])">목록</div> -->
+					
+					<div class="btn" th:onclick="sendSms()">보내기</div>					
+					<div class="btn" th:onclick="closePopoup()">취소</div>
+					
+					
+				</div>	
+	   		</form>
+		</div>
+		
+
+	</div>
+	<!-- 컨테이너 // -->
+	
+	
+<script th:inline="javascript">
+	let paramMap = /*[[${paramMap}]]*/ null;
+	
+	$( function(){
+
+		jQuery.datetimepicker.setLocale('kr');
+		$('.dateitem').datetimepicker({
+	        format:'Y.m.d',
+	        lang:'ko',
+	        timepicker:false,
+	        onChangeDateTime:function(dp,$input){
+	            // $('#dateitem').val($input.val());
+	        }
+	    });//datepicker end
+
+
+	 });
+</script>
+<script type="text/javascript" th:src="@{/js/admin/smsPopup.js}"></script>
+</body>
+
+</html>

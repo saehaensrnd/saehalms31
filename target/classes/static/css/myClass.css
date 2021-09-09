@@ -1,0 +1,304 @@
+#table {
+  border: 1px solid #dedede;
+  border-collapse: collapse;
+  border-left: 0px;
+  border-right: 0px;
+  font-size: 1em;
+}
+#table .th,
+#table .td {
+  border: 1px solid #dedede;
+  padding: 10px 15px;
+  text-align: center;
+  border-left: 0px;
+  line-height: 1.3em;
+  height: 60px;
+}
+
+#table .btn {
+  display: inline-block;
+}
+#table select,
+#table input:not(input[type="radio"]):not(input[type="checkbox"]) {
+  width: 100%;
+}
+#table input[type="radio"],
+#table input[type="checkbox"] {
+  height: 20px;
+  margin-right: 5px;
+}
+#table em {
+  margin: 0px 5px;
+}
+
+#table tr td span.state {
+  font-weight: 700;
+}
+#table tr td span.state.ing {
+  color: #8717e7;
+}
+#table tr td .btn {
+  line-height: 40px;
+  height: 40px;
+  width: 100px;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+#table .th,
+#table .td {
+  display: inline-block;
+}
+#table .frame {
+  max-width: 200%;
+}
+.txtCaution span {
+  display: inline-block;
+}
+table tr td .recordPlayBtn {
+  background: #dae6fe;
+  width: 200px;
+  border-color: #dae6fe;
+}
+tr {
+  border-right: 1px solid #dedede;
+  border-left: 1px solid #dedede;
+}
+.a.button {
+  display: inline-block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #fff;
+  background: #000;
+  margin: 20px;
+}
+
+
+.container_certificate {
+  margin: 0 auto;
+}
+.certificate {
+  background: url(../img/receipt_bg2.gif) no-repeat;
+  background-size: 100%;
+  max-width: 100%;
+  max-height: 650px;
+  min-height: 480px;
+  font-weight: 600;
+  font-size: 12px;
+  color: rgb(129, 129, 129);
+}
+.certificate ul,
+.certificate .certificate_script {
+  position: relative;
+  left: 15%;
+  top: 10%;
+}
+.redText {
+  color: #ff0000;
+}
+.certificate_date {
+  display: inline-block;
+  margin-top: 10%;
+  margin-bottom: 10%;
+}
+.mb60 {
+  margin-bottom: 0px;
+}
+.blackText {
+  color: #000;
+}
+.transformToCenter {
+  transform: translateX(20%);
+}
+.transformToCenter1 {
+  transform: translateX(200%);
+}
+.cerificateLogo {
+  max-width: 100%;
+}
+
+@media only screen and (max-width: 1024px) {
+  #table {
+    max-width: 96vw;
+  }
+  #table th,
+  #table td {
+    font-size: 14px;
+  }
+}
+@media only screen and (max-width: 768px) {
+  #table {
+    max-width: 96vw;
+  }
+  #table th,
+  #table td {
+    font-size: 10px;
+  }
+  .pupleBox {
+    display: inline-block;
+    word-break: keep-all;
+    word-wrap: normal;
+  }
+  .userInfo {
+    display: none;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .fontW {
+    font-weight: 300;
+    font-size: 12px;
+  }
+  .title {
+    font-size: 18px;
+  }
+  .w300 {
+    width: 100vw;
+  }
+  .txtCaution span {
+    font-size: 12px;
+  }
+  #table,
+  #table td,
+  #table th {
+    display: inline-block;
+  }
+  #table .moFirstRow {
+    width: 22.8vw;
+  }
+  #table .moSecRow {
+    width: 18.25vw;
+  }
+  #table tr th,
+  #table tr td {
+    font-size: 12px;
+    padding: 20px 0 0 0;
+    word-break: keep-all;
+  }
+  #table1 tr th,
+  #table1 tr td {
+    font-size: 12px;
+    padding: 0 2px 0 2px;
+    word-break: keep-all;
+  }
+  #table tr td {
+    word-break: keep-all;
+  }
+
+  .pupleBox {
+    max-width: 50px;
+    min-width: 20px;
+    padding: 10px 0 10px 0;
+    border-radius: 4px;
+    word-wrap: break-word;
+    font-size: 12px;
+    height: 40px;
+  }
+  table tr td .recordPlayBtn {
+    width: 50px;
+    font-size: 12px;
+    display: block;
+    font-weight: 600;
+  }
+  table tr td .btn {
+    line-height: 20px;
+  }
+  .cerificateLogo {
+    max-width: 70%;
+    transform: translateY(70%);
+  }
+  #ex7 {
+    width: 100%;
+    padding: 0 0 0 0;
+  }
+  
+  .certificate {
+    transform: translateY(0%);
+  }
+  .certificate ul,
+  .certificate .certificate_script {
+    font-size: 6px;
+  }
+  .certificate .certificate_script,
+  .certificate_script span {
+    line-height: 12px;
+  }
+
+  .redText {
+    font-size: 6px;
+  }
+  .transformToCenter {
+    
+  }
+  .transformToCenter1 {
+    margin: 0 auto;
+    margin-bottom: 30px;
+    margin-top: 30px;
+  }
+.certificate_date{ font-size: 12px;}
+.mt50{margin-top: 50px;}
+}
+
+
+
+
+ /* The Modal (background) */
+.myModal{
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 200px; /* Location of the box */
+  left: 0;
+  top: 0;
+  
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.myModal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  /* width: 80%; */
+  width : 480px;
+  min-height : 300px;
+  height : auto;  /* 370px; */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* The Close Button */
+.close {  
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  padding-right: 15px;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.myModal-header {
+  padding: 15px 0px 0px 15px;
+  background-color: white;
+  color: black;
+  height:40px;
+  /* font-size: 13px; */
+}
+
+.myModal-body {padding: 2px 16px;}
+
+
+

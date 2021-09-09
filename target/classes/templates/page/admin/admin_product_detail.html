@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+<script type="text/javascript" th:src="@{/js/admin/admin_product_detail.js}"></script>
+<style type="text/css">
+.shareChk {
+	width: 60px;
+	height: 20px;
+	position: relative;
+	left: 12px;
+}
+
+
+.selecter-wrap .jcf-unselectable {
+	margin-bottom: 0px;
+}
+
+input[type='radio'] {
+	float: left;
+}
+
+.radio_label {
+	margin-right: 20px;
+	font-size: 16px;
+	float: left;
+}
+
+.redpoint {
+	color: red;
+	margin-right: 3px;
+}
+
+#zip_code {
+	width: 200px;
+	float: left;
+}
+#postcode_btn {
+	width: 150px;
+	float: left;
+	margin-left: 20px;
+	background: white;
+}
+</style>
+</head>
+<body>
+	<th:block layout:fragment="content">
+
+		<!-- insert form -->
+		<th:block th:if="${flag == 'insert'}">
+			<form id="product_form">
+				<table class="customer-insert table table-bordered">
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>사이트</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<div class="selecter-wrap search-div">
+								<select id="site_no" name="site_no" class="form-control" style="width: 200px;">
+									<option th:each="s : ${site}" th:value="${s.site_no}" th:text="${s.site_name}"></option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>상품명</td>
+						<td style="padding: 10px;"><input type="text" name="product_name" id="product_name"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">상품영문명</td>
+						<td style="padding: 10px;"><input type="text" name="product_eng_name" id="product_eng_name"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">서비스타켓</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="product_target" name="product_target" class="form-control">
+									<option value="학생">학생</option>
+									<option value="학부모">학부모</option>
+									<option value="성인">성인</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>수업타입</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="product_type" name="product_type" class="form-control">
+									<option value="Phone">Phone</option>
+									<option value="Video">Video</option>
+									<option value="VideoCall">VideoCall</option>
+									<option value="VR">VR</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>언어</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="product_language" name="product_language" class="form-control">
+									<option value="English">English</option>
+									<option value="Chinese">Chinese</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>수업인원</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="product_personnel" name="product_personnel" class="form-control">
+									<option value="1:1">1:1</option>
+									<option value="1:2">1:2</option>
+									<option value="1:3">1:3</option>
+									<option value="1:4">1:4</option>
+									<option value="1:5">1:5</option>
+									<option value="1:6">1:6</option>
+									<option value="1:7">1:7</option>
+									<option value="1:8">1:8</option>
+									<option value="1:9">1:9</option>
+									<option value="1:10">1:10</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>런닝타임</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="product_running_time" name="product_running_time" class="form-control">
+									<option value="5">5분</option>
+									<option value="10">10분</option>
+									<option value="15">15분</option>
+									<option value="20">20분</option>
+									<option value="25">25분</option>
+									<option value="30">30분</option>
+									<option value="35">35분</option>
+									<option value="40">40분</option>
+									<option value="45">45분</option>
+									<option value="50">50분</option>
+									<option value="55">55분</option>
+									<option value="60">60분</option>
+									<option value="70">70분</option>
+									<option value="80">80분</option>
+									<option value="90">90분</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>주당 수업</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="product_week" name="product_week" class="form-control">
+									<option value="mon/wed/fri">월수금</option>
+									<option value="tue/thu">화목</option>
+									<option value="mon">월</option>
+									<option value="tue">화</option>
+									<option value="wed">수</option>
+									<option value="thu">목</option>
+									<option value="fri">금</option>
+									<option value="mon/tue">월화</option>
+									<option value="tue/wed">화수</option>
+									<option value="mon/wed">월수</option>
+									<option value="mon/thu">월목</option>
+									<option value="mon/fri">월금</option>
+									<option value="tue/fri">화금</option>
+									<option value="wed/thu">수목</option>
+									<option value="wed/fri">수금</option>
+									<option value="thu/fri">목금</option>
+									<option value="mon/tue/wed">월화수</option>
+									<option value="mon/tue/thu">월화목</option>
+									<option value="tue/thu/fri">화수목</option>
+									<option value="mon/tue/fri">월화금</option>
+									<option value="tue/wed/fri">화수금</option>
+									<option value="mon/wed/thu">월수목</option>
+									<option value="mon/thu/fri">월목금</option>
+									<option value="tue/thu/fri">화목금</option>
+									<option value="wed/thu/fri">수목금</option>
+									<option value="mon/tue/wed/thu/fri">월화수목금</option>
+									<option value="sun">일</option>
+									<option value="sat">토</option>
+									<option value="sat/sun">토일</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>수업횟수</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="product_count" name="product_count" class="form-control">
+									<option value="1">1회</option>
+									<option value="2">2회</option>
+									<option value="3">3회</option>
+									<option value="4">4회</option>
+									<option value="5">5회</option>
+									<option value="6">6회</option>
+									<option value="7">7회</option>
+									<option value="8">8회</option>
+									<option value="9">9회</option>
+									<option value="10">10회</option>
+									<option value="11">11회</option>
+									<option value="12">12회</option>
+									<option value="13">13회</option>
+									<option value="14">14회</option>
+									<option value="15">15회</option>
+									<option value="16">16회</option>
+									<option value="17">17회</option>
+									<option value="18">18회</option>
+									<option value="19">19회</option>
+									<option value="20">20회</option>
+									<option value="21">21회</option>
+									<option value="22">22회</option>
+									<option value="23">23회</option>
+									<option value="24">24회</option>
+									<option value="25">25회</option>
+									<option value="26">26회</option>
+									<option value="27">27회</option>
+									<option value="28">28회</option>
+									<option value="29">29회</option>
+									<option value="30">30회</option>
+									<option value="31">31회</option>
+									<option value="32">32회</option>
+									<option value="33">33회</option>
+									<option value="34">34회</option>
+									<option value="35">35회</option>
+									<option value="36">36회</option>
+									<option value="37">37회</option>
+									<option value="38">38회</option>
+									<option value="39">39회</option>
+									<option value="40">40회</option>
+									<option value="41">41회</option>
+									<option value="42">42회</option>
+									<option value="43">43회</option>
+									<option value="44">44회</option>
+									<option value="45">45회</option>
+									<option value="46">46회</option>
+									<option value="47">47회</option>
+									<option value="48">48회</option>
+									<option value="49">49회</option>
+									<option value="50">50회</option>
+									<option value="51">51회</option>
+									<option value="52">52회</option>
+									<option value="53">53회</option>
+									<option value="54">54회</option>
+									<option value="55">55회</option>
+									<option value="56">56회</option>
+									<option value="57">57회</option>
+									<option value="58">58회</option>
+									<option value="59">59회</option>
+									<option value="60">60회</option>
+									<option value="61">61회</option>
+									<option value="62">62회</option>
+									<option value="63">63회</option>
+									<option value="64">64회</option>
+									<option value="65">65회</option>
+									<option value="66">66회</option>
+									<option value="67">67회</option>
+									<option value="68">68회</option>
+									<option value="69">69회</option>
+									<option value="70">70회</option>
+									<option value="71">71회</option>
+									<option value="72">72회</option>
+									<option value="73">73회</option>
+									<option value="74">74회</option>
+									<option value="75">75회</option>
+									<option value="76">76회</option>
+									<option value="77">77회</option>
+									<option value="78">78회</option>
+									<option value="79">79회</option>
+									<option value="80">80회</option>
+									<option value="81">81회</option>
+									<option value="82">82회</option>
+									<option value="83">83회</option>
+									<option value="84">84회</option>
+									<option value="85">85회</option>
+									<option value="86">86회</option>
+									<option value="87">87회</option>
+									<option value="88">88회</option>
+									<option value="89">89회</option>
+									<option value="90">90회</option>
+									<option value="91">91회</option>
+									<option value="92">92회</option>
+									<option value="93">93회</option>
+									<option value="94">94회</option>
+									<option value="95">95회</option>
+									<option value="96">96회</option>
+									<option value="97">97회</option>
+									<option value="98">98회</option>
+									<option value="99">99회</option>
+									<option value="100">100회</option>
+									<option value="110">110회</option>
+									<option value="120">120회</option>
+									<option value="144">144회</option>
+									<option value="150">150회</option>
+									<option value="180">180회</option>
+									<option value="210">210회</option>
+									<option value="240">240회</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">판매가</td>
+						<td style="padding: 10px;"><input type="text" name="product_price" id="product_price" oninput="removeChar()"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">상품이미지</td>
+						<td style="padding: 10px;"><input type="file" name="mfile" id="mfile"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">상품설명</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+			      			<textarea name="product_content" id="product_content" style="width:100%;"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">상품설명(영문)</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+			      			<textarea name="product_eng_content" id="product_eng_content" style="width:100%;"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">공통사용</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="public_ok" name="product_public_status" value="1"><label for="public_ok" class="radio_label">사용</label>
+							<input type="radio" id="public_no" name="product_public_status" value="0" checked="checked"><label for="public_no" class="radio_label">미사용</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">상태</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="status_ok" name="product_status" value="1" checked="checked"><label for="status_ok" class="radio_label">사용</label>
+							<input type="radio" id="status_no" name="product_status" value="0"><label for="status_no" class="radio_label">중지</label>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+			<div style="margin: 20px 0px 20px 0px;">
+				<div class="btn-box">
+					<button type="button" class="btn btn_black" th:onclick=goList([[${cri}]])>목록</button>
+					<div style="float: right;">
+						<button type="button" id="insertBtn" class="btn add" style="margin: 0px;" onclick="productInsert()">등록</button>
+					</div>
+				</div>
+			</div>
+		</th:block>
+		<!-- </form> -->
+
+
+
+		<!-- update form -->
+		<th:block th:if="${flag == 'update'}">
+			<form id="product_form">
+				<input type="hidden" name="product_no" th:value="${product.product_no}">
+				<table class="customer-insert table table-bordered">
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>사이트</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<div class="selecter-wrap search-div">
+								<select id="site_no" name="site_no" class="form-control" style="width: 200px;">
+									<option th:each="s : ${site}" th:value="${s.site_no}" th:text="${s.site_name}" th:selected="${product.site_no} == ${s.site_no}"></option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>상품명</td>
+						<td style="padding: 10px;"><input type="text" name="product_name" id="product_name" th:value="${product.product_name}"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">상품영문명</td>
+						<td style="padding: 10px;"><input type="text" name="product_eng_name" id="product_eng_name" th:value="${product.product_eng_name}"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">서비스타켓</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="product_target" name="product_target" class="form-control">
+									<option value="학생" th:selected="${product.product_target} == '학생'">학생</option>
+									<option value="학부모" th:selected="${product.product_target} == '학부모'">학부모</option>
+									<option value="성인" th:selected="${product.product_target} == '성인'">성인</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>수업타입</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="product_type" name="product_type" class="form-control">
+									<option value="Phone" th:selected="${product.product_type} == 'Phone'">Phone</option>
+									<option value="Video" th:selected="${product.product_type} == 'Video'">Video</option>
+									<option value="VideoCall" th:selected="${product.product_type} == 'VideoCall'">VideoCall</option>
+									<option value="VR" th:selected="${product.product_type} == 'VR'">VR</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>언어</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="product_language" name="product_language" class="form-control">
+									<option value="English" th:selected="${product.product_language} == 'English'">English</option>
+									<option value="Chinese" th:selected="${product.product_language} == 'Chinese'">Chinese</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>수업인원</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="product_personnel" name="product_personnel" class="form-control">
+									<option value="1:1" th:selected="${product.product_personnel} == '1:1'">1:1</option>
+									<option value="1:2" th:selected="${product.product_personnel} == '1:2'">1:2</option>
+									<option value="1:3" th:selected="${product.product_personnel} == '1:3'">1:3</option>
+									<option value="1:4" th:selected="${product.product_personnel} == '1:4'">1:4</option>
+									<option value="1:5" th:selected="${product.product_personnel} == '1:5'">1:5</option>
+									<option value="1:6" th:selected="${product.product_personnel} == '1:6'">1:6</option>
+									<option value="1:7" th:selected="${product.product_personnel} == '1:7'">1:7</option>
+									<option value="1:8" th:selected="${product.product_personnel} == '1:8'">1:8</option>
+									<option value="1:9" th:selected="${product.product_personnel} == '1:9'">1:9</option>
+									<option value="1:10" th:selected="${product.product_personnel} == '1:10'">1:10</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>런닝타임</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="product_running_time" name="product_running_time" class="form-control">
+									<option value="5" th:selected="${product.product_running_time} == 5">5분</option>
+									<option value="10" th:selected="${product.product_running_time} == 10">10분</option>
+									<option value="15" th:selected="${product.product_running_time} == 15">15분</option>
+									<option value="20" th:selected="${product.product_running_time} == 20">20분</option>
+									<option value="25" th:selected="${product.product_running_time} == 25">25분</option>
+									<option value="30" th:selected="${product.product_running_time} == 30">30분</option>
+									<option value="35" th:selected="${product.product_running_time} == 35">35분</option>
+									<option value="40" th:selected="${product.product_running_time} == 40">40분</option>
+									<option value="45" th:selected="${product.product_running_time} == 45">45분</option>
+									<option value="50" th:selected="${product.product_running_time} == 50">50분</option>
+									<option value="55" th:selected="${product.product_running_time} == 55">55분</option>
+									<option value="60" th:selected="${product.product_running_time} == 60">60분</option>
+									<option value="70" th:selected="${product.product_running_time} == 70">70분</option>
+									<option value="80" th:selected="${product.product_running_time} == 80">80분</option>
+									<option value="90" th:selected="${product.product_running_time} == 90">90분</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>주당 수업</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="product_week" name="product_week" class="form-control">
+									<option value="mon/wed/fri" th:selected="${product.product_week} == 'mon/wed/fri'">월수금</option>
+									<option value="tue/thu" th:selected="${product.product_week} == 'tue/thu'">화목</option>
+									<option value="mon" th:selected="${product.product_week} == 'mon'">월</option>
+									<option value="tue" th:selected="${product.product_week} == 'tue'">화</option>
+									<option value="wed" th:selected="${product.product_week} == 'wed'">수</option>
+									<option value="thu" th:selected="${product.product_week} == 'thu'">목</option>
+									<option value="fri" th:selected="${product.product_week} == 'fri'">금</option>
+									<option value="mon/tue" th:selected="${product.product_week} == 'mon/tue'">월화</option>
+									<option value="tue/wed" th:selected="${product.product_week} == 'tue/wed'">화수</option>
+									<option value="mon/wed" th:selected="${product.product_week} == 'mon/wed'">월수</option>
+									<option value="mon/thu" th:selected="${product.product_week} == 'mon/thu'">월목</option>
+									<option value="mon/fri" th:selected="${product.product_week} == 'mon/fri'">월금</option>
+									<option value="tue/fri" th:selected="${product.product_week} == 'tue/fri'">화금</option>
+									<option value="wed/thu" th:selected="${product.product_week} == 'wed/thu'">수목</option>
+									<option value="wed/fri" th:selected="${product.product_week} == 'wed/fri'">수금</option>
+									<option value="thu/fri" th:selected="${product.product_week} == 'thu/fri'">목금</option>
+									<option value="mon/tue/wed" th:selected="${product.product_week} == 'mon/tue/wed'">월화수</option>
+									<option value="mon/tue/thu" th:selected="${product.product_week} == 'mon/tue/thu'">월화목</option>
+									<option value="tue/thu/fri" th:selected="${product.product_week} == 'tue/thu/fri'">화수목</option>
+									<option value="mon/tue/fri" th:selected="${product.product_week} == 'mon/tue/fri'">월화금</option>
+									<option value="tue/wed/fri" th:selected="${product.product_week} == 'tue/wed/fri'">화수금</option>
+									<option value="mon/wed/thu" th:selected="${product.product_week} == 'mon/wed/thu'">월수목</option>
+									<option value="mon/thu/fri" th:selected="${product.product_week} == 'mon/thu/fri'">월목금</option>
+									<option value="tue/thu/fri" th:selected="${product.product_week} == 'tue/thu/fri'">화목금</option>
+									<option value="wed/thu/fri" th:selected="${product.product_week} == 'wed/thu/fri'">수목금</option>
+									<option value="mon/tue/wed/thu/fri" th:selected="${product.product_week} == 'mon/tue/wed/thu/fri'">월화수목금</option>
+									<option value="sun" th:selected="${product.product_week} == 'sun'">일</option>
+									<option value="sat" th:selected="${product.product_week} == 'sat'">토</option>
+									<option value="sat/sun" th:selected="${product.product_week} == 'sat/sun'">토일</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>수업횟수</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="product_count" name="product_count" class="form-control">
+									<option value="1" th:selected="${product.product_count} == 1">1회</option>
+									<option value="2" th:selected="${product.product_count} == 2">2회</option>
+									<option value="3" th:selected="${product.product_count} == 3">3회</option>
+									<option value="4" th:selected="${product.product_count} == 4">4회</option>
+									<option value="5" th:selected="${product.product_count} == 5">5회</option>
+									<option value="6" th:selected="${product.product_count} == 6">6회</option>
+									<option value="7" th:selected="${product.product_count} == 7">7회</option>
+									<option value="8" th:selected="${product.product_count} == 8">8회</option>
+									<option value="9" th:selected="${product.product_count} == 9">9회</option>
+									<option value="10" th:selected="${product.product_count} == 10">10회</option>
+									<option value="11" th:selected="${product.product_count} == 11">11회</option>
+									<option value="12" th:selected="${product.product_count} == 12">12회</option>
+									<option value="13" th:selected="${product.product_count} == 13">13회</option>
+									<option value="14" th:selected="${product.product_count} == 14">14회</option>
+									<option value="15" th:selected="${product.product_count} == 15">15회</option>
+									<option value="16" th:selected="${product.product_count} == 16">16회</option>
+									<option value="17" th:selected="${product.product_count} == 17">17회</option>
+									<option value="18" th:selected="${product.product_count} == 18">18회</option>
+									<option value="19" th:selected="${product.product_count} == 19">19회</option>
+									<option value="20" th:selected="${product.product_count} == 20">20회</option>
+									<option value="21" th:selected="${product.product_count} == 21">21회</option>
+									<option value="22" th:selected="${product.product_count} == 22">22회</option>
+									<option value="23" th:selected="${product.product_count} == 23">23회</option>
+									<option value="24" th:selected="${product.product_count} == 24">24회</option>
+									<option value="25" th:selected="${product.product_count} == 25">25회</option>
+									<option value="26" th:selected="${product.product_count} == 26">26회</option>
+									<option value="27" th:selected="${product.product_count} == 27">27회</option>
+									<option value="28" th:selected="${product.product_count} == 28">28회</option>
+									<option value="29" th:selected="${product.product_count} == 29">29회</option>
+									<option value="30" th:selected="${product.product_count} == 30">30회</option>
+									<option value="31" th:selected="${product.product_count} == 31">31회</option>
+									<option value="32" th:selected="${product.product_count} == 32">32회</option>
+									<option value="33" th:selected="${product.product_count} == 33">33회</option>
+									<option value="34" th:selected="${product.product_count} == 34">34회</option>
+									<option value="35" th:selected="${product.product_count} == 35">35회</option>
+									<option value="36" th:selected="${product.product_count} == 36">36회</option>
+									<option value="37" th:selected="${product.product_count} == 37">37회</option>
+									<option value="38" th:selected="${product.product_count} == 38">38회</option>
+									<option value="39" th:selected="${product.product_count} == 39">39회</option>
+									<option value="40" th:selected="${product.product_count} == 40">40회</option>
+									<option value="41" th:selected="${product.product_count} == 41">41회</option>
+									<option value="42" th:selected="${product.product_count} == 42">42회</option>
+									<option value="43" th:selected="${product.product_count} == 43">43회</option>
+									<option value="44" th:selected="${product.product_count} == 44">44회</option>
+									<option value="45" th:selected="${product.product_count} == 45">45회</option>
+									<option value="46" th:selected="${product.product_count} == 46">46회</option>
+									<option value="47" th:selected="${product.product_count} == 47">47회</option>
+									<option value="48" th:selected="${product.product_count} == 48">48회</option>
+									<option value="49" th:selected="${product.product_count} == 49">49회</option>
+									<option value="50" th:selected="${product.product_count} == 50">50회</option>
+									<option value="51" th:selected="${product.product_count} == 51">51회</option>
+									<option value="52" th:selected="${product.product_count} == 52">52회</option>
+									<option value="53" th:selected="${product.product_count} == 53">53회</option>
+									<option value="54" th:selected="${product.product_count} == 54">54회</option>
+									<option value="55" th:selected="${product.product_count} == 55">55회</option>
+									<option value="56" th:selected="${product.product_count} == 56">56회</option>
+									<option value="57" th:selected="${product.product_count} == 57">57회</option>
+									<option value="58" th:selected="${product.product_count} == 58">58회</option>
+									<option value="59" th:selected="${product.product_count} == 59">59회</option>
+									<option value="60" th:selected="${product.product_count} == 60">60회</option>
+									<option value="61" th:selected="${product.product_count} == 61">61회</option>
+									<option value="62" th:selected="${product.product_count} == 62">62회</option>
+									<option value="63" th:selected="${product.product_count} == 63">63회</option>
+									<option value="64" th:selected="${product.product_count} == 64">64회</option>
+									<option value="65" th:selected="${product.product_count} == 65">65회</option>
+									<option value="66" th:selected="${product.product_count} == 66">66회</option>
+									<option value="67" th:selected="${product.product_count} == 67">67회</option>
+									<option value="68" th:selected="${product.product_count} == 68">68회</option>
+									<option value="69" th:selected="${product.product_count} == 69">69회</option>
+									<option value="70" th:selected="${product.product_count} == 70">70회</option>
+									<option value="71" th:selected="${product.product_count} == 71">71회</option>
+									<option value="72" th:selected="${product.product_count} == 72">72회</option>
+									<option value="73" th:selected="${product.product_count} == 73">73회</option>
+									<option value="74" th:selected="${product.product_count} == 74">74회</option>
+									<option value="75" th:selected="${product.product_count} == 75">75회</option>
+									<option value="76" th:selected="${product.product_count} == 76">76회</option>
+									<option value="77" th:selected="${product.product_count} == 77">77회</option>
+									<option value="78" th:selected="${product.product_count} == 78">78회</option>
+									<option value="79" th:selected="${product.product_count} == 79">79회</option>
+									<option value="80" th:selected="${product.product_count} == 80">80회</option>
+									<option value="81" th:selected="${product.product_count} == 81">81회</option>
+									<option value="82" th:selected="${product.product_count} == 82">82회</option>
+									<option value="83" th:selected="${product.product_count} == 83">83회</option>
+									<option value="84" th:selected="${product.product_count} == 84">84회</option>
+									<option value="85" th:selected="${product.product_count} == 85">85회</option>
+									<option value="86" th:selected="${product.product_count} == 86">86회</option>
+									<option value="87" th:selected="${product.product_count} == 87">87회</option>
+									<option value="88" th:selected="${product.product_count} == 88">88회</option>
+									<option value="89" th:selected="${product.product_count} == 89">89회</option>
+									<option value="90" th:selected="${product.product_count} == 90">90회</option>
+									<option value="91" th:selected="${product.product_count} == 91">91회</option>
+									<option value="92" th:selected="${product.product_count} == 92">92회</option>
+									<option value="93" th:selected="${product.product_count} == 93">93회</option>
+									<option value="94" th:selected="${product.product_count} == 94">94회</option>
+									<option value="95" th:selected="${product.product_count} == 95">95회</option>
+									<option value="96" th:selected="${product.product_count} == 96">96회</option>
+									<option value="97" th:selected="${product.product_count} == 97">97회</option>
+									<option value="98" th:selected="${product.product_count} == 98">98회</option>
+									<option value="99" th:selected="${product.product_count} == 99">99회</option>
+									<option value="100" th:selected="${product.product_count} == 100">100회</option>
+									<option value="110" th:selected="${product.product_count} == 110">110회</option>
+									<option value="120" th:selected="${product.product_count} == 120">120회</option>
+									<option value="144" th:selected="${product.product_count} == 144">144회</option>
+									<option value="150" th:selected="${product.product_count} == 150">150회</option>
+									<option value="180" th:selected="${product.product_count} == 180">180회</option>
+									<option value="210" th:selected="${product.product_count} == 210">210회</option>
+									<option value="240" th:selected="${product.product_count} == 240">240회</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">판매가</td>
+						<td style="padding: 10px;"><input type="text" name="product_price" id="product_price" oninput="removeChar()" th:value="${product.product_price}"></td>
+					</tr>
+					<tr>
+						<td class="grayColor" rowspan="2">상품이미지</td>
+						<td th:if="${#maps.containsKey(product, 'product_img')}"><img width="200px" th:src="|https://saeha.s3.ap-northeast-2.amazonaws.com/product_img/${product.product_img}|"></td>
+						<td th:unless="${#maps.containsKey(product, 'product_img')}"></td>
+					</tr>
+					<tr>
+						<td style="padding: 10px;"><input type="file" name="mfile" id="mfile"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">상품설명</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+			      			<textarea name="product_content" id="product_content" style="width:100%;" th:utext="${product.product_content}"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">상품설명(영문)</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+			      			<textarea name="product_eng_content" id="product_eng_content" style="width:100%;" th:utext="${product.product_eng_content}"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">공통사용</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="public_ok" name="product_public_status" value="1" th:checked="${product.product_public_status} == 1"><label for="public_ok" class="radio_label">사용</label>
+							<input type="radio" id="public_no" name="product_public_status" value="0" th:checked="${product.product_public_status} == 0"><label for="public_no" class="radio_label">미사용</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">상태</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="status_ok" name="product_status" value="1" th:checked="${product.product_status} == 1"><label for="status_ok" class="radio_label">사용</label>
+							<input type="radio" id="status_no" name="product_status" value="0" th:checked="${product.product_status} == 0"><label for="status_no" class="radio_label">중지</label>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+			<div style="margin: 20px 0px 20px 0px;">
+				<div class="btn-box">
+					<button type="button" class="btn btn_black" th:onclick=goList([[${cri}]])>목록</button>
+					<div style="float: right;">
+						<button type="button" id="updateBtn" class="btn add" style="margin: 0px;" onclick="updateBtn()">수정</button>
+					</div>
+				</div>
+			</div>
+		</th:block>
+		<!-- </form> -->
+		
+	</th:block>
+	
+</body>
+
+</html>

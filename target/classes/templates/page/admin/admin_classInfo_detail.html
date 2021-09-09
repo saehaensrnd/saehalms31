@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorator="layout/layout">
+<head>
+<title></title>
+
+
+<style type ="text/css">
+   .left-head-table.report .tr .th, .left-head-table.report .tr .td {
+       text-align: left;       
+       padding: 7px 20px;
+   }
+
+   .selecter-wrap .jcf-unselectable {
+       width: 100%;    
+       height: 45px;           
+   }
+   
+   .selecter-wrap .jcf-select-text {
+       line-height: 45px;
+    }
+   
+   .selecter-wrap .jcf-unselectable {       
+       margin-bottom: 0px;
+   }
+   
+   .btn-box {
+   	   width: 100%;   	   
+   	   text-align: right;	
+   }
+</style>
+
+
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<th:block th:if="${flag == 'class'}">  	
+		<p style="font-weight:600; margin-bottom:10px;">수업 상세 정보</p>  	
+		
+	   	<div class="left-head-table custom02-table report mb10">
+			<div class="tr">
+			   <div class="th">사이트</div>
+			   <div class="td" th:text="${classInfo.site_name}"></div>
+			   
+			   <div class="th">수업구분</div>
+			   <div class="td" th:text="${classInfo.class_type}"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">언어</div>
+			   <div class="td" th:text="${classInfo.product_language}"></div>
+			   
+			   <div class="th">교육과정</div>
+			   <div class="td" th:text="${classInfo.study_name}"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">상품</div>
+			   <div class="td" th:text="${classInfo.product_name}"></div>
+			   
+			   <div class="th">수업방식</div>
+			   <div class="td" th:text="${classInfo.product_type}"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">수업일</div>
+			   <div class="td" th:text="|${classInfo.start_date} ~ ${classInfo.end_date}|"></div>
+			   
+			   <div class="th">수업시간</div>
+			   <div class="td" th:text="|${classInfo.class_time} / ${classInfo.product_running_time} Min|"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">주당 수업 횟수</div>
+			   <div class="td" th:text="|주 ${classInfo.weekCnt}회|"></div>
+			   
+			   <div class="th">수업 요일</div>
+			   <div class="td" th:text="${classInfo.product_week}"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">과정명</div>
+			   <div class="td" th:text="${classInfo.product_name}"></div>
+			   
+			   <div class="th">교재</div>
+			   <div class="td" th:text="${classInfo.textbook_name}"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">티칭센터</div>
+			   <div class="td" th:text="${classInfo.center_name}"></div>
+			   
+			   <div class="th">선생님</div>
+			   <div class="td" th:text="|${classInfo.teacher_name} - ${classInfo.teacher_nickname}|"></div>
+			</div>		
+	   	</div>
+		 		
+		 		
+		 		
+		
+		<div class="studentInfo" th:each="item : ${studentList}">
+			 		
+		 	<p style="font-weight:600; margin:50px 0px 10px 0px;" th:text="|${item.student_name} 님 정보|"></p>  	
+			
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">수강자명</div>
+				   <div class="td">
+				   		<span th:text="${item.student_name}"></span>
+				   		<span th:text="${item.student_eng_name} != '' ? | [${item.student_eng_name}]| : ''"></span>
+				   </div>
+				   
+				   <div class="th">수업기간</div>
+				   <div class="td" th:text="|${item.start_date} ~ ${item.end_date}|"></div>
+				</div>
+				<div class="tr">
+				   <div class="th">수업전화번호</div>
+				   <div class="td" th:if="${#maps.containsKey(item, 'student_phone')}" th:text="${item.student_phone}"></div>
+				   <div class="td" th:unless="${#maps.containsKey(item, 'student_phone')}"></div>
+				   
+				   <div class="th">상태</div>
+				   <div class="td"><span class="state" th:text="${item.condition}" th:classappend="${item.condition} == '수업중' ? ing"></span></div>
+				</div>
+				
+		   	</div>
+	   	
+	   	</div>
+	   	
+	   	
+		<div class="btn-box">
+	  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>		
+			<div class="btn" th:onclick="deleteBtn([[${classInfo.class_no}]])">스케줄 삭제</div>
+		</div>	
+	</th:block>
+   		
+
+	
+	
+	<th:block th:if="${flag == 'leveltest'}">  	
+		<p style="font-weight:600; margin-bottom:10px;">수업 상세 정보</p>  	
+		
+	   	<div class="left-head-table custom02-table report mb10">
+			<div class="tr">
+			   <div class="th">사이트</div>
+			   <div class="td" th:text="${classInfo.site_name}"></div>
+			   
+			   <div class="th">수업구분</div>
+			   <div class="td" th:text="${classInfo.class_type}"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">언어</div>
+			   <div class="td" th:text="${classInfo.leveltest_language}"></div>
+			   
+			   <div class="th">교육과정</div>
+			   <div class="td"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">상품</div>
+			   <div class="td" th:text="${classInfo.product_name}"></div>
+			   
+			   <div class="th">수업방식</div>
+			   <div class="td" th:text="${classInfo.leveltest_type}"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">수업일</div>
+			   <div class="td" th:if="${#maps.containsKey(classInfo, 'study_date')}" th:text="|${classInfo.study_date} ~ ${classInfo.study_date}|"></div>
+			   <div class="td" th:unless="${#maps.containsKey(classInfo, 'study_date')}"></div>
+			   
+			   <div class="th">수업시간</div>
+			   <div class="td" th:if="${#maps.containsKey(classInfo, 'class_time')}"  th:text="|${classInfo.class_time} / ${classInfo.running_time} Min|"></div>
+			   <div class="td" th:unless="${#maps.containsKey(classInfo, 'class_time')}"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">주당 수업 횟수</div>
+			   <div class="td"></div>
+			   
+			   <div class="th">수업 요일</div>
+			   <div class="td"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">과정명</div>
+			   <div class="td" th:text="${classInfo.study_name}"></div>
+			   
+			   <div class="th">교재</div>
+			   <div class="td"></div>
+			</div>
+			
+			<div class="tr">
+			   <div class="th">티칭센터</div>
+			   <div class="td" th:if="${#maps.containsKey(classInfo, 'center_name')}" th:text="${classInfo.center_name}"></div>
+			   <div class="td" th:unless="${#maps.containsKey(classInfo, 'center_name')}"></div>
+			   
+			   <div class="th">선생님</div>
+			   <div class="td" th:if="${#maps.containsKey(classInfo, 'teacher_name')}" th:text="|${classInfo.teacher_name} - ${classInfo.teacher_nickname}|"></div>
+			   <div class="td" th:unless="${#maps.containsKey(classInfo, 'teacher_name')}"></div>
+			</div>		
+	   	</div>
+		 		
+		 		
+		 		
+		
+		<div class="studentInfo">
+			 		
+		 	<p style="font-weight:600; margin:50px 0px 10px 0px;" th:text="|${classInfo.student_name} 님 정보|"></p>  	
+			
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">수강자명</div>
+				   <div class="td">
+				   		<span th:text="${classInfo.student_name}"></span>
+				   		<span th:text="${classInfo.student_eng_name} != '' ? | [${classInfo.student_eng_name}]| : ''"></span>
+				   </div>
+				   
+				   <div class="th">수업기간</div>
+				   <div class="td" th:text="|${classInfo.study_date} ~ ${classInfo.study_date}|"></div>
+				</div>
+				<div class="tr">
+				   <div class="th">수업전화번호</div>
+				   <div class="td" th:if="${#maps.containsKey(classInfo, 'student_phone')}" th:text="${classInfo.student_phone}"></div>
+				   <div class="td" th:unless="${#maps.containsKey(classInfo, 'student_phone')}"></div>
+				   
+				   <div class="th">상태</div>
+				   <div class="td"><span class="state" th:text="${classInfo.status}"></span></div>
+				</div>
+				
+		   	</div>
+	   	
+	   	</div>
+	   	
+	   	
+		<div class="btn-box">
+	  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>		
+			<div class="btn" th:onclick="deleteBtn([[${classInfo.leveltest_no}]])">스케줄 삭제</div>
+		</div>	
+	</th:block>
+   
+   
+
+<script th:inline="javascript">
+	//let company_code = /*[[${company_code}]]*/ null;
+</script>
+<script type="text/javascript" th:src="@{/js/admin/admin_classInfo_detail.js}"></script>
+
+</th:block>
+</body>
+
+</html>

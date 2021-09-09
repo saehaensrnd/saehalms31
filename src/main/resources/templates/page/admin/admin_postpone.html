@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/admin/admin_postpone.js}"></script> 
+<style type ="text/css">
+	
+    
+    .search-div {width:100%; display: inline-flex;}
+	.search-div input {display: inline-block; width: 100%;}
+	
+	.btn-box {float: right;}
+	.btn-box button {width: 100px; height: 35px;}
+	
+	.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+	       text-align: left;       
+	       padding: 7px 20px;
+	}
+	
+	.selecter-wrap .jcf-unselectable {
+	    width: 100%;    
+	    height: 45px;           
+	}
+	
+	.selecter-wrap .jcf-select-text {
+	    line-height: 45px;
+	 }
+	
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+	
+	.searchBtn {
+		display: inline-block;
+	    line-height: 55px;
+	    width: 120px;
+	    text-align: center;
+	    background-color: #444;
+	    color: #ffff;
+	    vertical-align: top;
+	    border-radius: 4px;
+	    /* float: left; */
+	    height: 45px;
+    	line-height: 45px;
+    	margin-left: 10px;
+    	cursor: pointer;
+	}
+	
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table" style="margin-bottom: 30px;">		
+		<div class="tr">
+			<div class="th">검색어</div>
+			<div class="td" style="border-right:0px;">
+				<div class="search-div">
+					<input type="text" id="keyword" name="keyword" th:value="${cri.keyword}" autocomplete="off" >
+					<div class="searchBtn" onclick="search()">검색</div>
+				</div>
+			</div>			
+			<div class="td" style="border-right:0px;">
+				<div class="selecter-wrap search-div" style="width:100px; float:right">
+					<select id="perPageNum" name="perPageNum" class="form-control" style="min-width:80px; width:80px; float:right;">
+						<option value="10" th:selected="${cri.perPageNum eq 10}">10</option>
+						<option value="50" th:selected="${cri.perPageNum == 50}">50</option>
+						<option value="100" th:selected="${cri.perPageNum == 100}">100</option>
+					</select>
+				</div>
+			</div>	
+		</div>
+	</div>
+
+	<div class="table-wrap">
+		<div class="table-item">
+			<span class="total" th:text="'Total : ' +${postponeCnt}"></span>		
+			<div class="btn-box">
+				<button type="button" class="btn" th:onclick="excelDownBtn()">Excel</button>
+			</div>
+		</div>
+		<table>
+			<colgroup>
+				<col width="5%">
+				<col width="10">
+				<col width="10%">
+				<col width="*%">
+				<col width="10%">
+				<col width="10%">
+				<col width="10%">
+				<col width="10%">
+			</colgroup>
+			<thead>
+				<tr>					
+					<th>NO</th>
+					<th>사이트</th>				
+					<th>회원명</th>
+					<th>과정</th>
+					<th>휴강일</th>
+					<th>보강일</th>
+					<th>신청일</th>
+					<th>진행과정</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${postponeCnt} == 0">
+					<td colspan="8">There is no data.</td>				
+				</tr>
+				<tr th:each="pp : ${postpone}">
+					<td th:text="${ppStat.size} - ${ppStat.index}"></td>
+					<td th:text="${pp.site_name}"></td>
+					<td><a class="link" th:text="${pp.student_name}" th:onclick="openUserDetail([[${pp.user_student_no}]])"></a></td>
+					<td th:text="${pp.product_name}"></td>
+					
+					<td th:text="${#dates.format(pp.holiday_date, 'yyyy-MM-dd')}"></td>
+					<td th:text="${#dates.format(pp.supplement_date, 'yyyy-MM-dd')}"></td>
+					<td th:text="${#dates.format(pp.postpone_regdate, 'yyyy-MM-dd')}"></td>
+					
+					<td th:if="${pp.postpone_status} == 0"><a th:href="@{postponeMng/detail(postpone_no=${pp.postpone_no})}" class="link">요청</a></td>
+					<td th:if="${pp.postpone_status} == 1"><a th:href="@{postponeMng/detail(postpone_no=${pp.postpone_no})}" class="link">확인</a></td>
+				</tr>
+				
+			</tbody>
+		</table>
+				
+		<th:block th:if="${postponeCnt > 0}">
+			<ul class="pagenate">
+				<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+					<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/admin/postponeMng(page=1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}"></a>
+				</li>
+				<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+					<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/admin/postponeMng(page=${cri.page}-1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}">　</a>
+				</li>
+				
+				<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+					<a class="page-link" th:href="@{/admin/postponeMng(page=${idx}, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}" th:text="${idx}"></a>
+				</li>	
+											 				
+				<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+					<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/admin/postponeMng(page=${cri.page}+1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}">　</a>														
+				</li>				
+				<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+					<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/admin/postponeMng(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}">　</a>
+				</li>
+			</ul>
+		</th:block>	
+		
+	</div>
+</th:block>
+</body>
+
+</html>

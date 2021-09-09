@@ -1,0 +1,20 @@
+@media only screen and (max-width: 1024px){
+    .btn_controll{ left: 84vw;}
+}
+@media only screen and (max-width: 768px){
+    .btn_controll{ left: 78vw;}
+    .userInfo{ display: none;}
+}
+@media only screen and (max-width: 480px){
+    header .inner img{ width: 20%;}
+    body{overflow-x: hidden;}
+    .subTitle{font-size: 14px; font-weight: 300; line-height: 20px;}
+    #table{ width: 92vw;}
+    #table th,#table td{ font-size: 14px; word-wrap: break-word;}
+    #table th{ padding: 0 0 0 0;}
+    #table td{ padding: 0 0 0 0;}
+
+    .btn_controll{ left: 63vw; width: 90px;}
+    .btn_controll a{ position: relative; left: -45%;}
+    
+}

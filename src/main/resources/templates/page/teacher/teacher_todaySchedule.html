@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+
+<style type="text/css">
+		
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+	
+	.searchBtn {
+		display: inline-block;
+	    line-height: 55px;
+	    width: 90px;
+	    text-align: center;
+	    background-color: #444;
+	    color: #ffff;
+	    vertical-align: top;
+	    border-radius: 4px;
+	    height: 45px;
+    	line-height: 45px;
+    	margin-left: 10px;
+    	cursor: pointer;
+    	margin-right:10px;
+	}
+	
+	.search-div {width:100%; display: inline-flex;}
+	.search-div input {display: inline-block; width: 100%;}	
+	
+	
+	.chk {
+	    width: 16px;
+	}
+	
+	.customTableBtn {
+	    font-weight: 700;
+	    width: 80px;
+	    font-size: 14px;
+	}
+	
+	.btn_play {
+	    background: url("../img/icon/btn_file_play.png" ) no-repeat;
+	    border: none;
+	    width: 32px !important;
+	    height: 32px;
+	    cursor: pointer;
+	}
+	
+	.blueColor {
+		color: blue;
+	}
+	.greenColor {
+		color: green;
+	}
+	.redColor {
+		color: red;
+	}
+	.makeupColor {
+	    color: #FFBF00;
+	}
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table">
+		<div class="tr">
+			<div class="th">Date</div>
+			<div class="td" style="border-right:0px; max-width:20%">
+				<input type="" id="searchDate" name="searchDate" class="fx-item dateitem2" th:value="${cri.searchDate}"  style="width: 100%;" autocomplete="off">
+			</div>
+			
+			<div class="th">Time</div>
+			<div class="td" style="border-right:0px;">
+				<div class="selecter-wrap" style="width:15%; float:left;">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchStartHour" name="searchStartHour" >
+				   			<!-- <option value="" th:selected="${cri.searchType == ''}">-- 선택 --</option> -->													
+							<option th:each="hourList : ${hourList}" th:text="|${hourList}H|" th:value="${hourList}" th:selected="${hourList} == ${cri.searchStartHour}"></option>
+				   		</select>
+					</div>	
+				</div>
+				<div style="float:left; margin-left:20px; line-height: 45px;">
+				~
+				</div>
+				<div class="selecter-wrap" style="width:15%; float:left; margin-left:20px;">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchEndHour" name="searchEndHour" >
+							<option th:each="hourList : ${hourList}" th:text="|${hourList}H|" th:value="${hourList}" th:selected="${hourList} == ${cri.searchEndHour}"></option>
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			
+		</div>
+	
+		<div class="tr">
+			<div class="th">구분</div>
+			<div class="td" style="border-right:0px; max-width:20%">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchType" name="searchType" >
+				   			<option value="all" th:selected="${cri.searchType == 'all'}">전체</option>													
+							<option value="student_name" th:selected="${cri.searchType == 'student_name'}">회원명</option>
+							<option value="student_id" th:selected="${cri.searchType == 'student_id'}">ID</option>
+				   		</select>
+					</div>	
+				</div>
+			</div>	
+			
+			<div class="th">검색어</div>
+			<div class="td" style="border-right:0px;">
+				<div class="search-div">
+					<input type="text" id="keyword" name="keyword" th:value="${cri.keyword}" autocomplete="off" style="width:60%;">
+					<div class="searchBtn" onclick="search()">검색</div>
+					
+					<div class="selecter-wrap search-div" style="width:100px; float:right;">
+						<select id="perPageNum" name="perPageNum" class="form-control" style="min-width:80px; width:80px; float:right;">
+							<option value="10" th:selected="${cri.perPageNum eq 10}">10</option>
+							<option value="50" th:selected="${cri.perPageNum == 50}">50</option>
+							<option value="100" th:selected="${cri.perPageNum == 100}">100</option>						
+						</select> 
+					</div>
+				</div>
+				
+				
+			</div>		
+			
+				
+		</div>		
+	</div>
+
+
+
+	
+	<div class="table-wrap">
+		<div class="table-item">
+			<span class="total" th:text="'Total : ' +${classCnt}"></span>
+			<div class="btn-box">
+				<button type="button" class="btn" th:onclick="excelBtn([[${cri}]])">Excel</button>
+			</div>								
+		</div>
+		
+		<table class="result-table02">
+			<colgroup>
+				<col width="4%">	<!-- NO -->
+				<col width="6%">	<!-- Room No -->				
+				<col width="6%">	<!-- User Name -->
+				<col width="*%">	<!-- Course -->	
+				<col width="5%">	<!-- Class Phone -->
+				
+				<col width="5%">	<!-- TextBook -->			
+				<col width="11%">	<!-- Class Time -->				
+				<col width="8%">	<!-- Class Type -->	
+				<col width="6%">	<!-- Day Type -->
+				<col width="4%">	<!-- File -->
+				
+				<col width="6%">	<!-- Status -->
+				<col width="7%">	<!-- Attend -->
+				<col width="7%">	<!-- Report -->
+				
+			</colgroup>
+			<thead>
+				<tr>
+					<th>NO</th>
+					<th>Room No</th>
+					<th>User Name</th>
+					<th>Course</th>
+					<th>Class Phone</th>
+					
+					<th>TextBook</th>
+					<th>Class Time</th>
+					<th>Class Type</th>
+					<th>Day Type</th>					
+					<th>File</th>
+					
+					<th>Status</th>
+					<th>Attend</th>
+					<th>Report</th>					
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${classCnt} == 0">
+					<td colspan="13">There is no data.</td>
+				</tr>
+				<tr th:each="item : ${classList}">					
+					<td th:text="${item.rownum}"></td>					
+					<td th:text="${item.room_no}"></td>							
+					<td th:if="${#maps.containsKey(item, 'student_name')}">
+						<a class="link" th:if="${item.student_blacklist_status} == '0' " th:onclick="openUserDetail([[${item}]])">						
+							<span th:text="${item.student_name}"></span><br><span th:text="${item.student_id}"></span>
+						</a>						
+						<a class="redLink" th:unless="${item.student_blacklist_status} == '0' " th:onclick="openUserDetail([[${item.user_student_no}]])">
+							<span th:text="${item.student_name}"></span><br><span th:text="${item.student_id}"></span>
+						</a>						
+					</td>
+					
+					<td th:text="${item.product_name}"></td>
+					
+					<td th:if="${#maps.containsKey(item, 'class_phone')}" th:text="${item.class_phone}"></td>
+					<td th:unless="${#maps.containsKey(item, 'class_phone')}"></td>
+					
+					<td th:if="${#maps.containsKey(item, 'textbook_name')}" th:text="${item.textbook_name}"></td>
+					<td th:unless="${#maps.containsKey(item, 'textbook_name')}"></td>
+					
+					<td th:if="${#maps.containsKey(item, 'class_time')}">
+						<span th:text="${item.study_date}"></span><br><span th:text="|${item.class_time} ~ ${item.class_endTime}|" style="color:blue;"></span>
+					</td>
+					<td th:unless="${#maps.containsKey(item, 'class_time')}"></td>					
+					
+					<td th:if="${#maps.containsKey(item, 'product_type')}" th:text="${item.product_type}"></td>
+					<td th:unless="${#maps.containsKey(item, 'product_type')}"></td>
+					
+					<td th:text="${item.day_type}"></td>
+					
+					<td><input type="button" class="btn_play" th:onclick="fileBtn([[${item}]])"></td>	<!-- file -->
+					
+					<td th:if="${#maps.containsKey(item, 'log_status')}">
+						<span th:text="${item.log_status}" th:classappend="${item.log_status} == 'Complete' ? blueColor : ( ${item.log_status} == 'Before' ? greenColor : ( ${item.log_status} == 'Makeup' ? makeupColor : normalColor) )"></span>
+					</td>
+					<td th:unless="${#maps.containsKey(item, 'log_status')}"></td>
+					<td>
+						<span th:text="${item.present} == '1' ? 'Present' : (${item.present} == '2' ? 'Absent' : '')" 
+						      th:classappend="${item.present} == '1' ? blueColor : ( ${item.present} == '2' ? redColor : normalColor)"></span><br>
+					</td>
+					<td>
+						<!-- class / makeup이나 cancel 상태 아닌것 / type이 video인것 -->
+						<div class="customTableBtn" id="videoClassBtn" th:if="${item.flag == 'class'} and ${item.study_status != 2 and item.study_status != 3} and ${item.classVideoFlag == '1'}" th:onclick="videoClassBtn([[${item}]])">VideoClass</div>
+						<div class="customTableBtn" id="reportBtn" th:if="${item.study_status != 2 and item.study_status != 3}" th:onclick="reportBtn([[${item}]])" style="margin-top: 3px;">Report</div>
+						<!-- <div class="customTableBtn" id="videoLogBtn" th:onclick="videoLogBtn([[${item}]])" style="margin-top: 3px;">Video Log</div> -->
+						<!-- 정보가져오기 API 테스트용 <div class="customTableBtn" id="videoClassInfoBtn" th:onclick="videoClassInfoBtn([[${item}]])" style="margin-top: 3px;">Info</div> -->
+						
+						<!-- leveltest / cancel 상태 아닌것 / type이 video인것 -->
+						<div class="customTableBtn" id="levelVideoClassBtn" th:if="${item.flag == 'leveltest'} and ${item.study_status != 2} and ${item.classVideoFlag == '1'}" th:onclick="videoClassBtn([[${item}]])">VideoClass</div>
+						
+					</td>
+					
+				</tr>						
+			</tbody>
+		</table>
+		
+		
+		<th:block th:if="${classCnt > 0}">
+			<ul class="pagenate">
+				<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+					<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/teacher/todaySchedule(page=1, perPageNum=${cri.perPageNum}, searchType=${cri.searchType}, keyword=${cri.keyword}, searchDate=${cri.searchDate}, searchStartHour=${cri.searchStartHour}, searchEndHour=${cri.searchEndHour} )}"></a>
+				</li>
+				<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+					<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/teacher/todaySchedule(page=${cri.page}-1, perPageNum=${cri.perPageNum}, searchType=${cri.searchType}, keyword=${cri.keyword}, searchDate=${cri.searchDate}, searchStartHour=${cri.searchStartHour}, searchEndHour=${cri.searchEndHour} )}">　</a>
+				</li>
+				
+				<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+					<a class="page-link" th:href="@{/teacher/todaySchedule(page=${idx}, perPageNum=${cri.perPageNum}, searchType=${cri.searchType}, keyword=${cri.keyword}, searchDate=${cri.searchDate}, searchStartHour=${cri.searchStartHour}, searchEndHour=${cri.searchEndHour} )}" th:text="${idx}"></a>
+				</li>	
+											 				
+				<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+					<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/teacher/todaySchedule(page=${cri.page}+1, perPageNum=${cri.perPageNum}, searchType=${cri.searchType}, keyword=${cri.keyword}, searchDate=${cri.searchDate}, searchStartHour=${cri.searchStartHour}, searchEndHour=${cri.searchEndHour} )}">　</a>														
+				</li>				
+				<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+					<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/teacher/todaySchedule(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, searchType=${cri.searchType}, keyword=${cri.keyword}, searchDate=${cri.searchDate}, searchStartHour=${cri.searchStartHour}, searchEndHour=${cri.searchEndHour} )}">　</a>
+				</li>
+			</ul>
+		</th:block>
+		
+			
+		
+	</div>
+	
+	
+	
+<script type="text/javascript" th:src="@{/js/teacher/teacher_todaySchedule.js}"></script>
+</th:block>
+</body>
+
+</html>
+
+

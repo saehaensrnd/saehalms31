@@ -1,0 +1,43 @@
+#textArea{ padding: 0;  min-width:960px; height: 200px; overflow-y: hidden; background-color: #fff; cursor: auto;}
+#telInput{ border-radius: 4px; display: inline-block; max-width: 130px;  background: #fff;}
+tr{border-right: 1px solid #dedede ; border-left: 1px solid #dedede ;}
+@media only screen and (max-width: 1024px){
+  #textArea{ min-width: 760px;}
+  #telInput{ max-width: 80px;}
+}
+@media only screen and (max-width: 768px){
+#textArea{ min-width: 560px;}
+#telInput{ max-width: 70px;}
+#freeBorderTop{ font-size: 12px;}
+.w360{ max-width: 260px;}
+.userInfo{ display: none;}
+}
+@media only screen and (max-width: 480px){
+    header .inner img{ width: 20%;}
+    body{overflow-x: hidden;}
+    select ,input,textarea{ background-color: transparent;}
+    table select ,table input{ width: 94%;}
+
+    .subTitle{font-size: 14px; font-weight: 300;}
+   
+    #table .postReason{ height: 210px;}
+    #table{ width: 92.7vw;}
+    #table th,#table td{ font-size: 14px; word-wrap: break-word; border-top: 0; }
+    #table th{ padding: 20px 0 0 0;}
+    #table td{ padding: 5px 0 0 0; border-left: 0; border-right: 0; }
+    #table .freeBorderBm{ border-bottom: 0;}
+    #table .w360 span{ padding: 20px 0 0 0; display: inline-block;}
+    
+
+
+    #table, #table th, #table td,#table textarea {display: inline-block;}
+    #table th{ width: 28vw;}
+    #table td{ min-width: 64vw;}
+
+    #telInput{ width: 18vw;}
+    #textArea{ width: 62vw; min-width: 160px; position: relative; top: -72px;}
+    .w360{ max-width: 200px;}
+    .btn_right{left:  17%;}
+    .btn_black{ padding: 10px 36px;}
+    
+}

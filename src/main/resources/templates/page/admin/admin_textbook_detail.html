@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+<script type="text/javascript" th:src="@{/js/admin/admin_textbook_detail.js}"></script>
+<style type="text/css">
+.shareChk {
+	width: 60px;
+	height: 20px;
+	position: relative;
+	left: 12px;
+}
+
+
+.selecter-wrap .jcf-unselectable {
+	margin-bottom: 0px;
+}
+
+input[type='radio'] {
+	float: left;
+}
+
+.radio_label {
+	margin-right: 20px;
+	font-size: 16px;
+	float: left;
+}
+
+.redpoint {
+	color: red;
+	margin-right: 3px;
+}
+
+#zip_code {
+	width: 200px;
+	float: left;
+}
+#postcode_btn {
+	width: 150px;
+	float: left;
+	margin-left: 20px;
+	background: white;
+}
+</style>
+</head>
+<body>
+	<th:block layout:fragment="content">
+
+		<!-- insert form -->
+		<th:block th:if="${flag == 'insert'}">
+			<form id="textbook_form">
+				<table class="customer-insert table table-bordered">
+					<colgroup>
+						<col width="10%;">
+						<col width="40%;">
+						<col width="10%;">
+						<col width="40%;">
+					</colgroup>
+					<tr>
+						<td class="grayColor">교육과정</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="study_no" name="study_no" class="form-control">
+									<option th:each="s : ${study}" th:value="${s.study_no}" th:text="${s.study_name}"></option>
+								</select>
+							</div>
+						</td>
+						
+						<td class="grayColor">교육과정 레벨</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="study_level_no" name="study_level_no" class="form-control">
+									<option th:each="sl : ${study_level}" th:value="${sl.study_level_no}" th:text="${sl.level_name}"></option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">교재명</td>
+						<td colspan="3" class="txt-left" style="padding: 10px;"><input type="text" id="textbook_name" name="textbook_name"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">교재 가격</td>
+						<td colspan="3" class="txt-left" style="padding: 10px;"><input type="text" id="textbook_price" name="textbook_price" oninput="removeChar(event)"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">다운로드파일</td>
+						<td colspan="3" class="txt-left" style="padding: 10px;"><input type="file" id="mfile" name="mfile"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">설명</td>
+						<td colspan="3" class="txt-left" style="padding: 10px;">
+							<input type="hidden" id="language" name="language" th:value="${language}">
+			      			<textarea name="textbook_content" id="textbook_content" style="width:100%;"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">사용여부</td>
+						<td colspan="3" style="padding: 10px;">
+							<input type="radio" id="textbook_ok" name="textbook_status" value="1" checked="checked"><label for="textbook_ok" class="radio_label">사용</label>
+							<input type="radio" id="textbook_stop" name="textbook_status" value="0"><label for="textbook_stop" class="radio_label">중지</label>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+			<div style="margin: 20px 0px 20px 0px;">
+				<div class="btn-box">
+					<button type="button" class="btn btn_black" th:onclick=goList([[${cri}]])>목록</button>
+					<div style="float: right;">
+						<button type="button" id="insertBtn" class="btn add" style="margin: 0px;" onclick="textbookInsert()">등록</button>
+					</div>
+				</div>
+			</div>
+		</th:block>
+		<!-- </form> -->
+
+
+
+		<!-- update form -->
+		<th:block th:if="${flag == 'update'}">
+			<form id="textbook_form">
+				<table class="customer-insert table table-bordered">
+					<colgroup>
+						<col width="10%;">
+						<col width="40%;">
+						<col width="10%;">
+						<col width="40%;">
+					</colgroup>
+					<tr>
+						<td class="grayColor">교육과정</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="study_no" name="study_no" class="form-control">
+									<option th:each="s : ${study}" th:value="${s.study_no}" th:text="${s.study_name}" th:selected="${textbook.study_no} == ${s.study_no}"></option>
+								</select>
+							</div>
+						</td>
+						
+						<td class="grayColor">교육과정 레벨</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="study_level_no" name="study_level_no" class="form-control">
+									<option th:each="sl : ${study_level}" th:value="${sl.study_level_no}" th:text="${sl.level_name}" th:selected="${textbook.study_level_no} == ${sl.study_level_no}"></option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">교재명</td>
+						<td colspan="3" class="txt-left" style="padding: 10px;"><input type="text" id="textbook_name" name="textbook_name" th:value="${textbook.textbook_name}"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">교재 가격</td>
+						<td colspan="3" class="txt-left" style="padding: 10px;"><input type="text" id="textbook_price" name="textbook_price" th:value="${textbook.textbook_price}" oninput="removeChar(event)"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">교재순서</td>
+						<td colspan="3" class="txt-left" style="padding: 10px;"><input type="number" id="textbook_order" name="textbook_order" th:value="${textbook.textbook_order}"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">다운로드파일</td>
+						
+						<td th:if="${#maps.containsKey(textbook, 'textbook_download')}">
+							<a target="_blank" th:href="|https://saeha.s3.ap-northeast-2.amazonaws.com/textbook/${textbook.textbook_download}|" th:text="${textbook.textbook_download}"></a>
+							<input type="hidden" name="textbook_download" th:value="${textbook.textbook_download}">
+						</td>
+						<td th:unless="${#maps.containsKey(textbook, 'textbook_download')}"><a>-</a></td>
+						
+						<td colspan="2" class="txt-left" style="padding: 10px;"><input type="file" id="mfile" name="mfile"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">설명</td>
+						<td colspan="3" class="txt-left" style="padding: 10px;">
+							<input type="hidden" id="textbook_no" name="textbook_no" th:value="${textbook.textbook_no}">
+							<input type="hidden" id="language" name="language" th:value="${language}">
+			      			<textarea name="textbook_content" id="textbook_content" style="width:100%;" th:utext="${textbook.textbook_content}"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">사용여부</td>
+						<td colspan="3" style="padding: 10px;">
+							<input type="radio" id="textbook_ok" name="textbook_status" value="1" th:checked="${textbook.textbook_status} == 1"><label for="textbook_ok" class="radio_label">사용</label>
+							<input type="radio" id="textbook_stop" name="textbook_status" value="0" th:checked="${textbook.textbook_status} == 0"><label for="textbook_stop" class="radio_label">중지</label>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+			<div style="margin: 20px 0px 20px 0px;">
+				<div class="btn-box">
+					<button type="button" class="btn btn_black" th:onclick="goList([[${cri}]])" style="padding: 0;">목록</button>
+					<div style="float: right;">
+						<button type="button" id="updateBtn" class="btn add" style="margin: 0px;" onclick="updateBtn()">수정</button>
+					</div>
+				</div>
+			</div>
+			
+		</th:block>
+		<!-- </form> -->
+		
+	</th:block>
+	
+</body>
+
+</html>

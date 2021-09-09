@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/admin/admin_holiday.js}"></script>
+
+<style type="text/css">
+	.profile{
+		width: 70%;	
+		vertical-align: middle;
+		max-height: 80%;	
+	}
+	
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+	
+	.searchBtn {
+		display: inline-block;
+	    line-height: 55px;
+	    width: 90px;
+	    text-align: center;
+	    background-color: #444;
+	    color: #ffff;
+	    vertical-align: top;
+	    border-radius: 4px;
+	    height: 45px;
+    	line-height: 45px;
+    	margin-left: 10px;
+    	cursor: pointer;
+    	margin-right:10px;
+	}
+	
+	.search-div {width:100%; display: inline-flex;}
+	.search-div input {display: inline-block; width: 100%;}	
+	
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table">
+		<div class="tr">
+			<div class="th">언어</div>
+			<div class="td" style="border-right:0px; max-width:100%">
+				<div class="selecter-wrap" style="width:250px;">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchLanguage" name="searchLanguage" >
+				   			<option value="all" th:selected="${cri.searchLanguage == 'all'}">전체</option>													
+							<option value="English" th:selected="${cri.searchLanguage == 'English'}">English</option>
+							<option value="Chinese" th:selected="${cri.searchLanguage == 'Chinese'}">Chinese</option>							
+				   		</select>
+					</div>	
+				</div>
+			</div>
+		
+			<div class="td" style="border-right:0px;">									
+				<div class="selecter-wrap search-div" style="width:100px; float:right">
+					<select id="perPageNum" name="perPageNum" class="form-control" style="min-width:80px; width:80px; float:right;">
+						<option value="10" th:selected="${cri.perPageNum eq 10}">10</option>
+						<option value="50" th:selected="${cri.perPageNum == 50}">50</option>
+						<option value="100" th:selected="${cri.perPageNum == 100}">100</option>
+					</select>
+				</div>
+				<div class="searchBtn" th:onclick="search()" style="float:right; ">검색</div>
+			</div>		
+				
+		</div>		
+	</div>
+
+
+
+	
+	<div class="table-wrap">
+		<div class="table-item">
+			<span class="total" th:text="'Total : ' +${holidayCnt}"></span>
+			<div class="btn-box">
+				<button type="button" class="btn" th:onclick="insertBtn()">등록</button>
+				<button type="button" class="btn" th:onclick="checkedDelete()">삭제</button>
+			</div>								
+		</div>
+		
+		<table class="result-table02">
+			<colgroup>
+				<col width="5%">
+				<col width="6%">
+				<col width="20%">
+				<col width="20%">
+				<col width="*%">				
+				
+			</colgroup>
+			<thead>
+				<tr>
+					<th style="padding:0px;"><input type="checkbox" class="chk allCheck" name="allCheck" /></th>
+					<th>NO</th>
+					<th>language</th>					
+					<th>holiday</th>					
+					<th>holiday name</th>	
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${holidayCnt} == 0">
+					<td colspan="5">There is no data.</td>
+				</tr>
+				<tr th:each="item : ${holiday}">
+					<td class="hiddenChk chkTh" style="padding:0px;"><input type="checkbox" class="chk rowCheck" th:name="|${item.holiday_no}|" th:checked="false"/></td>
+									
+					<td th:text="${item.rownum}"></td>										
+					<td th:text="${item.language_type}"></td>				
+											
+					<td><a class="link" th:text="${item.holiday_date}" th:onclick="goDetail([[${item}]])"></a></td>												
+					<td>
+						<a class="link" th:if="${#maps.containsKey(item, 'holiday_name')}" th:text="${item.holiday_name}" th:onclick="goDetail([[${item}]])"></a>
+						<a class="link" th:unless="${#maps.containsKey(item, 'holiday_name')}" th:onclick="goDetail([[${item}]])"></a>
+					</td>
+				</tr>						
+			</tbody>
+		</table>
+		
+		
+		<th:block th:if="${holidayCnt > 0}">		
+			<ul class="pagenate">
+				<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+					<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/admin/holiday(page=1, perPageNum=${cri.perPageNum}, searchLanguage=${cri.searchLanguage} )}"></a>
+				</li>
+				<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+					<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/admin/holiday(page=${cri.page}-1, perPageNum=${cri.perPageNum}, searchLanguage=${cri.searchLanguage} )}">　</a>
+				</li>
+				
+				<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+					<a class="page-link" th:href="@{/admin/holiday(page=${idx}, perPageNum=${cri.perPageNum}, searchLanguage=${cri.searchLanguage} )}" th:text="${idx}"></a>
+				</li>	
+											 				
+				<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+					<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/admin/holiday(page=${cri.page}+1, perPageNum=${cri.perPageNum}, searchLanguage=${cri.searchLanguage} )}">　</a>														
+				</li>				
+				<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+					<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/admin/holiday(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, searchLanguage=${cri.searchLanguage} )}">　</a>
+				</li>
+			</ul>
+		</th:block>
+		
+	</div>
+	
+	
+
+</th:block>
+</body>
+
+</html>
+
+

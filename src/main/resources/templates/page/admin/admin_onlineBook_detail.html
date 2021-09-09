@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jcf.css}"/>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/admin/admin_page_detail.js}"></script> 
+
+<style type ="text/css">
+    .search-div {width:100%; display: inline-flex;}
+	.search-div input {display: inline-block; width: 100%;}
+	
+	.btn-box {float: right;}
+	.btn-box button {width: 100px; height: 35px;}
+	
+	.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+	       text-align: left;       
+	       padding: 7px 20px;
+	}
+	
+	.selecter-wrap .jcf-unselectable {
+	    width: 100%;    
+	    height: 45px;           
+	}
+	
+	.selecter-wrap .jcf-select-text {
+	    line-height: 45px;
+	 }
+	
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+	
+	.searchBtn {
+		display: inline-block;
+	    line-height: 55px;
+	    width: 120px;
+	    text-align: center;
+	    background-color: #444;
+	    color: #ffff;
+	    vertical-align: top;
+	    border-radius: 4px;
+	    /* float: left; */
+	    height: 45px;
+    	line-height: 45px;
+    	margin-left: 10px;
+    	cursor: pointer;
+	}
+	
+	.study_level_input {
+		margin-bottom: 10px;
+	}
+	
+	input[type='file'] {
+		width: 100%;
+	}
+	
+	body {
+		padding-top: 30px !important;
+		padding-left: 20px;
+		padding-right: 20px;
+		padding-bottom: 20px;
+	}
+	
+	#page_img {
+		width: 33%;
+	}
+	
+</style>
+
+</head>
+<body>
+	<div align="center">
+		<img th:each="p : ${page}" id="page_img" th:src="|https://saeha.s3.ap-northeast-2.amazonaws.com/textbook_page/${p.file_url}|">
+	</div>
+	
+				
+	<th:block th:if="${pageCnt > 0}">
+		<ul class="pagenate">
+			<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+				<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/admin/onlineBookDetail(page=1, perPageNum=${cri.perPageNum}, textbook_topic_no=${textbook_topic_no} )}"></a>
+			</li>
+			<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+				<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/admin/onlineBookDetail(page=${cri.page}-1, perPageNum=${cri.perPageNum}, textbook_topic_no=${textbook_topic_no} )}">　</a>
+			</li>
+			
+			<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+				<a class="page-link" th:href="@{/admin/onlineBookDetail(page=${idx}, perPageNum=${cri.perPageNum}, textbook_topic_no=${textbook_topic_no} )}" th:text="${idx}"></a>
+			</li>	
+										 				
+			<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+				<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/admin/onlineBookDetail(page=${cri.page}+1, perPageNum=${cri.perPageNum}, textbook_topic_no=${textbook_topic_no} )}">　</a>														
+			</li>				
+			<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+				<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/admin/onlineBookDetail(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, textbook_topic_no=${textbook_topic_no} )}">　</a>
+			</li>
+		</ul>
+	</th:block>
+		
+	<script>
+	</script>
+</body>
+
+</html>

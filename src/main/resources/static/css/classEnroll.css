@@ -1,0 +1,75 @@
+
+.page-nav .inner .text_menu{ font-size: 20px; font-weight: 600;}
+.pushLeft{ text-align: left;}
+.orderCenter{ text-align: center;}
+.mr20{ margin-right: 20px;}
+.voucherTxt{ padding: 10px 47px}
+
+#bluebtn{ color:#3e82ff; background: #d7e7ff; border: 1px solid #d9dadf; }
+.voucherSearch{ padding: 5px  0px 5px 15px ;}
+#voucherSearch{ padding: 5px 200px 5px 0px; }
+.padCtl01{ padding: 0 0 0 0px !important; }
+table input,table select{ background-color: transparent;}
+-tr{border-right: 1px solid #dedede ; border-left: 1px solid #dedede; max-width: 92vw;}
+
+@media only screen and (max-width: 1024px){
+  
+}
+@media only screen and (max-width: 768px){
+
+    .pupleBox{ padding: 10px 20px;}
+    #table1 tr th{ font-size: 12px; }
+    .userInfo{ display: none;}
+
+}
+@media only screen and (max-width: 480px){
+.page-nav .inner { }
+header .inner img{ max-width: 20%;}
+body{overflow-x: hidden;}
+.subtitle{ font-size: 12px;}
+.product { max-width: 92vw; }
+.product tr{ }
+.pushLeft{ margin: 10px 0 0 8px;}
+
+#table, #table th, #table td {display: inline-block; }
+#table{ border: 0;}
+#table th{ width: 27.5vw;  border-left: 1px solid #dedede;}
+#table td{ width: 63.8vw;  }
+#table tr th{ font-size: 14px; padding: 20px 10px; }
+#table tr td{ font-size: 14px; padding: 6px 0 0 0 ; word-wrap: break-word; border-right: 1px solid #dedede; }
+#table tr td select{ width: 60vw;}
+
+#table tr .bookSelect{ height: 120px;}
+#table tr #bookOptions{ position: relative ; top: -30px;}
+#table tr #checkBoxArea{ position: relative ; top: -60px; left: 28vw;}
+
+
+#table1, #table1 th, #table1 td {display: inline-block;}
+#table1 th{ border-left: 1px solid #dedede;}
+#table1 td{  border-left: 1px solid #dedede; border-right: 1px solid #dedede ;}
+#table1 th,#table1 td{font-size: 14px;  word-wrap: break-word; padding: 20px 0px;}
+#table1 th:nth-of-type(1),#table1 th:nth-of-type(2),#table1 th:nth-of-type(3),#table1 th:nth-of-type(4),#table1 th:nth-of-type(5),#table1 th:nth-of-type(6){ width: 15.22vw;}
+#table1 th:nth-of-type(7),#table1 th:nth-of-type(8){ width: 45.6vw;}
+#table1 td:nth-of-type(1),#table1 td:nth-of-type(2),#table1 td:nth-of-type(3),#table1 td:nth-of-type(4),#table1 td:nth-of-type(5),#table1 td:nth-of-type(6){ width: 15.22vw;}
+#table1 td:nth-of-type(7),#table1 td:nth-of-type(8){ width: 45.6vw;}
+
+
+#table2, #table2 th, #table2 td {display: inline-block;}
+#table > th:nth-of-type(1), #table >td:nth-of-type(1){ max-width: 90%;}
+#voucherSearch{ padding: 5px 10px 0 0; margin: 0 -5px 0 7px;}
+#table .voucherSearch select{ width: 10vw;}
+#table2 tr .voucherTxt{ width: 26vw; padding: 20px 0 0 0;}
+#table2 td select{ width: 38vw;}
+#table2 .padCtl01{ min-width: 26.3vw; max-width: 27vw;}
+#table2 tr th{ font-size: 14px; padding: 20px 10px; border-top: 0; border-bottom: 0; border-left: 1px solid #dedede;}
+#table2 tr td{ font-size: 12px; padding: 6px 0 0 0 ; word-wrap: break-word; border-top: 0; border-bottom: 0; border-right: 1px solid #dedede; }
+#bluebtn{ margin: 8px 0px 0px 23px; width: 60px;}
+
+
+#table3 tr th{ border-left: 1px solid #dedede; font-size: 14px;}
+#table3 tr td{ border-right: 1px solid #dedede;}
+
+
+.pupleBox{max-width: 120px; margin: -8px auto;}
+.mr100{ margin: 0 30px;}
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<link rel="stylesheet" th:href="@{/css/classEnroll.css}">
+<script src="https://js.tosspayments.com/v1"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+	<th:block layout:fragment="content">
+		<div class="mb30">
+			<h5 class="mb10">수강신청하기</h5>
+			<h5 class="subtitle">다음 제시된 항목에 따라 수강신청을 진행해주세요.</h5>
+			<div class="underline"></div>
+		</div>
+		<div class="mb30">
+			<h5>1.수강과정및 교재진도 선택</h5>
+			<input type="hidden" id="site_no" name="site_no" th:value="${site_no}">
+			<input type="hidden" id="user_student_no" name="user_student_no" th:value="${user_student_no}">
+			<input type="hidden" id="student_name" name="student_name" th:value="${student_name}">
+			<input type="hidden" id="student_phone" name="student_phone" th:value="${student_phone}">
+			<table class="mb30" id="table">
+				<tr>
+					<th id="freeBorderTop">수강언어</th>
+					<td>
+						<select name="site_language" id="site_language" onchange="langSel(this)">
+							<option value="0">-- 선택 --</option>
+							<option th:each="sl : ${site_language}" th:value="${sl}" th:text="${sl}"></option>
+						</select>
+					</td>
+
+					<th id="freeBorderTop">수업시작일</th>
+					<td><div id="start_date" align="left"></div></td>
+				</tr>
+				<tr>
+					<th id="freeBorderTop">수강과정</th>
+					<td>
+						<select name="study_no" id="study_no" onchange="studySel(this)">
+							<option value="0">-- 선택 --</option>
+						</select>
+					</td>
+					
+					<th id="freeBorderTop">교재진도</th>
+					<td>
+						<select name="textbook_no" id="textbook_no" onchange="textbookSel(this)">
+							<option value="0">-- 선택 --</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<span class="font_lightBlue">&#8251;수업시작일은 상품 선택 여부에 따라 변경됩니다.</span>
+		</div>
+		<div class="mb30">
+			<h5>2.상품 선택</h5>
+			<table class="product" id="table1">
+				<thead>
+					<tr>
+						<th>수업방식</th>
+						<th>상품명</th>
+						<th>수업시간</th>
+						<th>수업인원</th>
+						<th>횟수</th>
+						<th>수업요일</th>
+						<th>금액</th>
+						<th>수강신청</th>
+					</tr>
+				</thead>
+				<tr th:each="p : ${product}">
+					<td th:text="${p.product_type}"></td>
+					<td th:text="${p.product_name}"></td>
+					<td th:text="|${p.product_running_time}분|"></td>
+					<td th:text="${p.product_personnel}"></td>
+					<td th:text="${p.product_count}"></td>
+					<td th:text="${p.product_week}"></td>
+					<td th:text="${#numbers.formatDecimal(p.product_price, 0, 'COMMA', 0, 'POINT')}"></td>
+					<td>
+						<input type="radio" name="product_no" th:value="${p.product_no}" th:product="${p.product_name}" style="zoom: 2;" th:onclick="searchTeacher(this)">
+					</td>
+<!-- 					<td><div class="pupleBox">수강신청</div></td> -->
+				</tr>
+			</table>
+		</div>
+		<div class="mb30">
+			<h5>3.시간,강사,교재 선택</h5>
+			<table id="table">
+				<tr>
+					<th id="freeBorderTop">강사선택</th>
+					<td>
+						<select name="user_teacher_no" id="user_teacher_no" onchange="teacherSel(this)">
+							<option value="0">-- 선택 --</option>
+						</select>
+					</td>
+					<th id="freeBorderTop" class="">시간선택</th>
+					<td>
+						<select name="timeSel" id="timeSel">
+							<option value="0">-- 선택 --</option>
+						</select>
+					</td>
+				</tr>
+				<tr class="h120">
+					<th rowspan="2" id="freeBorderTop" class="bookSelect">교재선택</th>
+					<td colspan="2" id="bookOptions"><div id="textbookSel" align="left"></div></td>
+
+					<td class="freeLeftBorder" id="checkBoxArea">
+						<div class="pushLeft">
+							<input type="checkbox" name="" id="bookCheck" onclick="buyTextbook(this)">교재비구매
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+<!-- 		<div class="mb30"> -->
+<!-- 			<h5>4.수강권</h5> -->
+<!-- 			<table id="table2"> -->
+<!-- 				<tr> -->
+<!-- 					<th id="freeBorderTop" class="voucherTxt">수강권</th> -->
+<!-- 					<td class="voucherSearch" id="freeBorderRight"> -->
+<!-- 						<select name="" id="voucherSearch"> -->
+<!-- 								<option value="">AAA1111</option> -->
+<!-- 								<option value="">AAA1112</option> -->
+<!-- 								<option value="">AAA1113</option> -->
+<!-- 								<option value="">AAA1114</option> -->
+<!-- 						</select> -->
+<!-- 					</td> -->
+<!-- 					<td id="freeBorderLeft" class="pushRight padCtl01"> -->
+<!-- 						<button class="btn" id="bluebtn">검색</button> -->
+<!-- 					</td> -->
+<!-- 				</tr> -->
+<!-- 			</table> -->
+<!-- 		</div> -->
+		<div class="mb30">
+			<h5>4.교재 배송지</h5>
+			<table id="table">
+				<tr>
+					<th rowspan="3" id="freeBorderTop" class="voucherTxt">주소</th>
+					<td>
+						<input type="text" id="zip_code" name="zip_code" readonly="readonly" th:value="${zip_code}">
+					</td>
+					<td>
+						<input type="button" id="postcode_btn" onclick="daumPostCode()" value="주소찾기" style="background: #eee; cursor: pointer;">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="text" id="address" name="address" readonly="readonly" th:value="${address}">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="text" id="address_detail" name="address_detail" placeholder="상세주소" th:value="${address_detail}">
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div class="mb30">
+			<h5>4.결제 방식</h5>
+			<table id="table2">
+				<tr>
+					<th id="freeBorderTop" class="voucherTxt">결제 방식</th>
+					<td class="voucherSearch" id="freeBorderRight">
+						<select name="payType" id="payType">
+								<option value="카드">카드</option>
+								<option value="가상계좌">가상계좌</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="mb30">
+			<h5>5.결제금액</h5>
+			<table class="" id="table3">
+				<tr>
+					<th id="freeBorderTop" rowspan="3">결제금액</th>
+					<td><span class="mr100">주문금액</span></td>
+					<td><span class="mr100 state ing" id="product_price">-</span></td>
+				</tr>
+				<tr>
+					<td><span class="mr100">교재금액</span></td>
+					<td><span class="mr100" id="textbook_price">-</span></td>
+				</tr>
+<!-- 				<tr> -->
+<!-- 					<td><span class="mr100">주문금액</span><span class="mr100">180,000</span></td> -->
+<!-- 				</tr> -->
+				<tr>
+					<td class=""><span class="mr100">총 결제 금액</span></td>
+					<td><span class="mr100 state ing" id="total_price">-</span></td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="mb30">
+			<div class="orderCenter">
+				<span class="pupleBox mr20" onclick="payment()">결제하기</span><span class="blackBox">취소하기</span>
+			</div>
+		</div>
+		<script type="text/javascript" th:src="@{/js/student/enrolment.js}"></script>
+	</th:block>
+</body>
+
+</html>
+
+

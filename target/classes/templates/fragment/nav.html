@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<div th:fragment="nav" class="sider-menu">
+		<ul th:with="URL=${#httpServletRequest.requestURI}">			
+			<li th:if="${session.role_name == 'ROLE_ADMIN'}">	<!-- sec:authorize="hasAuthority('ROLE_ADMIN')" -->
+				<p class="drop-trigger active">회원관리</p>
+				<ul class="sub">					
+					<li><a th:href="@{/admin/user}" th:classappend="${#strings.contains(URL, '/admin/user') or #strings.contains(URL, '/admin/user/detail')}? active">회원정보</a></li>
+					<li><a th:href="@{/admin/classStudentMng}" th:classappend="${#strings.contains(URL, '/admin/classStudentMng')}? active">수강자정보</a></li>					
+				</ul>
+			</li>	
+			<li th:if="${session.role_name == 'ROLE_ADMIN'}">
+				<p class="drop-trigger active">상담관리</p>
+				<ul class="sub">
+					<li><a th:href="@{/admin/leveltestMng}" th:classappend="${#strings.contains(URL, '/admin/leveltestMng')}? active">레벨테스트 신청</a></li>
+					<li><a th:href="@{/admin/postponeMng}" th:classappend="${#strings.contains(URL, '/admin/postponeMng') or #strings.contains(URL, '/admin/postponeMng/detail')}? active">휴강 및 보강</a></li>					
+				</ul>
+			</li>
+			<li th:if="${session.role_name == 'ROLE_ADMIN'}">	
+				<p class="drop-trigger active">수업관리</p>
+				<ul class="sub">
+					<li><a th:href="@{/admin/classInfo}" th:classappend="${#strings.contains(URL, '/admin/classInfo')}? active">수업기본정보</a></li>
+					<li><a th:href="@{/admin/timeClass}" th:classappend="${#strings.contains(URL, '/admin/timeClass')}? active">시간별 수업현황</a></li>
+					<li><a th:href="@{/admin/classSchedule}" th:classappend="${#strings.contains(URL, '/admin/classSchedule')}? active">수업일정</a></li>
+					<li><a th:href="@{/admin/scheduleClassSite}" th:classappend="${#strings.contains(URL, '/admin/scheduleClassSite')}? active">사이트별 수강신청</a></li>
+					<li><a th:href="@{/admin/holiday}" th:classappend="${#strings.contains(URL, '/admin/holiday')}? active">휴강일</a></li>
+					<li><a th:href="@{/admin/startTime}" th:classappend="${#strings.contains(URL, '/admin/startTime')}? active">수업시작시간 관리</a></li>
+					<li><a th:href="@{/admin/modifyClassDate}" th:classappend="${#strings.contains(URL, '/admin/modifyClassDate')}? active">수업날짜 일괄변경</a></li>					
+				</ul>
+			</li>
+			<li th:if="${session.role_name == 'ROLE_ADMIN'}">	
+				<p class="drop-trigger active">사이트관리</p>
+				<ul class="sub">
+					<!--<li><a th:href="@{/admin/site}" th:classappend="${#strings.contains(URL, '/admin/site')}? active">사이트정보조회</a></li>
+					<li><a th:href="@{/admin/center}" th:classappend="${#strings.contains(URL, '/admin/center')}? active">티칭센터 정보조회</a></li>
+					<li><a th:href="@{/admin/teacher}" th:classappend="${#strings.contains(URL, '/admin/teacher')}? active">강사정보조회</a></li>
+					<li><a th:href="@{/admin/weeklySchedule}" th:classappend="${#strings.contains(URL, '/admin/weeklySchedule')}? active">선생님별 주간수업일정</a></li>
+					<li><a th:href="@{/admin/tutorGroup}" th:classappend="${#strings.contains(URL, '/admin/tutorGroup')}? active">강사그룹관리</a></li>	-->				
+				</ul>
+			</li>
+			<li th:if="${session.role_name == 'ROLE_ADMIN'}">	
+				<p class="drop-trigger active">온라인교재관리</p>
+				<ul class="sub">					
+					<li><a th:href="@{/admin/studyMng}" th:classappend="${#strings.contains(URL, '/admin/studyMng')}? active">수강과정</a></li>
+					<li><a th:href="@{/admin/studyLevel}" th:classappend="${#strings.contains(URL, '/admin/studyLevel')}? active">수강과정 레벨</a></li>
+					<li><a th:href="@{/admin/textbookMng}" th:classappend="${#strings.contains(URL, '/admin/textbookMng')}? active">교재리스트</a></li>
+					<li><a th:href="@{/admin/textbookTopic}" th:classappend="${#strings.contains(URL, '/admin/textbookTopic')}? active">교재토픽리스트</a></li>
+					<li><a th:href="@{/admin/onlineBook}" th:classappend="${#strings.contains(URL, '/admin/onlineBook')}? active">Online book</a></li>					
+				</ul>
+			</li>
+			<li th:if="${session.role_name == 'ROLE_ADMIN'}">
+				<p class="drop-trigger active">Teacher's Page</p>
+				<ul class="sub">	
+					<li><a th:href="@{/admin/todaySchedule}" th:classappend="${#strings.contains(URL, '/admin/todaySchedule')}? active">Today Schedule</a></li>
+					<li><a th:href="@{/admin/tPage/weeklySchedule}" th:classappend="${#strings.contains(URL, '/admin/tPage/weeklySchedule')}? active">Weekly Schedule</a></li>					
+					<li><a th:href="@{/admin/tPage/onlineBook}" th:classappend="${#strings.contains(URL, '/admin/tPage/onlineBook')}? active">Online Textbook</a></li>
+				</ul>
+			</li>
+			<li th:if="${session.role_name == 'ROLE_ADMIN'}">	
+				<p class="drop-trigger active">주문정보관리</p>
+				<ul class="sub">					
+					<li><a th:href="@{/admin/productMng}" th:classappend="${#strings.contains(URL, '/admin/productMng') or #strings.contains(URL, '/admin/productMng/detail')}? active">수강상품</a></li>
+					<li><a th:href="@{/admin/paymentMng}" th:classappend="${#strings.contains(URL, '/admin/paymentMng')}? active">신청내역</a></li>
+				</ul>
+			</li>
+			
+			
+			<!-- 강사 접속 -->
+			<li th:if="${session.role_name == 'ROLE_TEACHER'}">				
+				<p class="drop-trigger active">Teacher's Page</p>
+				<ul class="sub">	
+					<li><a th:href="@{/teacher/todaySchedule}" th:classappend="${#strings.contains(URL, '/teacher/todaySchedule')}? active">Today Schedule</a></li>
+					<li><a th:href="@{/teacher/weeklySchedule}" th:classappend="${#strings.contains(URL, 'teacher/weeklySchedule')}? active">Weekly Schedule</a></li>	
+					<li><a th:href="@{/teacher/onlineBook}" th:classappend="${#strings.contains(URL, '/teacher/onlineBook')}? active">Online book</a></li>
+				</ul>
+			</li>
+			
+			
+			<!-- 학생 접속 -->
+			<li th:if="${session.role_name == 'ROLE_STUDENT'}">				
+				<p class="drop-trigger active">마이노트</p>
+				<ul class="sub">	
+					<li><a th:href="@{/student/myClass}" th:classappend="${#strings.contains(URL, '/student/myClass')}? active">학습현황</a></li>
+					<li><a th:href="@{/student/levelTest}" th:classappend="${#strings.contains(URL, '/student/levelTest')}? active">무료레벨테스트신청</a></li>
+					<li><a th:href="@{/student/postpone}" th:classappend="${#strings.contains(URL, '/student/postpone')}? active">휴강 및 보강 신청</a></li>
+				</ul>
+			</li>
+			<li th:if="${session.role_name == 'ROLE_STUDENT'}">				
+				<p class="drop-trigger active">수강신청</p>
+				<ul class="sub">	
+					<li><a th:href="@{/student/enrolment}" th:classappend="${#strings.contains(URL, '/student/enrolment')}? active">수강신청하기</a></li>
+				</ul>
+			</li>
+			<li th:if="${session.role_name == 'ROLE_STUDENT'}">				
+				<p class="drop-trigger active">회원정보</p>
+				<ul class="sub">	
+					<li><a th:href="@{/student/infoModify}" th:classappend="${#strings.contains(URL, '/student/infoModify')}? active">내 정보 수정</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+
+</html>

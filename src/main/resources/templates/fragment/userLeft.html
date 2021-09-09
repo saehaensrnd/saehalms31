@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+	<div th:fragment="userLeft" class="user-left">
+		<!-- 회원기본정보 -->		
+		<div class="userDiv">
+			<p style="font-weight: 600; margin-bottom: 10px; font-size: 18px;">회원기본정보</p>
+			<form id="userForm" method="post" enctype="multipart/form-data">  
+	  			<input type="hidden" id="user_student_no"  name="user_student_no" th:value="${user.user_student_no}">
+	  		
+			   	<div class="left-head-table custom02-table report mb10">
+					<div class="tr">
+					   <div class="th">서비스</div>
+					   <div class="td" th:text="${user.site_name}"></div>					               
+					</div>
+					<div class="tr">
+					   <div class="th">이름(한글) <span class="red">*</span></div>
+					   <div class="td">
+					   		<input type="text" class="form-control" id="student_name"  name="student_name" autocomplete="off" th:value="${user.student_name}">	
+					   </div>					                  
+					</div>
+					<div class="tr">
+					   <div class="th">수업이름</div>
+					   <div class="td">
+					   		<input type="text" class="form-control" id="student_eng_name"  name="student_eng_name" autocomplete="off" th:if="${#maps.containsKey(user, 'student_eng_name')}" th:value="${user.student_eng_name}">
+					   		<input type="text" class="form-control" id="student_eng_name"  name="student_eng_name" autocomplete="off" th:unless="${#maps.containsKey(user, 'student_eng_name')}">	
+					   </div>					                  
+					</div>
+					<div class="tr">
+					   <div class="th">ID /PW</div>
+					   <div class="td" th:if="${#maps.containsKey(user, 'id')}" >
+					   		<span th:text="|${user.id} / ****|"></span>
+					   		<input type="button" class="postcode_btn" th:onclick="pwdClear([[${user}]])" value="초기화" style="float:right; cursor:pointer;">
+					   </div>
+					   
+					   <div class="td" th:unless="${#maps.containsKey(user, 'id')}"></div>
+					</div>
+					<div class="tr">
+					   <div class="th">생일</div>
+					   <div class="td" th:if="${#maps.containsKey(user, 'student_birth')}" >
+					   		<input type="date" name="student_birth" id="student_birth" th:value="${user.student_birth}" style="width:100%;">					   		
+					   </div>
+					</div>	
+					<div class="tr">
+					   <div class="th">성별</div>
+					   <div class="td" th:if="${#maps.containsKey(user, 'student_sex')}" >
+					   		<div class="selecter-wrap search-div">
+								<select id="student_sex" name="student_sex" class="form-control">
+									<option value="0" th:selected="${user.student_sex} == '0'">남</option>
+									<option value="1" th:selected="${user.student_sex} == '1'">여</option>
+								</select>
+							</div>				   		
+					   </div>
+					   <div class="td" th:unless="${#maps.containsKey(user, 'student_sex')}" >
+					   		<div class="selecter-wrap search-div">
+								<select id="student_sex" name="student_sex" class="form-control">
+									<option value="0">남</option>
+									<option value="1">여</option>
+								</select>
+							</div>				   		
+					   </div>
+					</div>	
+					<div class="tr">
+					   <div class="th">학년</div>
+					   <div class="td" th:if="${#maps.containsKey(user, 'student_grade')}" >
+					   		<div class="selecter-wrap search-div">
+								<select id="student_grade" name="student_grade" class="form-control">									
+									<option value="유아" th:selected="${user.student_grade} == '유아'">유아</option>
+									<option value="초1" th:selected="${user.student_grade} == '초1'">초1</option>
+									<option value="초2" th:selected="${user.student_grade} == '초2'">초2</option>
+									<option value="초3" th:selected="${user.student_grade} == '초3'">초3</option>
+									<option value="초4" th:selected="${user.student_grade} == '초4'">초4</option>
+									<option value="초5" th:selected="${user.student_grade} == '초5'">초5</option>
+									<option value="초6" th:selected="${user.student_grade} == '초6'">초6</option>
+									<option value="중1" th:selected="${user.student_grade} == '중1'">중1</option>
+									<option value="중2" th:selected="${user.student_grade} == '중2'">중2</option>
+									<option value="중3" th:selected="${user.student_grade} == '중3'">중3</option>
+									<option value="고1" th:selected="${user.student_grade} == '고1'">고1</option>
+									<option value="고2" th:selected="${user.student_grade} == '고2'">고2</option>
+									<option value="고3" th:selected="${user.student_grade} == '고3'">고3</option>
+									<option value="성인" th:selected="${user.student_grade} == '성인'">성인</option>
+								</select>
+							</div>				   		
+					   </div>
+					</div>
+									
+					<div class="tr">
+					   <div class="th">전화번호</div>
+					   <div class="td">
+					   		<input type="text" class="form-control" id="student_tel"  name="student_tel" autocomplete="off" placeholder="-없이 숫자만 입력하세요." oninput="removeChar(event)" th:if="${#maps.containsKey(user, 'student_tel')}" th:value="${user.student_tel}">
+					   		<input type="text" class="form-control" id="student_tel"  name="student_tel" autocomplete="off" placeholder="-없이 숫자만 입력하세요." oninput="removeChar(event)" th:unless="${#maps.containsKey(user, 'student_tel')}">
+					   </div>       
+					</div>
+					<div class="tr">
+					   <div class="th">휴대전화</div>
+					   <div class="td">
+					   		<input type="text" class="form-control" id="student_phone"  name="student_phone" autocomplete="off" placeholder="-없이 숫자만 입력하세요." oninput="removeChar(event)" th:if="${#maps.containsKey(user, 'student_phone')}" th:value="${user.student_phone}">
+					   		<input type="text" class="form-control" id="student_phone"  name="student_phone" autocomplete="off" placeholder="-없이 숫자만 입력하세요." oninput="removeChar(event)" th:unless="${#maps.containsKey(user, 'student_phone')}">
+					   		<input type="checkbox" id="student_phone_status_chk" name ="student_phone_status_chk" th:if="${#maps.containsKey(user, 'student_phone_status')}" th:checked="${user.student_phone_status} == '1'" style="min-width:30px; top: 4px; position: relative;">
+					   		<input type="checkbox" id="student_phone_status_chk" name ="student_phone_status_chk" th:unless="${#maps.containsKey(user, 'student_phone_status')}" style="min-width:30px; top: 4px; position: relative;">
+					   		<label for="student_phone_status_chk">수신</label>
+					   		
+					   		<img src="../img/phone.gif" style="cursor:pointer;" th:onclick="smsBtn([[${user}]])"></img>
+					   </div>       
+					</div>					
+					<div class="tr">
+					   <div class="th">이메일</div>
+					   <div class="td">
+					   		<input type="text" class="form-control" id="student_email"  name="student_email" autocomplete="off" th:if="${#maps.containsKey(user, 'student_email')}" th:value="${user.student_email}">
+					   		<input type="text" class="form-control" id="student_email"  name="student_email" autocomplete="off" th:unless="${#maps.containsKey(user, 'student_email')}">
+					   		<input type="checkbox" id="student_email_status_chk" name ="student_email_status_chk" th:if="${#maps.containsKey(user, 'student_email_status')}" th:checked="${user.student_email_status} == '1'" style="min-width:30px; top: 4px; position: relative;">
+					   		<input type="checkbox" id="student_email_status_chk" name ="student_email_status_chk" th:unless="${#maps.containsKey(user, 'student_email_status')}" style="min-width:30px; top: 4px; position: relative;">
+					   		<label for="student_email_status_chk">수신</label>					   		
+					   </div>					               
+					</div>
+					
+					<div class="tr">
+					   <div class="th">주소</div>
+					   <div class="td">
+					   		<input type="text" id="zip_code" name="zip_code" readonly="readonly" th:value="${zip_code}">
+							<input type="button" class="postcode_btn" onclick="daumPostCode()" value="주소찾기" style="cursor:pointer;">
+							<input type="text" id="address" name="address" readonly="readonly" th:value="${address}">
+							<input type="text" id="address_detail" name="address_detail" placeholder="상세주소" th:value="${address_detail}">					   		
+					   </div>					               
+					</div>
+					
+					<div class="tr">
+					   <div class="th" style="font-size: 15px;">블랙리스트 여부</div>
+					   <div class="td">
+					   		<input type="checkbox" id="student_blacklist_status_chk" name ="student_blacklist_status_chk" th:if="${#maps.containsKey(user, 'student_blacklist_status')}" th:checked="${user.student_blacklist_status} == '1'" style="min-width:50px; top: 4px; position: relative;">
+					   		<input type="checkbox" id="student_blacklist_status_chk" name ="student_blacklist_status_chk" th:unless="${#maps.containsKey(user, 'student_blacklist_status')}" style="min-width:50px; top: 4px; position: relative;">
+					   		<label for="student_blacklist_status_chk">*체크 시 블랙회원으로 이름, 아이디부분 색이 변경됩니다.</label>					   		
+					   </div>					               
+					</div>
+					
+					<div class="tr">
+					   <div class="th">
+					   		<span>특이사항</span>
+					   	    <input type="button" class="postcode_btn" th:onclick="etcPopup([[${user}]])" value="상세보기" style="cursor:pointer; margin-left: 0px;">			   
+					   </div>
+					   <div class="td">					   		
+					   		<textarea class="form-control" id="student_etc"  name="student_etc" th:if="${#maps.containsKey(user, 'student_etc')}" th:text="${user.student_etc}" style="width: 100%; height: 100px; padding: 10px;"></textarea>
+			   				<textarea class="form-control" id="student_etc"  name="student_etc" th:unless="${#maps.containsKey(user, 'student_etc')}" style="width: 100%; height: 100px; padding: 10px;"></textarea>
+					   </div>					     
+					</div>
+					
+					
+					<div class="tr">
+					   <div class="th">등록경로</div>
+					   <div class="td" th:if="${#maps.containsKey(user, 'student_invite')}" >
+					   		<div class="selecter-wrap search-div">
+								<select id="student_invite" name="student_invite" class="form-control">									
+									<option value="신문광고" th:selected="${user.student_invite} == '신문광고'">신문광고</option>
+									<option value="인터넷광고" th:selected="${user.student_invite} == '인터넷광고'">인터넷광고</option>
+									<option value="잡지광고" th:selected="${user.student_invite} == '잡지광고'">잡지광고</option>
+									<option value="지인소개" th:selected="${user.student_invite} == '지인소개'">지인소개</option>
+									<option value="대교지국" th:selected="${user.student_invite} == '대교지국'">대교지국</option>
+									<option value="라디오광고" th:selected="${user.student_invite} == '라디오광고'">라디오광고</option>
+									<option value="기타" th:selected="${user.student_invite} == '기타'">기타</option>
+								</select>
+							</div>				   		
+					   </div>
+					   <div class="td" th:unless="${#maps.containsKey(user, 'student_invite')}" >
+					   		<div class="selecter-wrap search-div">
+								<select id="student_invite" name="student_invite" class="form-control">
+									<option value="신문광고">신문광고</option>
+									<option value="인터넷광고">인터넷광고</option>
+									<option value="잡지광고">잡지광고</option>
+									<option value="지인소개">지인소개</option>
+									<option value="대교지국">대교지국</option>
+									<option value="라디오광고">라디오광고</option>
+									<option value="기타">기타</option>
+								</select>
+							</div>				   		
+					   </div>
+					</div>
+					
+					<div class="tr">
+					   <div class="th">상태</div>
+					   <div class="td" th:if="${#maps.containsKey(user, 'student_status')}" >
+					   		<div class="selecter-wrap search-div">
+								<select id="student_status" name="student_status" class="form-control">									
+									<option value="1" th:selected="${user.student_status} == '1'">정상</option>
+									<option value="2" th:selected="${user.student_status} == '2'">대기</option>
+									<option value="0" th:selected="${user.student_status} == '0'">탈퇴</option>
+								</select>
+							</div>				   		
+					   </div>
+					   <div class="td" th:unless="${#maps.containsKey(user, 'student_status')}" >
+					   		<div class="selecter-wrap search-div">
+								<select id="student_status" name="student_status" class="form-control">
+									<option value="1">정상</option>
+									<option value="2">대기</option>
+									<option value="0">탈퇴</option>
+								</select>
+							</div>				   		
+					   </div>
+					</div>
+					
+					
+			   	</div>
+					
+				
+				
+				<p style="font-weight: 600; margin: 50px 0px 10px 0px; font-size: 18px;">회원보호자정보</p>
+				<div class="left-head-table custom02-table report mb10">
+					<div class="tr">
+					   <div class="th">보호자명</div>
+					   <div class="td">
+					   		<input type="text" class="form-control" id="student_parent_name"  name="student_parent_name" autocomplete="off" th:if="${#maps.containsKey(user, 'student_parent_name')}" th:value="${user.student_parent_name}">
+					   		<input type="text" class="form-control" id="student_parent_name"  name="student_parent_name" autocomplete="off" th:unless="${#maps.containsKey(user, 'student_parent_name')}">
+					   </div>					               
+					   
+					</div>
+					<div class="tr">
+					   <div class="th">휴대전화</div>
+					   <div class="td">
+					   		<input type="text" class="form-control" id="student_parent_phone"  name="student_parent_phone" autocomplete="off" placeholder="숫자만 입력하세요." th:if="${#maps.containsKey(user, 'student_parent_phone')}" th:value="${user.student_parent_phone}">
+					   		<input type="text" class="form-control" id="student_parent_phone"  name="student_parent_phone" autocomplete="off" placeholder="숫자만 입력하세요." th:unless="${#maps.containsKey(user, 'student_parent_phone')}">
+					   		<input type="checkbox" id="student_parent_phone_status_chk" name ="student_parent_phone_status_chk" th:if="${#maps.containsKey(user, 'student_parent_phone_status')}" th:checked="${user.student_parent_phone_status}  == '1'" style="min-width:50px; top: 4px; position: relative;">
+					   		<input type="checkbox" id="student_parent_phone_status_chk" name ="student_parent_phone_status_chk" th:unless="${#maps.containsKey(user, 'student_parent_phone_status')}" style="min-width:50px; top: 4px; position: relative;">
+					   		<label for="student_parent_phone_status_chk">수신</label>	
+					   </div>					                  
+					</div>
+				</div>
+				
+				<div class="btn-box">
+					<div class="btn" th:onclick="updateUser()">수정</div>
+				</div>
+	   		</form>
+		</div>
+	</div>
+
+</html>

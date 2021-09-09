@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/admin/admin_leveltest.js}"></script> 
+
+<style type ="text/css">
+	
+    
+    .search-div {width:100%; display: inline-flex;}
+	.search-div input {display: inline-block; width: 100%;}
+	
+	.btn-box {float: right;}
+	.btn-box button {width: 150px; height: 35px;}
+	
+	.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+	       text-align: left;       
+	       padding: 7px 20px;
+	}
+	
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+	
+	.searchBtn {
+		display: inline-block;
+	    line-height: 55px;
+	    width: 120px;
+	    text-align: center;
+	    background-color: #444;
+	    color: #ffff;
+	    vertical-align: top;
+	    border-radius: 4px;
+	    /* float: left; */
+	    height: 45px;
+    	line-height: 45px;
+    	margin-left: 10px;
+    	cursor: pointer;
+    	margin-right: 10px;
+	}
+	
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table" style="margin-bottom: 30px;">		
+		<div class="tr">
+			<div class="th">구분</div>
+			<div class="td" style="border-right:0px; max-width:20%">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchType" name="searchType" >
+				   			<option value="all" th:selected="${cri.searchType == 'all'}">전체</option>							
+							<option value="site_name" th:selected="${cri.searchType == 'site_name'}">사이트명</option>
+							<option value="student_name" th:selected="${cri.searchType == 'student_name'}">회원명</option>
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			
+			<div class="th">검색어</div>
+			<div class="td" style="border-right:0px;">
+				<div class="search-div">
+					<input type="text" id="keyword" name="keyword" th:value="${cri.keyword}" autocomplete="off" >
+					<div class="searchBtn" onclick="search()">검색</div>
+					
+					<div class="selecter-wrap search-div" style="width:150px; float:right">
+						<select id="perPageNum" name="perPageNum" class="form-control" style="min-width:80px; width:80px; float:right;">
+							<option value="10" th:selected="${cri.perPageNum eq 10}">10</option>
+							<option value="50" th:selected="${cri.perPageNum == 50}">50</option>
+							<option value="100" th:selected="${cri.perPageNum == 100}">100</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="table-wrap">
+		<div class="table-item">
+			<span class="total" th:text="'Total : ' +${leveltestCnt}"></span>				
+			<div class="btn-box">
+				<button type="button" class="btn" th:onclick="insertLeveltest()">레벨테스트 등록</button>
+				<button type="button" class="btn" th:onclick="excelDownBtn([[${cri}]])">Excel</button>
+			</div>
+		</div>
+		<table>
+			<colgroup>
+				<col width="5%">
+				<col width="10%">
+				<col width="10%">
+				<col width="*%">
+				<col width="15%">
+				<col width="15%">
+				<col width="10%">
+				<col width="10%">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>NO</th>
+					<th>사이트</th>				
+					<th>회원명</th>
+					<th>레벨테스트명</th>
+					<th>등록일</th>
+					<th>레벨테스트일</th>
+					<th>테스트시간</th>
+					<th>상태</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${leveltestCnt} == 0">
+					<td colspan="7">There is no data.</td>
+				</tr>
+				<tr th:each="l : ${leveltest}">
+					<td th:text="${#numbers.formatInteger(l.num, 0)}"></td>
+					<td th:text="${l.site_name}"></td>
+					
+					<td>
+						<a class="link" th:if="${l.student_blacklist_status} == '0' " th:onclick="openUserDetail([[${l.user_student_no}]])" th:text="${l.student_name}"></a>						
+						<a class="redLink" th:unless="${l.student_blacklist_status} == '0' " th:onclick="openUserDetail([[${l.user_student_no}]])" th:text="${l.student_name}"></a>
+					</td>
+					
+					<td>레벨테스트</td>
+					
+					<td th:text="${#dates.format(l.leveltest_regdate, 'yyyy-MM-dd')}"></td>
+					
+					<td th:if="${#maps.containsKey(l, 'study_date')}" th:text="${#dates.format(l.study_date, 'yyyy-MM-dd')}"></td>
+					<td th:unless="${#maps.containsKey(l, 'study_date')}">미정</td>
+					
+					<td th:if="${#maps.containsKey(l, 'class_time')}" th:text="${l.class_time}"></td>
+					<td th:unless="${#maps.containsKey(l, 'class_time')}">미정</td>
+					
+					<td th:text="${l.status}"></td>
+				</tr>
+				
+			</tbody>
+		</table>
+				
+		<th:block th:if="${leveltestCnt > 0}">
+			<ul class="pagenate">
+				<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+					<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/admin/leveltestMng(page=1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}"></a>
+				</li>
+				<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+					<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/admin/leveltestMng(page=${cri.page}-1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}">　</a>
+				</li>
+				
+				<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+					<a class="page-link" th:href="@{/admin/leveltestMng(page=${idx}, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}" th:text="${idx}"></a>
+				</li>	
+											 				
+				<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+					<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/admin/leveltestMng(page=${cri.page}+1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}">　</a>														
+				</li>				
+				<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+					<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/admin/leveltestMng(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, keyword=${cri.keyword} )}">　</a>
+				</li>
+			</ul>
+		</th:block>	
+		
+	</div>
+</th:block>
+</body>
+
+</html>

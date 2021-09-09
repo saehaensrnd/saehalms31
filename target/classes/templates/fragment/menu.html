@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<div th:fragment="menu" class="page-nav">
+		<div class="inner">
+			<span class="tit" th:text="${main_title}"></span> <span th:if="${sub_title} != null "> > </span> <span th:text="${sub_title}"></span>
+			<span th:if="${sub_title2} != null "> > </span> <span th:text="${sub_title2}"></span>
+		</div>
+	</div>
+
+</html>

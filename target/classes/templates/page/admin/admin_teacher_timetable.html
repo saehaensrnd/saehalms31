@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+
+
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px; 
+}
+
+
+.left-head-table .tr .td input, .left-head-table .tr .td select {
+    min-width: 65px;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+   	height: 20px;
+}
+
+.searchBtn {
+	display: inline-block;
+    line-height: 55px;
+    width: 90px;
+    text-align: center;
+    background-color: #444;
+    color: #ffff;
+    vertical-align: top;
+    border-radius: 4px;
+    height: 45px;
+   	line-height: 45px;
+   	margin-left: 10px;
+   	cursor: pointer;    	
+}
+
+</style>
+
+</head>
+<body style="padding-top: 20px !important; ">
+	
+
+	<!--  컨테이너 -->		
+	<div style="width:95%; margin:0 auto;">
+		<!-- 검색 테이블 -->
+		<div class="left-head-table custom02-table">
+			<div class="tr">
+				<div class="th">티칭센터</div>
+				<div class="td" style="max-width: 28%;">
+					<div class="selecter-wrap">				
+						<div class="search-div">
+							<select data-jcf='{"maxVisibleItems": 10}' id="searchCenter" name="searchCenter" onchange="centerChange(this)">
+					   			<!-- <option value="" th:selected="${cri.searchCenter == ''}">-- 선택 --</option> -->
+								<option th:each="centerList : ${centerList}" th:text="${centerList.center_name}" th:value="${centerList.center_no}" th:selected="${cri.searchCenter} == ${centerList.center_no}"></option>
+					   		</select>
+						</div>	
+					</div>
+				</div>			
+				
+				<div class="th">선생님</div>
+				<div class="td" >
+					<div class="search-div">
+						<div class="selecter-wrap" style="float:left; width: 67%;">				
+							<div class="search-div">
+								<select data-jcf='{"maxVisibleItems": 10}' id="searchTeacher" name="searchTeacher" >
+						   			<option value="" th:selected="${cri.searchTeacher == ''}">-- 선택 --</option>
+									<option th:each="teacherList : ${teacherList}" th:text="${teacherList.teacher_name}" th:value="${teacherList.user_teacher_no}" th:selected="${cri.searchTeacher} == ${teacherList.user_teacher_no}"></option>
+						   		</select>
+							</div>	
+						</div>					
+						
+						<div class="searchBtn" onclick="search()">검색</div>
+					</div>
+				</div>		
+				
+					
+			</div>		
+		</div>	
+		
+		
+		<p style="margin:50px 0px 10px 0px;  font-weight: 600;">* 휴일</p><hr>
+		
+		<div class="holidayDiv" style="height:200px;">
+			<div class="div1" style="float:left; width:49%; height:100%; padding:20px; border: 1px solid rgba(0, 0, 0, 0.2);">			    
+			    <input type="" id="teacher_holiday_date" name="teacher_holiday_date" class="fx-item dateitem" autocomplete="off" style="float:left;">			    
+			    <div class="btn-box">
+			    	<button class="btn" type="button" id="holidayUpdateBtn" style="float:left; margin-left:5px;" th:onclick="holidayUpdate([[${teacher}]])">휴일등록</button>
+			    </div>			    
+			</div>
+			<div class="div2" style="float:right; width:50%; height:100%; border: 1px solid rgba(0, 0, 0, 0.2); overflow:auto;">				
+				<table class="holidayTable">
+					<tbody>						
+						<tr th:if="${holiday}" th:each="item : ${holiday}">
+ 							<td th:if="${#maps.containsKey(item, 'teacher_holiday_date')}" th:text="|${item.teacher_holiday_date}|"></td>							
+							<td style="width:80px;"><div class="customTableBtn" style="width:65px;" th:onclick="holidayDeleteBtn([[${item.teacher_holiday_no}]])">삭제</div></td>
+						</tr>													
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		
+		
+		<!-- 근무가능 시간표 -->
+   		<form id="timeTableForm" method="post">
+   			<input type="hidden" name="user_teacher_no" th:value="${teacher.user_teacher_no}">
+   		
+   			<p style="margin:50px 0px 10px 0px;  font-weight: 600;">* 근무시간</p><hr>
+   			
+   			<div class="btn-box">
+   				<div class="btn" th:onclick="allCheck()" style="float:left">주간 전체선택</div>		  		
+				<button class="btn add" type="button" id="timeUpdateBtn" style="float:left; margin-left:5px;">저장</button>
+			</div>
+			
+   			<div class="timeTable" style="margin-top:90px;">
+   				<div class="table-wrap">
+					<table class="result-table02">
+						<colgroup>
+							<col width="*%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+							<col width="12%">
+						</colgroup>
+						<thead>
+							<tr>
+								<th>수업시간</th>
+								<th><a class="link" onclick="allCheck_col(0)">일</a></th>
+								<th><a class="link" onclick="allCheck_col(1)">월</a></th>
+								<th><a class="link" onclick="allCheck_col(2)">화</a></th>
+								<th><a class="link" onclick="allCheck_col(3)">수</a></th>
+								<th><a class="link" onclick="allCheck_col(4)">목</a></th>
+								<th><a class="link" onclick="allCheck_col(5)">금</a></th>
+								<th><a class="link" onclick="allCheck_col(6)">토</a></th>			
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:if="${timeTableList.size()} == 0">
+								<td colspan="8">There is no data.</td>
+							</tr>
+							<tr th:each="item : ${timeTableList}">
+								<td th:if="${#maps.containsKey(item, 'time')}" th:text="${item.time}"></td>
+								<!-- th:classappend="${item.checked} == true ? checked" -->								
+								<td><input type="checkbox" th:name="|weekTime${item.d0}|" class="day0" th:value=${item.d0} th:checked="${item.isCheck0} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d1}|" class="check day1" th:value=${item.d1} th:checked="${item.isCheck1} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d2}|" class="check day2" th:value=${item.d2} th:checked="${item.isCheck2} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d3}|" class="check day3" th:value=${item.d3} th:checked="${item.isCheck3} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d4}|" class="check day4" th:value=${item.d4} th:checked="${item.isCheck4} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d5}|" class="check day5" th:value=${item.d5} th:checked="${item.isCheck5} == 1 "></td>
+								<td><input type="checkbox" th:name="|weekTime${item.d6}|" class="day6" th:value=${item.d6} th:checked="${item.isCheck6} == 1 "></td>								
+							</tr>								
+						</tbody>
+					</table>					
+				</div>
+   			</div>   			
+   		</form>	
+				
+		
+		
+
+	</div>
+	<!-- 컨테이너 // -->
+	
+	
+<script th:inline="javascript">
+	let paramMap = /*[[${paramMap}]]*/ null;
+	
+	$( function(){
+
+		jQuery.datetimepicker.setLocale('kr');
+		$('.dateitem').datetimepicker({
+	        format:'Y.m.d',
+	        lang:'ko',
+	        timepicker:false,
+	        onChangeDateTime:function(dp,$input){
+	            // $('#dateitem').val($input.val());
+	        }
+	    });//datepicker end
+
+
+	 });
+</script>
+<script type="text/javascript" th:src="@{/js/admin/admin_teacher_timetable.js}"></script>
+</body>
+
+</html>

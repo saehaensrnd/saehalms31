@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/reportBottom_Layout">
+<head>
+<title></title>
+
+
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+.custom02-table .tr .th {
+    max-width: 120px;
+    font-size: 13px;
+}
+
+.radioBtn {
+    display: inline-block;
+    background: black;
+    min-width: 30px !important;
+    height: 15px;
+    margin-top: -1px;
+    vertical-align: middle;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+   	height: 20px;
+}
+
+.btn {
+    line-height: 40px;
+    height: 40px;
+    width: 100px;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
+.divTitle {
+	padding: 10px 0px 10px 10px; margin:5px 0px 5px 0px; background-color: #E0F8E6;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 0px !important; padding-bottom: 0px !important; ">
+
+<th:block layout:fragment="reportBottomContent"  >
+	
+	
+<!-- class -->	
+<div th:if="${flag} == 'class' ">
+	<div class="tabDiv" style="border: 1px solid rgba(0, 0, 0, .1);">
+		<form id="reportForm">
+			
+			<div class="selecter-wrap" style="padding: 10px 0px 10px 0px;">
+		   		<select data-jcf='{"maxVisibleItems": 7}' id="class_score_no" name="class_score_no" onchange="classScoreNoChange(this)"> 
+		   			<option value="0" th:selected="${class_score_no} == 0">-- 선택 --</option>	
+		   			<option th:each="classScoreList : ${classScoreList}" th:text="|${classScoreList.student_eng_name} (${classScoreList.student_name})|" th:value="${classScoreList.class_score_no}" th:selected="${classScoreList.class_score_no} == ${class_score_no}"></option>	   								         						   								   			 						   							
+		   		</select>
+	   		</div>
+	   		
+	   		
+	   		<div class="score">
+		   		<div class="left-head-table custom02-table report mb10">
+					<div class="tr">
+					   <div class="th">Grammer</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="grammer" id="grammer1" value="1" th:checked="${reportInfo.grammer} == 1"><label for="grammer1">1</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer2" value="2" th:checked="${reportInfo.grammer} == 2"><label for="grammer2">2</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer3" value="3" th:checked="${reportInfo.grammer} == 3 or ${reportInfo.grammer} == 0"><label for="grammer3">3</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer4" value="4" th:checked="${reportInfo.grammer} == 4"><label for="grammer4">4</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer5" value="5" th:checked="${reportInfo.grammer} == 5"><label for="grammer5">5</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer6" value="6" th:checked="${reportInfo.grammer} == 6"><label for="grammer6">6</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer7" value="7" th:checked="${reportInfo.grammer} == 7"><label for="grammer7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Speaking<br>Fluency</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency1" value="1" th:checked="${reportInfo.speaking_fluency} == 1"><label for="speaking_fluency1">1</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency2" value="2" th:checked="${reportInfo.speaking_fluency} == 2"><label for="speaking_fluency2">2</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency3" value="3" th:checked="${reportInfo.speaking_fluency} == 3 or ${reportInfo.speaking_fluency} == 0"><label for="speaking_fluency3">3</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency4" value="4" th:checked="${reportInfo.speaking_fluency} == 4"><label for="speaking_fluency4">4</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency5" value="5" th:checked="${reportInfo.speaking_fluency} == 5"><label for="speaking_fluency5">5</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency6" value="6" th:checked="${reportInfo.speaking_fluency} == 6"><label for="speaking_fluency6">6</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency7" value="7" th:checked="${reportInfo.speaking_fluency} == 7"><label for="speaking_fluency7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Listening<br>Comprehension</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension1" value="1" th:checked="${reportInfo.listening_comprehension} == 1"><label for="listening_comprehension1">1</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension2" value="2" th:checked="${reportInfo.listening_comprehension} == 2"><label for="listening_comprehension2">2</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension3" value="3" th:checked="${reportInfo.listening_comprehension} == 3 or ${reportInfo.listening_comprehension} == 0"><label for="listening_comprehension3">3</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension4" value="4" th:checked="${reportInfo.listening_comprehension} == 4"><label for="listening_comprehension4">4</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension5" value="5" th:checked="${reportInfo.listening_comprehension} == 5"><label for="listening_comprehension5">5</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension6" value="6" th:checked="${reportInfo.listening_comprehension} == 6"><label for="listening_comprehension6">6</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension7" value="7" th:checked="${reportInfo.listening_comprehension} == 7"><label for="listening_comprehension7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Pronunciation &<br>Intonation</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation1" value="1" th:checked="${reportInfo.pronunciation_intonation} == 1"><label for="pronunciation_intonation1">1</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation2" value="2" th:checked="${reportInfo.pronunciation_intonation} == 2"><label for="pronunciation_intonation2">2</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation3" value="3" th:checked="${reportInfo.pronunciation_intonation} == 3 or ${reportInfo.pronunciation_intonation} == 0"><label for="pronunciation_intonation3">3</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation4" value="4" th:checked="${reportInfo.pronunciation_intonation} == 4"><label for="pronunciation_intonation4">4</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation5" value="5" th:checked="${reportInfo.pronunciation_intonation} == 5"><label for="pronunciation_intonation5">5</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation6" value="6" th:checked="${reportInfo.pronunciation_intonation} == 6"><label for="pronunciation_intonation6">6</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation7" value="7" th:checked="${reportInfo.pronunciation_intonation} == 7"><label for="pronunciation_intonation7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Vocabulary</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary1" value="1" th:checked="${reportInfo.vocabulary} == 1"><label for="vocabulary1">1</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary2" value="2" th:checked="${reportInfo.vocabulary} == 2"><label for="vocabulary2">2</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary3" value="3" th:checked="${reportInfo.vocabulary} == 3 or ${reportInfo.vocabulary} == 0"><label for="vocabulary3">3</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary4" value="4" th:checked="${reportInfo.vocabulary} == 4"><label for="vocabulary4">4</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary5" value="5" th:checked="${reportInfo.vocabulary} == 5"><label for="vocabulary5">5</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary6" value="6" th:checked="${reportInfo.vocabulary} == 6"><label for="vocabulary6">6</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary7" value="7" th:checked="${reportInfo.vocabulary} == 7"><label for="vocabulary7">7</label>
+					   </div>
+					</div>
+					<div style="padding: 10px 0px 10px 10px;">
+						1 = Low Beginner , 2 = Beignner , 3 = Upper Beginner ,<br>
+						4 = Low Intermediate , 5 = Intermediate ,<br>
+						6 = Upper Intermediate , 7 = Advanced
+					</div>
+					<div style="padding: 10px 0px 10px 10px; background-color: #E0F8E6;">					
+						<span>Teacher's Comments</span>	
+						<input type="checkbox" id="present_chk" name ="present_chk" th:if="${#maps.containsKey(reportInfo, 'present')}" th:checked="${reportInfo.present} == '1' or ${reportInfo.present} == '0' " style="min-width:50px; margin-left: 30px; top: 4px; position: relative;">
+						<input type="checkbox" id="present_chk" name ="present_chk" th:unless="${#maps.containsKey(reportInfo, 'present')}" checked style="min-width:50px; margin-left: 30px; top: 4px; position: relative;">
+						<label for="present_chk" style="color:red;">Attend</label>
+					</div>
+					
+					<div style="padding: 10px 0px 10px 10px; margin:5px 0px 5px 0px; background-color: #E0F8E6;">
+						<span>Today's Topic (오늘의 진도)</span>
+					</div>
+					<div>
+						<textarea name ="today_topic" style="width: 100%; height: 60px; line-height: 18px;" th:if="${#maps.containsKey(reportInfo, 'today_topic')}" th:text="${reportInfo.today_topic}"></textarea>
+						<textarea name ="today_topic" style="width: 100%; height: 60px; line-height: 18px;" th:unless="${#maps.containsKey(reportInfo, 'today_topic')}"></textarea>
+					</div>
+					
+					<div style="padding: 10px 0px 10px 10px; margin:5px 0px 5px 0px; background-color: #E0F8E6;">
+						<span>Evaluation (총평)</span>
+					</div>
+					<div>						
+						<textarea name ="evaluation" style="width: 100%; height: 100px; line-height: 18px;" th:if="${#maps.containsKey(reportInfo, 'evaluation')}" th:text="${reportInfo.evaluation}"></textarea>
+						<textarea name ="evaluation" style="width: 100%; height:100px; line-height: 18px;" th:unless="${#maps.containsKey(reportInfo, 'evaluation')}"></textarea>
+					</div>
+					
+					
+					<div>
+						<div class="btn" th:onclick="registerBtn()" style="text-align:center; margin:auto;">1. Register</div>
+					</div>
+					
+				</div>
+				<div class="btn" th:onclick="completeBtn([[${reportInfo.class_log_no}]])" style="text-align: center; float: left; margin-left: 152px; width: 120px;">2. Completed</div>
+				<div class="btn" th:onclick="makeUpBtn([[${reportInfo.class_score_no}]], [[${reportInfo.class_log_no}]])" th:if="${reportInfo.study_status} != 1 " style="text-align:center; margin:auto; float:right; color: white; background-color: red; font-weight:600;">Make Up</div>
+	   		</div>
+	   	</form>	
+	</div>	
+	
+</div>
+
+
+<!-- 레벨테스트 -->
+<div th:if="${flag} == 'leveltest' ">
+	<div class="tabDiv" style="border: 1px solid rgba(0, 0, 0, .1);">
+		<form id="reportForm">
+			
+			<div class="selecter-wrap" style="padding: 10px 0px 10px 0px;">
+		   		<select data-jcf='{"maxVisibleItems": 7}' id="leveltest_no" name="leveltest_no"> 
+		   			<option th:value="${reportInfo.leveltest_no}" th:text="|${reportInfo.student_eng_name} (${reportInfo.student_name})|"></option>		   								         						   								   			 						   							
+		   		</select>
+	   		</div>
+	   		
+	   		
+	   		<div class="score">
+		   		<div class="left-head-table custom02-table report mb10">
+					<div class="tr">
+					   <div class="th">Grammer</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="grammer" id="grammer1" value="1" th:checked="${reportInfo.grammer} == 1"><label for="grammer1">1</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer2" value="2" th:checked="${reportInfo.grammer} == 2"><label for="grammer2">2</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer3" value="3" th:checked="${reportInfo.grammer} == 3 or ${reportInfo.grammer} == 0"><label for="grammer3">3</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer4" value="4" th:checked="${reportInfo.grammer} == 4"><label for="grammer4">4</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer5" value="5" th:checked="${reportInfo.grammer} == 5"><label for="grammer5">5</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer6" value="6" th:checked="${reportInfo.grammer} == 6"><label for="grammer6">6</label>
+							<input type="radio" class="radioBtn" name="grammer" id="grammer7" value="7" th:checked="${reportInfo.grammer} == 7"><label for="grammer7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Speaking<br>Fluency</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency1" value="1" th:checked="${reportInfo.speaking_fluency} == 1"><label for="speaking_fluency1">1</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency2" value="2" th:checked="${reportInfo.speaking_fluency} == 2"><label for="speaking_fluency2">2</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency3" value="3" th:checked="${reportInfo.speaking_fluency} == 3 or ${reportInfo.speaking_fluency} == 0"><label for="speaking_fluency3">3</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency4" value="4" th:checked="${reportInfo.speaking_fluency} == 4"><label for="speaking_fluency4">4</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency5" value="5" th:checked="${reportInfo.speaking_fluency} == 5"><label for="speaking_fluency5">5</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency6" value="6" th:checked="${reportInfo.speaking_fluency} == 6"><label for="speaking_fluency6">6</label>
+							<input type="radio" class="radioBtn" name="speaking_fluency" id="speaking_fluency7" value="7" th:checked="${reportInfo.speaking_fluency} == 7"><label for="speaking_fluency7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Listening<br>Comprehension</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension1" value="1" th:checked="${reportInfo.listening_comprehension} == 1"><label for="listening_comprehension1">1</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension2" value="2" th:checked="${reportInfo.listening_comprehension} == 2"><label for="listening_comprehension2">2</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension3" value="3" th:checked="${reportInfo.listening_comprehension} == 3 or ${reportInfo.listening_comprehension} == 0"><label for="listening_comprehension3">3</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension4" value="4" th:checked="${reportInfo.listening_comprehension} == 4"><label for="listening_comprehension4">4</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension5" value="5" th:checked="${reportInfo.listening_comprehension} == 5"><label for="listening_comprehension5">5</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension6" value="6" th:checked="${reportInfo.listening_comprehension} == 6"><label for="listening_comprehension6">6</label>
+							<input type="radio" class="radioBtn" name="listening_comprehension" id="listening_comprehension7" value="7" th:checked="${reportInfo.listening_comprehension} == 7"><label for="listening_comprehension7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Pronunciation &<br>Intonation</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation1" value="1" th:checked="${reportInfo.pronunciation_intonation} == 1"><label for="pronunciation_intonation1">1</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation2" value="2" th:checked="${reportInfo.pronunciation_intonation} == 2"><label for="pronunciation_intonation2">2</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation3" value="3" th:checked="${reportInfo.pronunciation_intonation} == 3 or ${reportInfo.pronunciation_intonation} == 0"><label for="pronunciation_intonation3">3</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation4" value="4" th:checked="${reportInfo.pronunciation_intonation} == 4"><label for="pronunciation_intonation4">4</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation5" value="5" th:checked="${reportInfo.pronunciation_intonation} == 5"><label for="pronunciation_intonation5">5</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation6" value="6" th:checked="${reportInfo.pronunciation_intonation} == 6"><label for="pronunciation_intonation6">6</label>
+							<input type="radio" class="radioBtn" name="pronunciation_intonation" id="pronunciation_intonation7" value="7" th:checked="${reportInfo.pronunciation_intonation} == 7"><label for="pronunciation_intonation7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Vocabulary</div>
+					   <div class="td">
+					   		<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary1" value="1" th:checked="${reportInfo.vocabulary} == 1"><label for="vocabulary1">1</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary2" value="2" th:checked="${reportInfo.vocabulary} == 2"><label for="vocabulary2">2</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary3" value="3" th:checked="${reportInfo.vocabulary} == 3 or ${reportInfo.vocabulary} == 0"><label for="vocabulary3">3</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary4" value="4" th:checked="${reportInfo.vocabulary} == 4"><label for="vocabulary4">4</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary5" value="5" th:checked="${reportInfo.vocabulary} == 5"><label for="vocabulary5">5</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary6" value="6" th:checked="${reportInfo.vocabulary} == 6"><label for="vocabulary6">6</label>
+							<input type="radio" class="radioBtn" name="vocabulary" id="vocabulary7" value="7" th:checked="${reportInfo.vocabulary} == 7"><label for="vocabulary7">7</label>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Result Course</div>
+					   <div class="td">
+					   		<div class="selecter-wrap">				
+								<div class="search-div">
+									<select data-jcf='{"maxVisibleItems": 10}' id="study_no" name="study_no" onchange="studyChange(this)">
+							   			<option value="">-- 선택 --</option>
+							   			<option th:each="studyList : ${studyList}" th:text="${studyList.study_name}" th:value="${studyList.study_no}" th:if="${#maps.containsKey(reportInfo, 'study_no')}" th:selected="${reportInfo.study_no} == ${studyList.study_no}"></option>
+										<option th:each="studyList : ${studyList}" th:text="${studyList.study_name}" th:value="${studyList.study_no}" th:unless="${#maps.containsKey(reportInfo, 'study_no')}"></option>
+							   		</select>
+								</div>	
+							</div>
+					   </div>
+					</div>
+					<div class="tr">				   
+					   <div class="th">Result Level</div>
+					   <div class="td">
+					   		<div class="selecter-wrap">				
+								<div class="search-div">
+									<select data-jcf='{"maxVisibleItems": 10}' id="study_level_no" name="study_level_no">
+							   			<option value="">-- 선택 --</option>
+							   			<option th:each="studyLevelList : ${studyLevelList}" th:text="${studyLevelList.level_name}" th:value="${studyLevelList.study_level_no}" th:if="${#maps.containsKey(reportInfo, 'study_level_no')}" th:selected="${reportInfo.study_level_no} == ${studyLevelList.study_level_no}"></option>
+							   		</select>
+								</div>	
+							</div>
+					   </div>
+					</div>
+					
+					<div style="padding: 10px 0px 10px 10px;">
+						1 = Low Beginner , 2 = Beignner , 3 = Upper Beginner ,<br>
+						4 = Low Intermediate , 5 = Intermediate ,<br>
+						6 = Upper Intermediate , 7 = Advanced
+					</div>
+					<div style="padding: 10px 0px 10px 10px; background-color: #E0F8E6;">					
+						<span>Teacher's Comments</span>	
+						<input type="checkbox" id="present_chk" name ="present_chk" th:if="${#maps.containsKey(reportInfo, 'present')}" th:checked="${reportInfo.present} == '1' or ${reportInfo.present} == '0' " style="min-width:50px; margin-left: 30px; top: 4px; position: relative;">
+						<input type="checkbox" id="present_chk" name ="present_chk" th:unless="${#maps.containsKey(reportInfo, 'present')}" checked style="min-width:50px; margin-left: 30px; top: 4px; position: relative;">
+						<label for="present_chk" style="color:red;">Attend</label>
+					</div>
+					
+					
+					<div class="divTitle">
+						<span>Recommended Level (추천진도)</span>
+					</div>
+					<div>						
+						<textarea name ="comment_level" style="width: 100%; height: 60px; line-height: 18px;" th:if="${#maps.containsKey(reportInfo, 'comment_level')}" th:text="${reportInfo.comment_level}"></textarea>
+						<textarea name ="comment_level" style="width: 100%; height: 60px; line-height: 18px;" th:unless="${#maps.containsKey(reportInfo, 'comment_level')}"></textarea>
+					</div>
+					
+					<div class="divTitle">
+						<span>Grammar & Vocabulary (문법&어휘)</span>
+					</div>
+					<div>						
+						<textarea name ="comment_grammer_vocabulary" style="width: 100%; height: 60px; line-height: 18px;" th:if="${#maps.containsKey(reportInfo, 'comment_grammer_vocabulary')}" th:text="${reportInfo.comment_grammer_vocabulary}"></textarea>
+						<textarea name ="comment_grammer_vocabulary" style="width: 100%; height: 60px; line-height: 18px;" th:unless="${#maps.containsKey(reportInfo, 'comment_grammer_vocabulary')}"></textarea>
+					</div>
+					
+					<div class="divTitle">
+						<span>Pronunciation & Intonation (발음&억양)</span>
+					</div>
+					<div>						
+						<textarea name ="comment_pronun_intonation" style="width: 100%; height: 60px; line-height: 18px;" th:if="${#maps.containsKey(reportInfo, 'comment_pronun_intonation')}" th:text="${reportInfo.comment_pronun_intonation}"></textarea>
+						<textarea name ="comment_pronun_intonation" style="width: 100%; height: 60px; line-height: 18px;" th:unless="${#maps.containsKey(reportInfo, 'comment_pronun_intonation')}"></textarea>
+					</div>
+					
+					<div class="divTitle">
+						<span>Listening (듣기)</span>
+					</div>
+					<div>						
+						<textarea name ="comment_listening" style="width: 100%; height: 60px; line-height: 18px;" th:if="${#maps.containsKey(reportInfo, 'comment_listening')}" th:text="${reportInfo.comment_listening}"></textarea>
+						<textarea name ="comment_listening" style="width: 100%; height: 60px; line-height: 18px;" th:unless="${#maps.containsKey(reportInfo, 'comment_listening')}"></textarea>
+					</div>
+					
+					
+					
+					<div class="divTitle">
+						<span>Evaluation (총평)</span>
+					</div>
+					<div>						
+						<textarea name ="evaluation" style="width: 100%; height: 100px; line-height: 18px;" th:if="${#maps.containsKey(reportInfo, 'evaluation')}" th:text="${reportInfo.evaluation}"></textarea>
+						<textarea name ="evaluation" style="width: 100%; height: 100px; line-height: 18px;" th:unless="${#maps.containsKey(reportInfo, 'evaluation')}"></textarea>
+					</div>
+					
+					
+					<div>
+						<div class="btn" th:onclick="leveltest_registerBtn()" style="text-align:center; margin:auto;">1. Register</div>
+					</div>
+					
+				</div>
+				<div class="btn" th:onclick="leveltest_completeBtn([[${reportInfo.leveltest_no}]])" style="text-align:center; margin:auto; width: 120px;">2. Completed</div>
+	   		</div>
+	   	</form>	
+	</div>
+
+
+
+</div>
+	
+
+  
+<script th:inline="javascript">
+	// let class_log_no = /*[[${class_no}]]*/ null;     reportBottom_Layout에 있음
+	// let leveltest_no = /*[[${leveltest_no}]]*/ null; reportBottom_Layout에 있음
+</script>
+
+<script type="text/javascript" th:src="@{/js/admin/reportBottom_report.js}"></script>
+</th:block>
+
+</body>
+
+</html>

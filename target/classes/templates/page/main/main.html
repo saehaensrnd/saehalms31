@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://js.tosspayments.com/v1"></script>
+</head>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+var result = /*[[${result}]]*/ null;
+
+if(result == "success"){
+	var paymentKey = /*[[${paymentKey}]]*/ "";
+	var orderId = /*[[${orderId}]]*/ "";
+	var amount = /*[[${amount}]]*/ 0;
+	
+	$.ajax({
+		url : 'https://api.tosspayments.com/v1/payments/'+paymentKey,			
+		type : 'get',
+		data : {
+			'orderId': orderId,
+			'amount': amount
+		},
+		beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization","Basic dGVzdF9za19QMjR4TGVhNXpWQXAxUW1aek9iM1FBTVlOd1c2Og==");
+            xhr.setRequestHeader("Content-type","application/json");
+        },
+		success : function(data) {
+			console.log(data);
+			alert("결제가 완료되었습니다.");
+			window.location.href = "/student/enrolment";
+		}, error : function(data) {
+			alert("결제 승인 실패. 관리자에게 문의해주세요.");
+			console.log(data);
+			window.location.href = "/student/enrolment";
+		}
+	});
+}
+else if(result == "fail"){
+	var message = /*[[${message}]]*/ "";
+	alert(message);
+	window.location.href = "/student/enrolment";
+}
+</script>
+</html>

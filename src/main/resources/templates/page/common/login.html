@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Document</title>
+	   
+   	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>     
+    <script>
+  
+    </script>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    
+</head>
+<body class="login_body">
+    <div class="box">
+        <div class="company_logo"><a><img src="../img/test_logo.png"/></a><span class="">업체명</span></div>
+        <div class="login_box">
+            
+            <h3 class="text_login">로그인</h3>
+            <form th:action="@{/loginProcessing}" method="post">
+            	<input type="hidden" name="loginType" value="normal">
+                <div class="text_login_area">
+                    <span class="text_login_id">아이디</span>
+                    <input type="text" name="id" placeholder="아이디를 입력하세요" class="free_border" id="input_id"/>
+                    <div class="underline_bar underline1"></div>
+                </div>
+                
+                <div class="text_login_area"><span class="text_login_pass">비밀번호</span>
+                    <input type="password" name="password" placeholder="비밀번호를 입력하세요" class="free_border" id="input_pass"/>
+                    <div class="underline_bar underline2"></div>
+                </div>
+                <div class="btn_frame">
+                <input type="submit" class="login_btn" name="" value="로그인"/>
+                </div>
+            </form>
+            <a th:if="${site_code}" th:href="@{/student/join(site_code=${site_code})}" class="text_join">회원가입</a>
+        </div>
+    </div>
+   <!--  <script src="../js/jquery-3.6.0.min.js"></script> -->
+   <!--  <script type="javascript" src="../js/custom.js"></script> -->
+   <script type="text/javascript" th:src="@{/js/custom.js}"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+<script type="text/javascript" th:src="@{/js/admin/admin_postpone_detail.js}"></script>
+<style type="text/css">
+.shareChk {
+	width: 60px;
+	height: 20px;
+	position: relative;
+	left: 12px;
+}
+
+.selecter-wrap .jcf-unselectable {
+	margin-bottom: 0px;
+}
+
+input[type='radio'] {
+	float: left;
+}
+
+.radio_label {
+	margin-right: 20px;
+	font-size: 18px;
+	float: left;
+}
+
+.redpoint {
+	color: red;
+	margin-right: 3px;
+}
+
+.td_left {
+	text-align: left !important;
+}
+
+</style>
+</head>
+<body>
+	<th:block layout:fragment="content">
+		<form id="postpone_form">
+			<input type="hidden" name="postpone_no" th:value="${postpone.postpone_no}">
+			<table class="customer-insert table table-bordered">
+				<tr>
+					<td class="grayColor">회원명</td>
+					<td class="td_left" style="padding: 10px;" th:text="${postpone.student_name}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor">연락처</td>
+					<td class="td_left" style="padding: 10px;" th:text="${postpone.student_phone}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor">과정명</td>
+					<td class="td_left" style="padding: 10px;" th:text="${postpone.product_name}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor">휴강일</td>
+					<td class="td_left" style="padding: 10px;" th:text="${#dates.format(postpone.holiday_date, 'yyyy-MM-dd')}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor">보강일</td>
+					<td class="td_left" style="padding: 10px;" th:text="${#dates.format(postpone.supplement_date, 'yyyy-MM-dd')}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor">신청일</td>
+					<td class="td_left" style="padding: 10px;" th:text="${#dates.format(postpone.postpone_regdate, 'yyyy-MM-dd')}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor">사유</td>
+					<td class="td_left" style="padding: 10px;" th:utext="${postpone.postpone_content}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor">처리사항</td>
+					<td class="txt-left" style="padding: 10px;" colspan="3">
+		      			<textarea name="postpone_feedback" id="postpone_feedback" style="width:100%;" th:utext="${postpone.postpone_feedback}" th:if="${#maps.containsKey(postpone, 'postpone_feedback')}"></textarea>
+		      			<textarea name="postpone_feedback" id="postpone_feedback" style="width:100%;" th:unless="${#maps.containsKey(postpone, 'postpone_feedback')}"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="grayColor">진행과정</td>
+					<td style="padding: 10px;">
+						<div class="selecter-wrap search-div">
+							<select id="postpone_status" name="postpone_status" class="form-control">
+								<option value="0" th:selected="${postpone.postpone_status} == 0">요청</option>
+								<option value="1" th:selected="${postpone.postpone_status} == 1">확인</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+
+		<div style="margin: 20px 0px 20px 0px;">
+			<div class="btn-box">
+				<button type="button" class="btn btn_black" th:onclick=goList([[${cri}]])>목록</button>
+				<div style="float: right;">
+					<button type="button" id="updateBtn" class="btn add" style="margin: 0px;" onclick="updateBtn()">처리</button>
+				</div>
+			</div>
+		</div>
+		
+	</th:block>
+	
+</body>
+
+</html>

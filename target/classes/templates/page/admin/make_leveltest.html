@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+<script type="text/javascript" th:src="@{/js/jcf.select.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jcf.css}"/>
+<style type="text/css">
+body {height: 100%;}
+
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px; 
+}
+
+.left-head-table .tr .td input, .left-head-table .tr .td select {
+    min-width: 65px;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+   	height: 20px;
+}
+
+.searchBtn {
+	display: inline-block;
+    line-height: 55px;
+    width: 90px;
+    text-align: center;
+    background-color: #444;
+    color: #ffff;
+    vertical-align: top;
+    border-radius: 4px;
+    height: 45px;
+   	line-height: 45px;
+   	margin-left: 10px;
+   	cursor: pointer;    	
+}
+
+.selecter-wrap .jcf-unselectable {
+    margin-bottom: 0px;
+}
+	
+.cke_inner{
+	height: 200px !important;
+}
+
+#cke_1_contents{
+	height: 140px !important;
+}
+</style>
+
+</head>
+<body style="padding-top: 20px !important; ">
+	
+
+	<!--  컨테이너 -->		
+	<div style="width:95%; margin:0 auto;">
+		<form id="leveltest_form">
+			<table class="customer-insert table table-bordered">
+				<colgroup>
+					<col width="10%;">
+					<col width="40%;">
+					<col width="10%;">
+					<col width="40%;">
+				</colgroup>
+				<tr>
+					<td class="grayColor">이름</td>
+					<td style="padding: 10px;">
+						<input type="hidden" name="user_student_no" th:value="${user_student.user_student_no}">
+						<input type="hidden" name="site_no" th:value="${user_student.site_no}">
+						<input type="text" name="student_name" id="student_name" th:value="${user_student.student_name}" readonly="readonly">
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="grayColor">언어</td>
+					<td class="txt-left" style="padding: 10px;" colspan="3">
+						<div class="selecter-wrap search-div">
+							<select id="leveltest_language" name="leveltest_language" class="form-control" style="width: 200px;">
+								<option value="English">English</option>
+								<option value="Chinese">Chinese</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="grayColor">수업방식</td>
+					<td class="txt-left" style="padding: 10px;" colspan="3">
+						<div class="selecter-wrap search-div">
+							<select id="leveltest_type" name="leveltest_type" class="form-control" style="width: 200px;">
+								<option value="Phone">Phone</option>
+								<option value="Video">Video</option>
+								<option value="VideoCall">VideoCall</option>
+								<option value="VR">VR</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="grayColor">수업전화</td>
+					<td style="padding: 10px;">
+						<input type="text" th:if="${#maps.containsKey(user_student, 'student_phone')}" name="student_phone" th:value="${user_student.student_phone}" oninput="removeChar(event)" maxlength="11">
+						<input type="text" th:unless="${#maps.containsKey(user_student, 'student_phone')}" name="student_phone" value="" oninput="removeChar(event)" maxlength="11">
+					</td>
+				</tr>
+				<tr>
+					<td class="grayColor">상담내용</td>
+					<td class="txt-left" style="padding: 10px;" colspan="3">
+		      			<textarea name="leveltest_content" id="leveltest_content" style="width:100%;"></textarea>
+					</td>
+				</tr>
+			</table>
+			<div align="center" style="margin-top: 15px;">
+				<div class="customTableBtn" id="infoBtn" onclick="insertLeveltest()">등록</div>
+				<div class="customTableBtn" id="infoBtn" onclick="selfClose()">닫기</div>
+			</div>
+		</form>
+	</div>
+	<!-- 컨테이너 // -->
+	
+<script th:inline="javascript">
+</script>
+<script type="text/javascript" th:src="@{/js/admin/make_leveltest.js}"></script>
+</body>
+
+</html>

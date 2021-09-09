@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+.divTitle {
+	height: 35px;
+    line-height: 35px;
+    padding-left: 10px;
+    margin: 5px 0px 3px 0px;
+    background-color: #85b8a6;
+}
+
+.btn {
+   	line-height: 30px;
+    height: 30px;
+    width: 120px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #E6E6E6;
+}
+
+#time_checkbox_div input[type='checkbox'] {
+	vertical-align: middle;
+}
+
+.time_sel {
+	width: 40%;
+	padding-right: 0;
+	padding: 5px 10px;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 0px !important; ">
+<th:block layout:fragment="userContent">
+		
+	<!-- 수강목록 -->
+	<div class="divTitle">
+		<span style="font-weight: 600;">진도 변경</span>
+	</div>
+	<form id="changeProgressForm" method="post">
+		<input type="hidden" name="class_log_no" th:value="${paramMap.class_log_no}">
+		<input type="hidden" name="user_student_no" th:value="${paramMap.user_student_no}">
+		<table>
+			<colgroup>
+				<col width="15%;">
+				<col width="85%;">
+			</colgroup>
+			<tr>
+				<td>과정</td>
+				<td th:if="${study}" th:text="${study.study_name}"></td>
+				<td th:unless="${study}"></td>
+			</tr>
+			<tr>
+				<td>교재</td>
+				<td>
+					<select id="textbook_no" name="textbook_no" onchange="textbookSelect(this)">
+						<option value="0">-- 선택 --</option>
+						<option th:each="t : ${textbook}" th:value="${t.textbook_no}" th:text="${t.textbook_name}"></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>토픽</td>
+				<td>
+					<select id="textbook_topic_no" name="textbook_topic_no">
+						<option value="0">-- 선택 --</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>페이지</td>
+				<td><input type="number" name="slide_number" min="0" step="1"></td>
+			</tr>
+			<tr>
+				<td>수업전화변경</td>
+				<td><input type="text" name="class_phone" oninput="removeChar(event)" maxlength="11"></td>
+			</tr>
+		</table>
+	</form>
+	
+	<div class="btn" style="text-align:center; float: right; margin: 20px 5px 0px 0px;" onclick="change()">확인</div>
+	
+<script th:inline="javascript">
+</script>
+<script type="text/javascript" th:src="@{/js/admin/userDetail_change_progress.js}"></script>
+</th:block>
+</body>
+
+</html>

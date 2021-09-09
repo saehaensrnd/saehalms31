@@ -1,0 +1,36 @@
+body{overflow-x: hidden;}
+
+.container_levelResult{ max-width: 96%; margin: 0 auto;}
+header div h2{ display: inline-block;}
+header div .close{ position: relative; left: 90%;}
+.mt40{ margin-top: 40px;}
+#table1 th,#table2 th,#table3 th{ border-top: 0;}
+table tr{border-left: 1px solid #dedede; border-right: 1px solid #dedede;}
+#table3 th{ max-width: 50px; }
+.headerBox{max-width: 100%; background: #000; min-height: 60px; color: #fff; }
+.headerBox span{font-size: 1em; line-height: 60px; font-weight: 600;}
+.btnArea{ position: relative; left: 35%;}
+.btnArea span{ display: inline-block;}
+.emptyBox{ display: inline-block; min-width: 60px; min-height: 30px; }
+@media only screen and (max-width: 1024px){
+    header div .close{ left: 82%;}
+    .mt40{ margin-top: 40px;}
+    #table3 th{ max-width: 60px; font-size: 16px; }
+  
+}
+@media only screen and (max-width: 768px){
+    header div .close{ left: 78%;}
+    table tr td span{ font-size: 14px;}
+    .btnArea{ left: 35%;}
+}
+@media only screen and (max-width: 480px){
+    header div .close{ left: 53%;}
+    #table1 th,#table2 th,#table3 th{ font-size: 10px;}
+    #table1 td span,#table2 td span,#table3 td span{ font-size: 10px;}
+    #table2 th{ padding: 0 0 0 0; max-width: 40px;}
+    .container_levelResult{ max-width: 96vw; margin: 0 auto;}
+    .btnArea span{ font-size: 12px;}
+    .emptyBox{ min-width: 10px;}
+    .blackBox{ padding: 10px 5px;}
+    .textFixed{ -word-break: keep-all; word-wrap: break-word;}
+}

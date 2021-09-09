@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+.divTitle {
+	height: 35px;
+    line-height: 35px;
+    padding-left: 10px;
+    margin: 5px 0px 3px 0px;
+    background-color: #85b8a6;
+}
+
+.btn {
+   	line-height: 30px;
+    height: 30px;
+    width: 120px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #E6E6E6;
+}
+
+#time_checkbox_div input[type='checkbox'] {
+	vertical-align: middle;
+}
+
+.time_sel {
+	width: 40%;
+	padding-right: 0;
+	padding: 5px 10px;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 0px !important; ">
+<th:block layout:fragment="userContent">
+		
+	<!-- 수강목록 -->
+	<div class="divTitle">
+		<span style="font-weight: 600;" th:text="|${student.student_name} (${student.student_eng_name})|"></span>
+	</div>
+	<form id="leveltestForm" method="post">
+		<input type="hidden" id="leveltest_no" name="leveltest_no" th:value="${paramMap.no}">
+		<table>
+			<colgroup>
+				<col width="15%;">
+				<col width="35%;">
+				<col width="15%;">
+				<col width="35%;">
+			</colgroup>
+			<tr>
+				<th colspan="4">레벨테스트 수업변경</th>
+			</tr>
+			<tr>
+				<td>language</td>
+				<td th:text="${leveltest.leveltest_language}"></td>
+				<td>start date</td>
+				<td><input type="date" id="start_date" name="start_date"></td>
+			</tr>
+			<tr>
+				<td>time</td>
+				<td>
+					<div>
+						<select class="time_sel" data-jcf='{"maxVisibleItems": 10}' id="start_time" name="start_time" onchange="startTime(this)">
+							<option value="0">00시</option>
+							<option value="1">01시</option>
+							<option value="2">02시</option>
+							<option value="3">03시</option>
+							<option value="4">04시</option>
+							<option value="5">05시</option>
+							<option value="6">06시</option>
+							<option value="7">07시</option>
+							<option value="8">08시</option>
+							<option value="9">09시</option>
+							<option value="10">10시</option>
+							<option value="11">11시</option>
+							<option value="12">12시</option>
+							<option value="13">13시</option>
+							<option value="14">14시</option>
+							<option value="15">15시</option>
+							<option value="16">16시</option>
+							<option value="17">17시</option>
+							<option value="18">18시</option>
+							<option value="19">19시</option>
+							<option value="20">20시</option>
+							<option value="21">21시</option>
+							<option value="22">22시</option>
+							<option value="23">23시</option>
+						</select>
+						&nbsp;~&nbsp;
+						<select class="time_sel" data-jcf='{"maxVisibleItems": 10}' id="end_time" name="end_time" onchange="endTime(this)">
+							<option value="0">00시</option>
+							<option value="1">01시</option>
+							<option value="2">02시</option>
+							<option value="3">03시</option>
+							<option value="4">04시</option>
+							<option value="5">05시</option>
+							<option value="6">06시</option>
+							<option value="7">07시</option>
+							<option value="8">08시</option>
+							<option value="9">09시</option>
+							<option value="10">10시</option>
+							<option value="11">11시</option>
+							<option value="12">12시</option>
+							<option value="13">13시</option>
+							<option value="14">14시</option>
+							<option value="15">15시</option>
+							<option value="16">16시</option>
+							<option value="17">17시</option>
+							<option value="18">18시</option>
+							<option value="19">19시</option>
+							<option value="20">20시</option>
+							<option value="21">21시</option>
+							<option value="22">22시</option>
+							<option value="23">23시</option>
+						</select>
+					</div>
+				</td>
+				
+				<td>tutor</td>
+				<td>
+					<select id="center_no" name="center_no" onchange="centerSel(this)">
+						<option value="0">-- 티칭센터 --</option>
+						<option th:each="c : ${center}" th:value="${c.center_no}" th:text="${c.center_name}" th:unless="${teacher}"></option>
+						<option th:each="c : ${center}" th:value="${c.center_no}" th:text="${c.center_name}" th:if="${teacher}" th:selected="${c.center_no} == ${teacher.center_no}"></option>
+					</select>
+					
+					<select id="teacher_group_no" name="teacher_group_no" onchange="groupSel(this)">
+						<option value="0">-- 그룹 --</option>
+						<option th:each="g : ${group}" th:value="${g.teacher_group_no}" th:text="${g.teacher_group_name}"></option>
+					</select>
+					
+					<select id="user_teacher_no" name="user_teacher_no">
+						<option value="0">-- 선택 --</option>
+						<option th:if="${teacher}" th:value="${teacher.user_teacher_no}" th:selected="${teacher}" th:text="${teacher.teacher_name}">
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<div class="btn" style="text-align:center; float: right;" onclick="searchTeacher()">조회</div>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="4">시간배정</th>
+			</tr>
+			<tr>
+				<td id="cal_sel" colspan="4"></td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<table id="teacher_sel">
+						<colgroup>
+							<col width="30%">
+							<col width="10%">
+							<col width="10%">
+							<col width="10%">
+							<col width="10%">
+							<col width="10%">
+							<col width="10%">
+							<col width="10%">
+						</colgroup>
+						<tr>
+							<td>수업시간</td>
+							<td id="day0">일</td>
+							<td id="day1">월</td>
+							<td id="day2">화</td>
+							<td id="day3">수</td>
+							<td id="day4">목</td>
+							<td id="day5">금</td>
+							<td id="day6">토</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</form>
+	
+	<div class="btn" style="text-align:center; float: right; margin: 20px 5px 0px 0px;" onclick="setTutor()">등록</div>
+	
+<script th:inline="javascript">
+</script>
+<script type="text/javascript" th:src="@{/js/admin/userDetail_modify_leveltest.js}"></script>
+</th:block>
+</body>
+
+</html>

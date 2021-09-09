@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jcf.select.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jcf.css}"/>
+<style type="text/css">
+body {height: 100%;}
+
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px; 
+}
+
+.left-head-table .tr .td input, .left-head-table .tr .td select {
+    min-width: 65px;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+   	height: 20px;
+}
+
+.searchBtn {
+	display: inline-block;
+    line-height: 55px;
+    width: 90px;
+    text-align: center;
+    background-color: #444;
+    color: #ffff;
+    vertical-align: top;
+    border-radius: 4px;
+    height: 45px;
+   	line-height: 45px;
+   	margin-left: 10px;
+   	cursor: pointer;    	
+}
+
+.selecter-wrap .jcf-unselectable {
+    margin-bottom: 0px;
+}
+	
+.cke_inner{
+	height: 200px !important;
+}
+
+#cke_1_contents{
+	height: 140px !important;
+}
+
+.redpoint {
+	color: red;
+	margin-right: 3px;
+}
+
+.prevSearch, .nextSearch{
+	border: 0px;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 20px !important; ">
+	
+
+	<!--  컨테이너 -->		
+	<div style="width:95%; margin:0 auto; padding-bottom: 70px;">
+		<form id="leveltestForm">
+			<input type="hidden" id="user_student_no" name="user_student_no" th:value="${user_student.user_student_no}">
+			<input type="hidden" name="student_phone" th:value="${user_student.student_phone}">						
+			<input type="hidden" id="site_no" name="site_no" th:value="${user_student.site_no}">
+			
+			<input type="hidden" name="start_date" id="start_date" th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}">
+			
+			
+			<table class="customer-insert table table-bordered">
+				<tr>
+					<td class="grayColor" style="width:200px;">이름(국문)</td>
+					<td style="padding: 10px 10px 10px 20px; text-align:left;" th:text="${user_student.student_name}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor" style="width:200px;">이름(영문)</td>
+					<td style="padding: 10px 10px 10px 20px; text-align:left;" th:text="${user_student.student_eng_name}"></td>
+				</tr>
+				<tr>
+					<td class="grayColor">레벨테스트 방식</td>
+					<td class="txt-left" style="padding: 10px;" colspan="3">
+						<div class="selecter-wrap search-div">
+							<select id="leveltest_type" name="leveltest_type" class="form-control" style="width: 200px;">
+								<option value="Phone">전화</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="grayColor">수업 전화번호</td>
+					<td style="padding: 10px;" colspan="3">
+						<input type="text" name="class_phone" id="class_phone" th:value="${user_student.student_phone}" autocomplete="off">
+					</td>
+				</tr>				
+				<tr>
+					<td class="grayColor">레벨테스트 언어</td>
+					<td class="txt-left" style="padding: 10px;" colspan="3">
+						<div class="selecter-wrap search-div">
+							<select id="leveltest_language" name="leveltest_language" class="form-control" style="width: 200px;">
+								<option value="--선택--">--선택--</option>	<!-- 언어 : 강사 selectbox 조건인데 English, Chinese 둘 다 가능한 강사 like절에 "" 넣으면 안됨 -->									
+								<option th:each="languageList : ${languageList}" th:text="${languageList}" th:value="${languageList}"></option>							
+							</select>
+						</div>
+					</td>
+				</tr>
+				
+				<!--  
+				<tr>
+					<td class="grayColor">강사선택</td>
+					<td class="txt-left" style="padding: 10px;" colspan="3">
+						<div class="selecter-wrap search-div">
+							<select id="user_teacher_no" name="user_teacher_no" class="form-control" style="width: 200px;">
+								<option value="">--선택--</option>																
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="grayColor"><span class="redpoint">*</span>레벨테스트일</td>
+					<td style="padding: 10px;">
+						<input type="date" name="search_date" id="search_date" onchange="searchDateChange(this)">
+					</td>
+				</tr>
+				-->
+				
+				<tr>
+					<td class="grayColor">레벨테스트 시간</td>
+					<td class="txt-left" style="padding: 10px;" colspan="3">
+						<div class="selecter-wrap search-div" style="width:60%; float:left;">
+							<select data-jcf='{"maxVisibleItems": 10}' id="time" name="time" style="width: 25%;">
+								<option value="--선택--">--선택--</option>
+								<option value="14~16">14:00~16:00</option>
+								<option value="16~18">16:00~18:00</option>
+								<option value="18~20">18:00~20:00</option>
+								<option value="20~22">20:00~22:00</option>
+								<option value="22~23">22:00~23:00</option>
+							</select>
+						</div>
+						<div style="float:right; line-height:50px;">
+							<span class="blackBox" style="cursor: pointer;" onclick="searchBtn()">조회</span>
+						</div>
+					</td>					
+				</tr>
+				
+				
+				
+				<tr>
+					<th colspan="4">레벨테스트 신청</th>
+				</tr>
+				<tr>
+					<td id="cal_sel" colspan="4"></td>
+				</tr>
+				<tr>
+					<td colspan="4">
+						<table id="teacher_sel">
+							<colgroup>
+								<col width="*%">
+								<col width="15%">
+								<col width="9%">
+								<col width="9%">
+								<col width="9%">
+								<col width="9%">
+								<col width="9%">
+								<col width="9%">
+								<col width="9%">
+							</colgroup>
+							<tr>
+								<td>수업시간</td>
+								<td>선생님</td>
+								<td id="day0">일</td>
+								<td id="day1">월</td>
+								<td id="day2">화</td>
+								<td id="day3">수</td>
+								<td id="day4">목</td>
+								<td id="day5">금</td>
+								<td id="day6">토</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+								
+				
+				
+				
+			</table>
+			<div align="center" style="margin-top: 15px;">
+				<div class="customTableBtn" id="infoBtn" onclick="insertBtn()">등록</div>
+				<div class="customTableBtn" id="infoBtn" onclick="selfClose()">닫기</div>
+			</div>
+		</form>
+	</div>
+	<!-- 컨테이너 // -->
+	
+<script th:inline="javascript">
+
+
+</script>
+<script type="text/javascript" th:src="@{/js/student/popup_leveltestApp.js}"></script>
+</body>
+
+</html>

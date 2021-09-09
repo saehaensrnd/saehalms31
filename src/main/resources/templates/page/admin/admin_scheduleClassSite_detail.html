@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorator="layout/layout">
+<head>
+<title></title>
+
+
+<style type ="text/css">
+   .left-head-table.report .tr .th, .left-head-table.report .tr .td {
+       text-align: left;       
+       padding: 7px 20px;
+   }
+   
+   .selecter-wrap .jcf-unselectable {       
+       margin-bottom: 0px;
+   }
+   
+   .btn-box {
+   	   width: 100%;   	   
+   	   text-align: right;	
+   }
+   
+   .custom02-table .tr .th {
+	    max-width: 215px;
+	    text-align: center;
+	    font-weight: 700;
+	}
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+	<p style="font-weight:600; margin-bottom:10px;">기수 일정 상세 정보</p>
+
+  	<th:block th:if="${flag == 'insert'}">	  		  	
+  		<form id="insertForm" method="post">
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">언어 <span class="red">*</span></div>
+				   <div class="td">
+						<div class="selecter-wrap">				
+							<div class="search-div">
+								<select data-jcf='{"maxVisibleItems": 7}' id="language_type" name="language_type" onchange="languageChange(this)">
+						   			<option value="">-- 선택 --</option>													
+									<option value="English">English</option>
+									<option value="Chinese">Chinese</option>							
+						   		</select>
+							</div>	
+						</div>
+				   </div>
+				   
+				   <div class="th">기수 년월 <span class="red">*</span></div>
+				   <div class="td">				   		
+				   		<!-- <input id="semester_ym" name="semester_ym" type="text" placeholder="ex) 2021-06"/> -->
+				   		<div class="selecter-wrap">				
+							<div class="search-div">
+								<select data-jcf='{"maxVisibleItems": 7}' id="semester_ym" name="semester_ym" >
+						   			<option value="">-- 언어를 선택하세요 --</option>
+						   		</select>
+							</div>	
+						</div>		   		
+				   </div>
+				   				   
+				</div>
+				<div class="tr">				
+				   <div class="th">사이트 <span class="red">*</span></div>
+				   <div class="td">
+				   		<div class="selecter-wrap" style="width: 39%;">				
+							<div class="search-div">
+								<select data-jcf='{"maxVisibleItems": 7}' id="site_no" name="site_no" >
+						   			<option value="">-- 선택 --</option>
+						   			<option th:each="siteList : ${siteList}" th:text="${siteList.site_name}" th:value="${siteList.site_no}"></option>
+						   		</select>
+							</div>	
+						</div>		   
+				   </div>
+				</div>
+				<div class="tr">				
+				   <div class="th">재수강 신청 시작일 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="reapplication_start_date" name="reapplication_start_date" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				   
+				   <div class="th">재수강 신청 종료일 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="reapplication_end_date" name="reapplication_end_date" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				</div>
+				<div class="tr">				
+				   <div class="th">일반 신청 시작일 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="application_start_date" name="application_start_date" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				   
+				   <div class="th">일반 신청 종료일 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="application_end_date" name="application_end_date" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				</div>
+				<div class="tr">				
+				   <div class="th">수업 시작일</div>
+				   <div class="td">
+				   		<input type="" id="class_start_date" name="class_start_date" class="fx-item dateitem2" style="width: 432px; min-width: 30%;" autocomplete="off">
+				   </div>
+				</div>
+				<div class="tr">				
+				   <div class="th">레벨테스트 신청 시작일</div>
+				   <div class="td">
+				   		<input type="" id="level_application_start_date" name="level_application_start_date" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				   
+				   <div class="th">레벨테스트 신청 종료일</div>
+				   <div class="td">
+				   		<input type="" id="level_application_end_date" name="level_application_end_date" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				</div>
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<!-- <div class="btn" th:onclick="goList([[${cri}]])">취소</div> -->
+				<button class="btn add" type="button" id="insertBtn">저장</button>
+			</div>	
+   		</form>
+   </th:block>
+   
+   
+   
+   <th:block th:if="${flag == 'update'}">	  		  	
+  		<form id="updateForm" method="post">
+  			<input type="hidden" id="schedule_class_site_no" name="schedule_class_site_no" th:value="${item.schedule_class_site_no}" >
+  			<input type="hidden" id="site_no" name="site_no" th:value="${item.site_no}" >
+  			<input type="hidden" id="language_type" name="language_type" th:value="${item.language_type}" >
+  		
+		   	<div class="left-head-table custom02-table report mb10">
+				<div class="tr">
+				   <div class="th">언어 </div>
+				   <div class="td" th:text="${item.language_type}"></div>
+				   
+				   <div class="th">기수 년월 </div>
+				   <div class="td" th:text="${item.semester_ym}"></div>
+				   				   
+				</div>
+				<div class="tr">				
+				   <div class="th">사이트 </div>
+				   <div class="td" th:text="${item.site_name}"></div>
+				</div>
+				
+				<div class="tr">				
+				   <div class="th">재수강 신청 시작일 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="reapplication_start_date" name="reapplication_start_date" th:if="${#maps.containsKey(item, 'reapplication_start_date')}" th:value="${item.reapplication_start_date}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   		<input type="" id="reapplication_start_date" name="reapplication_start_date" th:unless="${#maps.containsKey(item, 'reapplication_start_date')}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				   
+				   <div class="th">재수강 신청 종료일 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="reapplication_end_date" name="reapplication_end_date" th:if="${#maps.containsKey(item, 'reapplication_end_date')}" th:value="${item.reapplication_end_date}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   		<input type="" id="reapplication_end_date" name="reapplication_end_date" th:unless="${#maps.containsKey(item, 'reapplication_end_date')}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				</div>
+				<div class="tr">				
+				   <div class="th">일반 신청 시작일 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="application_start_date" name="application_start_date" th:if="${#maps.containsKey(item, 'application_start_date')}" th:value="${item.application_start_date}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   		<input type="" id="application_start_date" name="application_start_date" th:unless="${#maps.containsKey(item, 'application_start_date')}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				   
+				   <div class="th">일반 신청 종료일 <span class="red">*</span></div>
+				   <div class="td">
+				   		<input type="" id="application_end_date" name="application_end_date" th:if="${#maps.containsKey(item, 'application_end_date')}" th:value="${item.application_end_date}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   		<input type="" id="application_end_date" name="application_end_date" th:unless="${#maps.containsKey(item, 'application_end_date')}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				</div>
+				<div class="tr">				
+				   <div class="th">수업 시작일</div>
+				   <div class="td">
+				   		<input type="" id="class_start_date" name="class_start_date" th:if="${#maps.containsKey(item, 'class_start_date')}" th:value="${item.class_start_date}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   		<input type="" id="class_start_date" name="class_start_date" th:unless="${#maps.containsKey(item, 'class_start_date')}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>
+				</div>
+				<div class="tr">				
+				   <div class="th">레벨테스트 신청 시작일</div>
+				   <div class="td">
+				   		<input type="" id="level_application_start_date" name="level_application_start_date" th:if="${#maps.containsKey(item, 'level_application_start_date')}" th:value="${item.level_application_start_date}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   		<input type="" id="level_application_start_date" name="level_application_start_date" th:unless="${#maps.containsKey(item, 'level_application_start_date')}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				   
+				   <div class="th">레벨테스트 신청 종료일</div>
+				   <div class="td">
+				   		<input type="" id="level_application_end_date" name="level_application_end_date" th:if="${#maps.containsKey(item, 'level_application_end_date')}" th:value="${item.level_application_end_date}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   		<input type="" id="level_application_end_date" name="level_application_end_date" th:unless="${#maps.containsKey(item, 'level_application_end_date')}" class="fx-item dateitem2" style="width: 100%;" autocomplete="off">
+				   </div>	
+				</div>
+				
+		   	</div>
+			<div class="btn-box">
+		  		<a class="btn btn_black" th:onclick="goList([[${cri}]])" style="float:left;">목록</a>
+				<div class="btn" th:onclick="deleteBtn([[${item}]])">삭제</div>
+				<button class="btn add" type="button" id="updateBtn">저장</button>
+			</div>	
+   		</form>
+   </th:block>
+   
+   
+   
+   
+   
+   
+
+<script type="text/javascript" th:src="@{/js/admin/admin_scheduleClassSite_detail.js}"></script>
+<script th:inline="javascript">
+	//let company_code = /*[[${company_code}]]*/ null;
+</script>
+
+
+</th:block>
+</body>
+
+</html>

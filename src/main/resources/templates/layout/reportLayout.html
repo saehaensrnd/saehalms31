@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta name="code" charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0,maximum-scale=10,user-scalable=yes"/>
+
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jcf.css}"/>
+<script type="text/javascript" th:src="@{/js/jcf.select.js}"></script>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+
+
+<script type="text/javascript">
+
+	$( function(){
+
+		jQuery.datetimepicker.setLocale('kr');
+		$('.dateitem').datetimepicker({
+	        format:'Y.m.d',
+	        lang:'ko',
+	        timepicker:false,
+	        onChangeDateTime:function(dp,$input){
+	            // $('#dateitem').val($input.val());
+	        }
+	    });//datepicker end
+
+		$('.drop-trigger').click( function(){
+			var this_ = $(this);
+			
+			if(!this_.hasClass('active')){
+				this_.addClass('active');
+				this_.siblings('.sub').slideDown();
+			} else {
+				this_.removeClass('active');
+				this_.siblings('.sub').slideUp();
+			}
+		});
+	    
+		$('.m_trigger').click( function(){
+			$('body').addClass('fixed');
+		});
+
+		$('.m_nav .closer').click( function(){
+			$('body').removeClass('fixed');
+		});
+
+	 });
+	
+	
+	// 연락처 숫자만 입력되도록 - uncomma, inputOnlyNumberFormat, onlynumber
+	function removeChar(e){
+		var e = e || window.event, keyCode = (e.which) ? e.which : e.keyCode;
+
+		if (keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
+			return;
+		} else {
+			e.target.value = e.target.value.replace(/[^0-9]/g, '');
+		}
+	}
+	//////////////////////////////////////////////////////////////////
+
+</script>
+
+
+<style type="text/css">
+.custom02-table .tr .th {
+    max-width: 120px;
+    font-size: 14px;
+}
+
+.custom02-table .tr .td {    
+    font-size: 14px;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+   	height: 20px;
+}
+
+
+#userForm {
+	padding-bottom: 100px;
+}
+
+
+.btn_start {
+    background: url("../img/icon/btn_timer_start.jpg" ) no-repeat;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+.btn_stop {
+    background: url("../img/icon/btn_timer_pause.jpg" ) no-repeat;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+.btn_clear {
+    background: url("../img/icon/btn_timer_reset.jpg" ) no-repeat;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+
+
+
+</style>
+
+
+</head>
+<body>
+	<!-- <header th:replace="fragment/header :: header"></header> -->
+	<!-- <div th:replace="fragment/menu :: menu"></div> -->
+	<div class="report-inner">
+		<div class="container">
+			<div th:replace="fragment/reportLeft :: reportLeft" ></div>
+			<div class="report-content">
+				<div th:replace="fragment/reportContentNav :: reportContentNav"></div>
+				<th:block layout:fragment="reportContent"></th:block>
+			</div>
+		</div>
+	</div>
+	
+
+<script th:inline="javascript">
+	let running_time = /*[[${running_time}]]*/ null;
+</script>
+<script type="text/javascript" th:src="@{/js/admin/reportLeft.js}"></script>
+<script type="text/javascript" th:src="@{/js/admin/reportPopup.js}"></script>
+</body>
+
+
+</html>

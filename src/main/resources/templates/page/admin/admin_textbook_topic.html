@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/admin/admin_textbook_topic.js}"></script> 
+
+<style type ="text/css">
+	
+    
+    .search-div {width:100%; display: inline-flex;}
+	.search-div input {display: inline-block; width: 100%;}
+	
+	.btn-box {float: right;}
+	.btn-box button {width: 100px; height: 35px;}
+	
+	.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+	       text-align: left;       
+	       padding: 7px 20px;
+	}	
+	
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+	
+	.searchBtn {
+		display: inline-block;
+	    line-height: 55px;
+	    width: 120px;
+	    text-align: center;
+	    background-color: #444;
+	    color: #ffff;
+	    vertical-align: top;
+	    border-radius: 4px;
+	    /* float: left; */
+	    height: 45px;
+    	line-height: 45px;
+    	margin-left: 10px;
+    	cursor: pointer;
+	}
+	
+	.study_level_input {
+		margin-bottom: 10px;
+	}
+	
+	input[type='file'] {
+		width: 100%;
+	}
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table" style="margin-bottom: 30px;">		
+		<div class="tr">
+			<div class="th">언어</div>
+			<div class="td" style="border-right:0px;">
+				<div class="selecter-wrap search-div">
+					<select id="language" name="language" class="form-control">
+						<option value="English" th:selected="${language} == 'English'">English</option>
+						<option value="Chinese" th:selected="${language} == 'Chinese'">Chinese</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="th">수강과정</div>
+			<div class="td" style="border-right:0px;">
+				<div class="selecter-wrap search-div">
+					<select id="study" name="study" class="form-control">
+						<option th:each="s : ${study}" th:value="${s.study_no}" th:text="${s.study_name}" th:selected="${study_no} == ${s.study_no}"></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		
+		<div class="tr">
+			<div class="th">교재</div>
+			<div class="td" style="border-right:0px;">
+				<div class="selecter-wrap search-div">
+					<select id="textbook" name="textbook" class="form-control">
+						<option th:each="t : ${textbook}" th:value="${t.textbook_no}" th:text="${t.textbook_name}" th:selected="${textbook_no} == ${t.textbook_no}"></option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="table-wrap">
+		<div class="table-item">
+			<div class="btn-box">
+				<form id="textbookTopic_form">
+					<label>Topic</label><input class="study_level_input" type="text" id="topic_name" name="topic_name">
+					<label>Audio File</label><input class="study_level_input" type="file" id="audio_file" name="mfile" accept=".mp3">
+					<label>PDF File</label><input class="study_level_input" type="file" id="pdf_file" name="mfile" accept=".pdf">
+					<label>Other Url</label><input class="study_level_input" type="text" id="other_url" name="other_url">
+					<button type="button" class="btn" th:onclick="insertBtn()" style="float: right; margin-bottom: 20px;">등록</button>
+				</form>
+			</div>
+		</div>
+		<table>
+			<colgroup>
+				<col width="7%">
+				<col width="*%">
+				<col width="*%">
+<!-- 				<col width="10%"> -->
+				<col width="5%">
+				<col width="5%">
+			</colgroup>
+			<thead>
+				<tr>				
+					<th>Unit</th>
+					<th>Topic / Audio</th>				
+					<th>OtherUrl</th>
+<!-- 					<th>페이지수</th> -->
+					<th>수정</th>
+					<th>삭제</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${textbookTopic.size()} == 0">
+					<td colspan="5">There is no data.</td>
+				</tr>
+				<tr th:each="tt : ${textbookTopic}">
+					<td><input type="text" th:id="|unit${tt.textbook_topic_no}|" th:value="${tt.unit}" oninput="removeChar(event)" style="text-align: center;"></td>
+					
+					<td>
+						<form th:id="|update_form${tt.textbook_topic_no}|">
+							<table>
+								<tr>
+									<td>Topic</td>
+									<td colspan="2"><input th:id="|topic_name${tt.textbook_topic_no}|" name="topic_name" type="text" th:value="${tt.topic_name}"></td>
+								</tr>
+								<tr>
+									<td>Audio</td>
+									<td>
+										<a target="_blank" th:if="${#maps.containsKey(tt, 'audio_file')}" th:href="|https://saeha.s3.ap-northeast-2.amazonaws.com/textbook_audio/${tt.audio_file}|" th:text="${tt.audio_file}"></a>
+										<a th:unless="${#maps.containsKey(tt, 'audio_file')}">none</a>
+									</td>
+									<td><input type="file" name="mfile" accept=".mp3"></td>
+								</tr>
+								<tr>
+									<td>PDF</td>
+									<td>
+										<a target="_blank" th:if="${#maps.containsKey(tt, 'pdf_file')}" th:href="|https://saeha.s3.ap-northeast-2.amazonaws.com/textbook_pdf/${tt.pdf_file}|" th:text="${tt.pdf_file}"></a>
+										<a th:unless="${#maps.containsKey(tt, 'pdf_file')}">none</a>
+									</td>
+									<td><input type="file" name="mfile" accept=".pdf"></td>
+								</tr>
+							</table>
+						</form>
+					</td>
+					
+					<td>
+						<div><span>Other Url</span><input th:id="|other_url${tt.textbook_topic_no}|" type="text" th:value="${tt.other_url}"></div>
+					</td>
+					
+<!-- 					<td><a th:onclick="pageDetail([[${tt.textbook_topic_no}]])" th:text="|${tt.page} Page|" style="cursor: pointer;"></a></td> -->
+					
+					<td><button type="button" th:onclick="updateBtn([[${tt.textbook_topic_no}]])">수정</button></td>
+					
+					<td><button type="button" th:onclick="deleteBtn([[${tt.textbook_topic_no}]])">삭제</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<script>
+	$("#language").change(function(){
+		window.location.href = "/admin/textbookTopic?study_language="+$("#language").val();
+	});
+	
+	$("#study").change(function(){
+		window.location.href = "/admin/textbookTopic?study_language="+$("#language").val()+"&study_no="+$("#study").val();
+	});
+	
+	$("#textbook").change(function(){
+		window.location.href = "/admin/textbookTopic?study_language="+$("#language").val()+"&study_no="+$("#study").val()+"&textbook_no="+$("#textbook").val();
+	});
+	
+	function pageDetail(textbook_topic_no){
+		console.log(textbook_topic_no);
+		PopupCenter("textbookTopic/pageDetail?textbook_topic_no="+textbook_topic_no, "pageDetail", screen.width/1.8, screen.height/2);
+	}
+
+	function PopupCenter(url, title, w, h) {
+	    // Fixes dual-screen position                         Most browsers      Firefox
+	    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+	    var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+	    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+	    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+	    var systemZoom = width / window.screen.availWidth;
+	    var left = (width - w) / 2 / systemZoom + dualScreenLeft;
+	    var top = (height - h) / 2 / systemZoom + dualScreenTop;
+	    var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w / systemZoom + ', height=' + h / systemZoom + ', top=' + top + ', left=' + left + ', menubar=no, status=no, toolbar=no, location=no, resizable=no');
+
+	    var timer = setInterval(function() { 
+	        if(newWindow.closed) {
+	            clearInterval(timer);
+	            let url = window.location.href;
+	            if(url.indexOf('?') > -1){
+	            	url = url.split("?")[0]+"?study_language="+$("#language").val()+"&study_no="+$("#study").val()+"&textbook_no="+$("#textbook").val();
+	            }
+	            else{
+	            	url = url+"?study_language="+$("#language").val()+"&study_no="+$("#study").val()+"&textbook_no="+$("#textbook").val();
+	            }
+	            window.location.href = url;
+	        }
+	    }, 1000);
+	    
+	    // Puts focus on the newWindow
+	    if (window.focus) newWindow.focus();
+	}
+	</script>
+	
+</th:block>
+</body>
+
+</html>

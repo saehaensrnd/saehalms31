@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+	<!-- Class -->
+	<div th:fragment="reportLeft" class="report-left" th:if="${flag} == 'class' ">
+				
+		<div class="infoDiv" >
+			<div style="margin-bottom: 5px;">
+				<span style="font-weight: 600; font-size: 18px; line-height: 31px;">Lecture Info.</span> <span style="color:green; font-weight: 600; font-size: 18px; line-height: 31px;" th:text=${classInfo.study_date}></span> 
+				<div class="customTableBtn" id="onOffBtn" th:onclick="textbookSubmitOnOff()" style="float:right;">Close</div>
+			</div>
+		
+			
+			<form id="textbookPageForm" method="post">
+				<input type="hidden" name="class_log_no" th:value="${classInfo.class_log_no}" />
+	  		
+			   	<div class="left-head-table custom02-table report mb10">					
+					<div class="tr">
+					   <div class="th">Lecture Name</div>
+					   <div class="td" th:text="${classInfo.product_name}"></div>		                  
+					</div>
+					<div class="tr">
+					   <div class="th">Class Date</div>
+					   <div class="td" th:if="${#maps.containsKey(classInfo, 'end_date')}" th:text="|${classInfo.start_date} ~ ${classInfo.end_date}|"></div>
+					   <div class="td" th:unless="${#maps.containsKey(classInfo, 'end_date')}" th:text="|${classInfo.start_date} ~ |"></div>
+					   		                  
+					</div>
+					<div class="tr">
+					   <div class="th">Teacher</div>
+					   
+					   <div class="td" th:if="${#maps.containsKey(classInfo, 'teacher_name')}" th:text="|[${classInfo.center_name}] ${classInfo.teacher_name}|"></div>
+					   <div class="td" th:unless="${#maps.containsKey(classInfo, 'teacher_name')}"></div>		                  
+					</div>
+					<div class="tr">
+					   <div class="th">Last Book</div>
+					   <div class="td">
+					   		<div th:if="${lastBook.textbook_name} != ''" style="line-height: 25px;">					   		
+						   		<span th:text="${lastBook.textbook_name}"></span><br>
+						   		>> <span th:text="${lastBook.topic_name}"></span><br>
+						   		>> <span th:text="${lastBook.slide_number}"></span><br>
+					   		</div>
+					   </div>		                  
+					</div>
+					<div class="tr">
+					   <div class="th" style="color:red;">Today Book</div>
+					   <div class="td">
+					   		<span>Textbook</span>
+					   		<div class="selecter-wrap">				
+								<div class="search-div">
+									<select data-jcf='{"maxVisibleItems": 10}' id="textbook_no" name="textbook_no" onchange="textbookChange(this)">
+							   			<option value="">-- 선택 --</option>
+							   			<option th:each="textbookList : ${textbookList}" th:text="${textbookList.textbook_name}" th:value="${textbookList.textbook_no}" th:if="${#maps.containsKey(classInfo, 'textbook_no')}" th:selected="${classInfo.textbook_no} == ${textbookList.textbook_no}"></option>
+										<option th:each="textbookList : ${textbookList}" th:text="${textbookList.textbook_name}" th:value="${textbookList.textbook_no}"></option>
+							   		</select>
+								</div>	
+							</div>
+							
+							<span>Unit</span>
+					   		<div class="selecter-wrap">				
+								<div class="search-div">
+									<select data-jcf='{"maxVisibleItems": 10}' id="textbook_topic_no" name="textbook_topic_no" onchange="topicChange(this)">
+							   			<option value="">-- 선택 --</option>										
+							   			<option th:each="textbookTopicList : ${textbookTopicList}" th:text="${textbookTopicList.topic_name}" th:value="${textbookTopicList.textbook_topic_no}" th:if="${#maps.containsKey(classInfo, 'textbook_topic_no')}" th:selected="${classInfo.textbook_topic_no} == ${textbookTopicList.textbook_topic_no}"></option>
+							   			<option th:each="textbookTopicList : ${textbookTopicList}" th:text="${textbookTopicList.topic_name}" th:value="${textbookTopicList.textbook_topic_no}" th:unless="${#maps.containsKey(classInfo, 'textbook_topic_no')}"></option>
+							   		</select>
+								</div>	
+							</div>
+							
+							<span>Slide</span>
+							<input type="text" id="slide_number" name="slide_number" th:if="${#maps.containsKey(classInfo, 'slide_number')}" th:value="${classInfo.slide_number}" autocomplete="off" style="margin-bottom: 20px;" oninput="removeChar(event)" >
+							<input type="text" id="slide_number" name="slide_number" th:unless="${#maps.containsKey(classInfo, 'slide_number')}" autocomplete="off" style="margin-bottom: 20px;" oninput="removeChar(event)" >
+					   		
+							
+							<div class="btn-box">
+								<div class="btn" th:onclick="textbookSubmit()" style="width:100%;">Textbook Submit</div>
+							</div>
+					   </div>	          
+					</div>
+			   	</div>
+				
+	   		</form>
+		</div>
+		
+		<div class="studentListDiv" style="padding-bottom:30px;">
+			<div style="margin-bottom: 5px; margin-top:20px;">
+				<span style="font-weight: 600; font-size: 18px; line-height: 31px;">Student List</span>
+			</div>
+			
+			<div class="table-wrap">
+				<table class="result-table02">
+					<colgroup>
+						<col width="*%">
+						<col width="25%">
+						<col width="32%">
+						<col width="5%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th colspan="2">Name</th>
+							<th>Phone Num</th>
+							<th>R</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${studentList}">
+							<td>
+								<div class="txt-left">
+									<span th:text="|${itemStat.count}. ${item.student_eng_name}|"></span><br>
+									<span th:text="|${item.student_name}|"></span>
+								</div>							
+							</td>
+							<td>
+								<div>
+									<div class="btn" th:onclick="smsSendBtn([[${item}]], 'sound')">No Sound</div>
+									<div class="btn" th:onclick="smsSendBtn([[${item}]], 'show')" style="margin-top:5px;">No Show</div>
+								</div>
+							</td>
+							<td><span th:text="${item.student_phone}"></span></td>
+							<td><div class="btn" th:onclick="rBtn([[${item}]], 'class')" style="width:25px;">R</div></td>
+						</tr>
+					</tbody>
+				
+				</table>
+			</div>
+			
+		</div>
+		
+		
+		<div class="timerDiv" style="padding-bottom:80px;">
+			<div style="margin-bottom: 5px; margin-top:20px;">
+				<span style="font-weight: 600; font-size: 18px; line-height: 31px;">Time Alert</span>
+			</div>
+			
+			<div class="timeBtnDiv" style="width:40%; float:left;">			
+				<input type="button" class="btn_start" onclick="timer_start()">
+				<input type="button" class="btn_stop" onclick="timer_stop()">
+				<input type="button" class="btn_clear" onclick="timer_clear()">
+			</div>
+			<div class="timeDiv" style="width:60%; float:left;">
+				<div id="ViewTimer" style="font-size: 25px; line-height: 33px;" th:text="|${running_time} : 00|"></div>
+			</div>
+		</div>
+		
+		
+		<div class="LeftTabDiv" style="padding-bottom:80px;">						
+			<iframe id="reportIframe" style="width:100%; height:550px;" th:src="@{|/reportPopup/report?flag=${flag}&class_score_no=${classInfo.class_score_no}|}"></iframe>
+		</div>
+		
+	</div>
+	
+	
+	
+	
+	
+	<!-- Level Test -->
+	<div th:fragment="reportLeft" class="report-left" th:if="${flag} == 'leveltest' ">
+				
+		<div class="infoDiv" >
+			<div style="margin-bottom: 5px;">
+				<span style="font-weight: 600; font-size: 18px; line-height: 31px;">Lecture Info.</span> 
+				<span style="color:green; font-weight: 600; font-size: 18px; line-height: 31px;" th:if="${#maps.containsKey(info, 'study_date')}" th:text=${info.study_date}></span>
+				<div class="customTableBtn" id="onOffBtn" th:onclick="textbookSubmitOnOff()" style="float:right;">Close</div>
+			</div>
+		
+			
+			<form id="textbookPageForm" method="post">
+			   	<div class="left-head-table custom02-table report mb10">					
+					<div class="tr">
+					   <div class="th">Lecture Name</div>
+					   <div class="td" th:text="${info.product_name}"></div>		                  
+					</div>
+					<div class="tr">
+					   <div class="th">Class Date</div>
+					   <div class="td" th:if="${#maps.containsKey(info, 'study_date')}" th:text="|${info.study_date}|"></div>
+					   <div class="td" th:unless="${#maps.containsKey(info, 'study_date')}" ></div>		                  
+					</div>
+					<div class="tr">
+					   <div class="th">Teacher</div>
+					   <div class="td" th:if="${#maps.containsKey(info, 'teacher_name')}"  th:text="|[${info.center_name}] ${info.teacher_name}|"></div>
+					   <div class="td" th:unless="${#maps.containsKey(info, 'teacher_name')}"></div>		                  
+					</div>
+					<div class="tr">
+					   <div class="th">Last Book</div>
+					   <div class="td">
+					   </div>		                  
+					</div>
+					<div class="tr">
+					   <div class="th" style="color:red;">Today Book</div>
+					   <div class="td">
+					   		<span>Textbook</span>
+					   		<div class="selecter-wrap">				
+								<div class="search-div">
+									<select data-jcf='{"maxVisibleItems": 10}' id="textbook_no" name="textbook_no">
+							   			<option value="">-- 선택 --</option>
+							   		</select>
+								</div>	
+							</div>
+							
+							<span>Unit</span>
+					   		<div class="selecter-wrap">				
+								<div class="search-div">
+									<select data-jcf='{"maxVisibleItems": 10}' id="textbook_topic_no" name="textbook_topic_no">
+							   			<option value="">-- 선택 --</option>
+							   		</select>
+								</div>	
+							</div>
+							
+							<span>Slide</span>
+							
+							<div class="btn-box">
+								<div class="btn" th:onclick="textbookSubmit()" style="width:100%;">Textbook Submit</div>
+							</div>
+					   </div>	          
+					</div>
+			   	</div>
+				
+	   		</form>
+		</div>		
+		
+		<div class="studentListDiv" style="padding-bottom:30px;">
+			<div style="margin-bottom: 5px; margin-top:20px;">
+				<span style="font-weight: 600; font-size: 18px; line-height: 31px;">Student List</span>
+			</div>
+			
+			<div class="table-wrap">
+				<table class="result-table02">
+					<colgroup>
+						<col width="*%">
+						<col width="25%">
+						<col width="32%">
+						<col width="5%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th colspan="2">Name</th>
+							<th>Phone Num</th>
+							<th>R</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<div class="txt-left">
+									<span th:text="|1. ${info.student_eng_name}|"></span><br>
+									<span th:text="|${info.student_name}|"></span>
+								</div>							
+							</td>
+							<td>
+								<div>
+									<div class="btn" th:onclick="smsSendBtn([[${info}]], 'sound')">No Sound</div>
+									<div class="btn" th:onclick="smsSendBtn([[${info}]], 'show')" style="margin-top:5px;">No Show</div>
+								</div>
+							</td>
+							<td><span th:text="${info.student_phone}"></span></td>
+							<td><div class="btn" th:onclick="rBtn([[${info}]], 'leveltest')" style="width:25px;">R</div></td>
+						</tr>
+					</tbody>
+				
+				</table>
+			</div>			
+		</div>
+		
+		
+		<div class="timerDiv" style="padding-bottom:80px;">
+			<div style="margin-bottom: 5px; margin-top:20px;">
+				<span style="font-weight: 600; font-size: 18px; line-height: 31px;">Time Alert</span>
+			</div>
+			
+			<div class="timeBtnDiv" style="width:40%; float:left;">			
+				<input type="button" class="btn_start" onclick="timer_start()">
+				<input type="button" class="btn_stop" onclick="timer_stop()">
+				<input type="button" class="btn_clear" onclick="timer_clear()">
+			</div>
+			<div class="timeDiv" style="width:60%; float:left;">
+				<div id="ViewTimer" style="font-size: 25px; line-height: 33px;" th:text="|${running_time} : 00|"></div>
+			</div>
+		</div>
+		
+		    
+		<div class="LeftTabDiv" style="padding-bottom:80px;">						
+			<iframe id="reportIframe" style="width:100%; height:550px;" th:src="@{|/reportPopup/report?flag=${flag}&leveltest_no=${info.leveltest_no}|}"></iframe>
+		</div>
+		
+		
+	</div>
+	
+	
+
+</html>

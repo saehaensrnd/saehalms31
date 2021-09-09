@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<div th:fragment="reportContentNav" class="report-nav">
+		<ul class="h" th:with="URL=${#httpServletRequest.requestURI}"> 
+			<li class="report-li" ><a class="h" th:href="@{|/reportPopup?flag=${paramMap.flag}&no=${paramMap.no}|}" th:classappend="${#strings.contains(URL, '/reportPopup')}? active">Book</a></li>			
+			
+		</ul>
+
+
+	</div>
+
+</html>

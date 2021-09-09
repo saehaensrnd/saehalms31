@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<div th:fragment="userNav" class="user-nav">
+		<ul class="h" th:with="URL=${#httpServletRequest.requestURI}"> 
+			<li class="user-li" ><a class="h" th:href="@{|/userDetail?user_student_no=${user.user_student_no}&flag=normal&no=|}" th:classappend="${#strings.contains(URL, '/userDetail')}? active">수강목록</a></li>
+			<li class="user-li" ><a class="h" th:href="@{|/smsLog?user_student_no=${user.user_student_no}|}" th:classappend="${#strings.contains(URL, '/smsLog')}? active">문자내역</a></li>
+		</ul>
+
+
+	</div>
+
+</html>

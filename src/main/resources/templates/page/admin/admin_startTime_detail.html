@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+
+
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px; 
+}
+
+
+.left-head-table .tr .td input, .left-head-table .tr .td select {
+    min-width: 65px;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+   	height: 20px;
+}
+
+.searchBtn {
+	display: inline-block;
+    line-height: 55px;
+    width: 90px;
+    text-align: center;
+    background-color: #444;
+    color: #ffff;
+    vertical-align: top;
+    border-radius: 4px;
+    height: 45px;
+   	line-height: 45px;
+   	margin-left: 10px;
+   	cursor: pointer;    	
+}
+
+</style>
+
+</head>
+<body style="padding-top: 20px !important; ">
+	
+	<th:block th:if="${flag == 'insert'}">
+		<!--  컨테이너 -->		
+		<div style="width:95%; margin:0 auto;">
+			<!-- 검색 테이블 -->
+			<div class="left-head-table custom02-table">
+				<div class="tr">
+					<div class="th">언어</div>
+					<div class="td" style="border-right:0px; max-width:24%">
+						<div class="selecter-wrap">				
+							<div class="search-div">
+								<select data-jcf='{"maxVisibleItems": 7}' id="language_type" name="language_type" >
+						   			<option value="">-- 선택 --</option>													
+									<option value="English">English</option>
+									<option value="Chinese">Chinese</option>							
+						   		</select>
+							</div>	
+						</div>
+					</div>
+				
+					<div class="th">런닝타임</div>
+					<div class="td" style="border-right:0px;">
+						<div class="selecter-wrap">				
+							<div class="search-div" style="width:45%;">
+								<select data-jcf='{"maxVisibleItems": 10}' id="running_time" name="running_time" >
+						   			<option value="">-- 선택 --</option>
+										<option th:each="runningTimeList : ${runningTimeList}" th:text="|${runningTimeList}분|" th:value="${runningTimeList}"></option>							
+						   		</select>
+						   		
+						   		<div class="searchBtn" th:onclick="insertBtn()" style="right: 40px; position: absolute;">저장</div>
+							</div>	
+						</div>
+					</div>	
+				</div>		
+			</div>
+			
+			
+			<!-- 시작시간 list -->	   		
+   			<div class="timeTable" style="margin-top:90px;">
+   				<div class="table-wrap">
+					<table class="result-table02">
+						<colgroup>
+							<col width="*%">
+							<col width="50%">								
+						</colgroup>
+						<thead>
+							<tr>
+								<th>수업시간</th>
+								<th><a class="link" onclick="allCheck()">설정</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:if="${startTimeList.size()} == 0">
+								<td colspan="8">There is no data.</td>
+							</tr>
+							<tr th:each="item : ${startTimeList}">
+								<td th:if="${#maps.containsKey(item, 'time')}" th:text="${item.timeStamp}"></td>																	
+								<td><input type="checkbox" th:name="|${item.time}|" class="check" th:value=${item.time}></td>																	
+							</tr>								
+						</tbody>
+					</table>					
+				</div>
+   			</div>
+			
+	
+		</div>
+		<!-- 컨테이너 // -->	
+	
+	</th:block>
+	
+	
+	<th:block th:if="${flag == 'update'}">
+		<!--  컨테이너 -->		
+		<div style="width:95%; margin:0 auto;">
+			<!-- 검색 테이블 -->
+			<div class="left-head-table custom02-table">
+				<div class="tr">
+					<div class="th">언어</div>
+					<div class="td" style="border-right:0px; max-width:24%" th:text="${studyStartTime.language_type}"></div>					
+				
+					<div class="th">런닝타임</div>
+					<div class="td" style="border-right:0px;" th:text="${studyStartTime.running_time}"></div>						
+						
+					<div class="searchBtn" th:onclick="updateBtn()" style="right: 40px; top:29px; position: absolute;">저장</div>
+				</div>		
+			</div>
+			
+			
+			<!-- 시작시간 list -->	   		
+			<input type="hidden" id="study_start_time_no" name="study_start_time_no" th:value="${studyStartTime.study_start_time_no}" >
+   			<div class="timeTable" style="margin-top:90px;">
+   				<div class="table-wrap">
+					<table class="result-table02">
+						<colgroup>
+							<col width="*%">
+							<col width="50%">								
+						</colgroup>
+						<thead>
+							<tr>
+								<th>수업시간</th>
+								<th><a class="link" onclick="allCheck()">설정</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:if="${startTimeList.size()} == 0">
+								<td colspan="8">There is no data.</td>
+							</tr>
+							<tr th:each="item : ${startTimeList}">
+								<td th:if="${#maps.containsKey(item, 'time')}" th:text="${item.timeStamp}"></td>																	
+								<td><input type="checkbox" th:name="|${item.time}|" class="check" th:value=${item.time} th:checked="${item.isCheck} == 1 "></td>																	
+							</tr>								
+						</tbody>
+					</table>					
+				</div>
+   			</div>
+			
+	
+		</div>
+		<!-- 컨테이너 // -->
+		
+	</th:block>
+	
+	
+
+	
+	
+	
+<script th:inline="javascript">
+	let paramMap = /*[[${paramMap}]]*/ null;
+	
+	$( function(){
+
+		jQuery.datetimepicker.setLocale('kr');
+		$('.dateitem').datetimepicker({
+	        format:'Y.m.d',
+	        lang:'ko',
+	        timepicker:false,
+	        onChangeDateTime:function(dp,$input){
+	            // $('#dateitem').val($input.val());
+	        }
+	    });//datepicker end
+
+
+	 });
+</script>
+<script type="text/javascript" th:src="@{/js/admin/admin_startTime_detail.js}"></script>
+</body>
+
+</html>

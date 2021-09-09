@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+<script type="text/javascript" th:src="@{/js/admin/admin_study_detail.js}"></script>
+<style type="text/css">
+.shareChk {
+	width: 60px;
+	height: 20px;
+	position: relative;
+	left: 12px;
+}
+
+.selecter-wrap .jcf-unselectable {
+	width: 100%;
+	height: 45px;
+}
+
+.selecter-wrap .jcf-select-text {
+	line-height: 45px;
+}
+
+.selecter-wrap .jcf-unselectable {
+	margin-bottom: 0px;
+}
+
+input[type='radio'] {
+	float: left;
+}
+
+.radio_label {
+	margin-right: 20px;
+	font-size: 16px;
+	float: left;
+}
+
+.redpoint {
+	color: red;
+	margin-right: 3px;
+}
+
+#zip_code {
+	width: 200px;
+	float: left;
+}
+#postcode_btn {
+	width: 150px;
+	float: left;
+	margin-left: 20px;
+	background: white;
+}
+</style>
+</head>
+<body>
+	<th:block layout:fragment="content">
+
+		<!-- insert form -->
+		<th:block th:if="${flag == 'insert'}">
+			<form id="study_form">
+				<table class="customer-insert table table-bordered">
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>언어</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="study_language" name="study_language" class="form-control">
+									<option value="English">English</option>
+									<option value="Chinese">Chinese</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>교육과정명</td>
+						<td class="txt-left" style="padding: 10px;"><input type="text" id="study_name" name="study_name"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">교육대상</td>
+						<td style="padding: 10px;">
+							<input type="checkbox" id="child" name="arr_target" value="유아"><label for="child">유아</label>
+							<input type="checkbox" id="element" name="arr_target" value="초등부"><label for="element">초등부</label>
+							<input type="checkbox" id="middle" name="arr_target" value="중등부"><label for="middle">중등부</label>
+							<input type="checkbox" id="high" name="arr_target" value="고등부"><label for="high">고등부</label>
+							<input type="checkbox" id="university" name="arr_target" value="대학생"><label for="university">대학생</label>
+							<input type="checkbox" id="officer" name="arr_target" value="직장인"><label for="officer">직장인</label>
+							<input type="checkbox" id="adult" name="arr_target" value="성인"><label for="adult">성인</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">사용하지 않을 사이트</td>
+						<td style="padding: 10px;">
+							<th:block th:each="s : ${site}">
+								<input type="checkbox" th:id="|site${s.site_no}|" name="arr_site" th:value="${s.site_no}"><label th:for="|site${s.site_no}|" th:text="${s.site_name}"></label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">수업방식</td>
+						<td style="padding: 10px;">
+							<input type="checkbox" id="phone" name="arr_type" value="Phone"><label for="phone">Phone</label>
+							<input type="checkbox" id="video" name="arr_type" value="Video"><label for="video">Video</label>
+							<input type="checkbox" id="video_call" name="arr_type" value="VideoCall"><label for="video_call">VideoCall</label>
+							<input type="checkbox" id="vr" name="arr_type" value="VR"><label for="vr">VR</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">학습대상 설명</td>
+						<td class="txt-left" style="padding: 10px;">
+			      			<textarea name="study_target_explain" id="study_target_explain" style="width:100%;"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">강의목표</td>
+						<td class="txt-left" style="padding: 10px;">
+			      			<textarea name="study_purpose" id="study_purpose" style="width:100%;"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">강좌특징</td>
+						<td class="txt-left" style="padding: 10px;">
+			      			<textarea name="study_point" id="study_point" style="width:100%;"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">상태</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="status_ok" name="study_status" value="1" checked="checked"><label for="status_ok" class="radio_label">사용</label>
+							<input type="radio" id="status_no" name="study_status" value="0"><label for="status_no" class="radio_label">사용안함</label>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+			<div style="margin: 20px 0px 20px 0px;">
+				<div class="btn-box">
+					<button type="button" class="btn btn_black" th:onclick=goList([[${cri}]])>목록</button>
+					<div style="float: right;">
+						<button type="button" id="insertBtn" class="btn add" style="margin: 0px;" onclick="studyInsert()">등록</button>
+					</div>
+				</div>
+			</div>
+		</th:block>
+		<!-- </form> -->
+
+
+
+		<!-- update form -->
+		<th:block th:if="${flag == 'update'}">
+			<form id="study_form">
+				<table class="customer-insert table table-bordered">
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>언어</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="study_language" name="study_language" class="form-control">
+									<option value="English" th:selected="${study.study_language} == 'English'">English</option>
+									<option value="Chinese" th:selected="${study.study_language} == 'Chinese'">Chinese</option>
+								</select>
+								<input type="hidden" name="study_no" th:value="${study.study_no}">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>교육과정명</td>
+						<td class="txt-left" style="padding: 10px;"><input type="text" id="study_name" name="study_name" th:value="${study.study_name}"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">교육대상</td>
+						<td style="padding: 10px;">
+							<th:block th:if="${#maps.containsKey(study, 'study_target')}">
+								<input type="checkbox" id="child" name="arr_target" value="유아" th:checked="${#strings.indexOf(study.study_target, '유아')} != -1"><label for="child">유아</label>
+								<input type="checkbox" id="element" name="arr_target" value="초등부" th:checked="${#strings.indexOf(study.study_target, '초등부')} != -1"><label for="element">초등부</label>
+								<input type="checkbox" id="middle" name="arr_target" value="중등부" th:checked="${#strings.indexOf(study.study_target, '중등부')} != -1"><label for="middle">중등부</label>
+								<input type="checkbox" id="high" name="arr_target" value="고등부" th:checked="${#strings.indexOf(study.study_target, '고등부')} != -1"><label for="high">고등부</label>
+								<input type="checkbox" id="university" name="arr_target" value="대학생" th:checked="${#strings.indexOf(study.study_target, '대학생')} != -1"><label for="university">대학생</label>
+								<input type="checkbox" id="officer" name="arr_target" value="직장인" th:checked="${#strings.indexOf(study.study_target, '직장인')} != -1"><label for="officer">직장인</label>
+								<input type="checkbox" id="adult" name="arr_target" value="성인" th:checked="${#strings.indexOf(study.study_target, '성인')} != -1"><label for="adult">성인</label>
+							</th:block>
+							<th:block th:unless="${#maps.containsKey(study, 'study_target')}">
+								<input type="checkbox" id="child" name="arr_target" value="유아"><label for="child">유아</label>
+								<input type="checkbox" id="element" name="arr_target" value="초등부"><label for="element">초등부</label>
+								<input type="checkbox" id="middle" name="arr_target" value="중등부"><label for="middle">중등부</label>
+								<input type="checkbox" id="high" name="arr_target" value="고등부"><label for="high">고등부</label>
+								<input type="checkbox" id="university" name="arr_target" value="대학생"><label for="university">대학생</label>
+								<input type="checkbox" id="officer" name="arr_target" value="직장인"><label for="officer">직장인</label>
+								<input type="checkbox" id="adult" name="arr_target" value="성인"><label for="adult">성인</label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">사용하지 않을 사이트</td>
+						<td style="padding: 10px;">
+							<th:block th:each="s : ${site}">
+								<input type="checkbox" th:id="|site${s.site_no}|" name="arr_site" th:value="${s.site_no}"><label th:for="|site${s.site_no}|" th:text="${s.site_name}"></label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">수업방식</td>
+						<td style="padding: 10px;">
+							<th:block th:if="${#maps.containsKey(study, 'study_type')}">
+								<input type="checkbox" id="phone" name="arr_type" value="Phone" th:checked="${#strings.indexOf(study.study_type, 'Phone')} != -1"><label for="phone">Phone</label>
+								<input type="checkbox" id="video" name="arr_type" value="Video" th:checked="${#strings.indexOf(study.study_type, 'Video')} != -1"><label for="video">Video</label>
+								<input type="checkbox" id="video_call" name="arr_type" value="VCall" th:checked="${#strings.indexOf(study.study_type, 'VCall')} != -1"><label for="video_call">VideoCall</label>
+								<input type="checkbox" id="vr" name="arr_type" value="VR" th:checked="${#strings.indexOf(study.study_type, 'VR')} != -1"><label for="vr">VR</label>
+							</th:block>
+							<th:block th:unless="${#maps.containsKey(study, 'study_type')}">
+								<input type="checkbox" id="phone" name="arr_type" value="Phone"><label for="phone">Phone</label>
+								<input type="checkbox" id="video" name="arr_type" value="Video"><label for="video">Video</label>
+								<input type="checkbox" id="video_call" name="arr_type" value="VideoCall"><label for="video_call">VideoCall</label>
+								<input type="checkbox" id="vr" name="arr_type" value="VR"><label for="vr">VR</label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">학습대상 설명</td>
+						<td class="txt-left" style="padding: 10px;">
+			      			<textarea name="study_target_explain" id="study_target_explain" style="width:100%;" th:utext="${study.study_target_explain}"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">강의목표</td>
+						<td class="txt-left" style="padding: 10px;">
+			      			<textarea name="study_purpose" id="study_purpose" style="width:100%;" th:utext="${study.study_purpose}"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">강좌특징</td>
+						<td class="txt-left" style="padding: 10px;">
+			      			<textarea name="study_point" id="study_point" style="width:100%;" th:utext="${study.study_point}"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">상태</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="status_ok" name="study_status" value="1" th:checked="${study.study_status} == 1"><label for="status_ok" class="radio_label">사용</label>
+							<input type="radio" id="status_no" name="study_status" value="0" th:checked="${study.study_status} == 0"><label for="status_no" class="radio_label">사용안함</label>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+			<div style="margin: 20px 0px 20px 0px;">
+				<div class="btn-box">
+					<button type="button" class="btn btn_black" th:onclick=goList([[${cri}]])>목록</button>
+					<div style="float: right;">
+						<button type="button" id="updateBtn" class="btn add" style="margin: 0px;" onclick="updateBtn()">수정</button>
+					</div>
+				</div>
+			</div>
+			
+			<script th:inline="javascript">
+			var study_not_used_site = /*[[${study_not_used_site}]]*/ null;
+			$("input[name='arr_site']").each(function(){
+				var check = $(this);
+				Array.prototype.forEach.call(study_not_used_site, function(site){
+					if(check.val() == site.site_no){
+						check.attr("checked", "checked");
+					}
+				});
+			});
+			</script>
+			
+		</th:block>
+		<!-- </form> -->
+		
+	</th:block>
+	
+</body>
+
+</html>

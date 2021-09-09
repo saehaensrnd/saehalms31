@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+
+<!-- <link rel="stylesheet" th:href="@{/css/default.css}"> -->
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<link rel="stylesheet" th:href="@{/css/myClass.css}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+<style type="text/css">	
+	.fontW{
+		font-size:15px;
+		margin-bottom: 4px;
+	}
+	
+	.modal{
+		max-width: 590px;
+	}
+</style>
+
+<script>
+/*
+$(document).ready(function(){
+	$('a[href="#ex7"]').click(function(event) {
+	    event.preventDefault();
+	
+	    $(this).modal({
+	      fadeDuration: 250
+	    });
+    });
+});
+*/
+</script>
+
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+
+	<!-- The Modal -->
+	<div id="myModal" class="myModal">	
+		<div class="myModal-content">
+		  <div class="myModal-header">
+		    <span class="close">&times;</span>		   
+		  </div>
+		  <div class="myModal-body">
+		    <div id="printDiv">		    	
+		    	
+		    	<div class="container_certificate"> 
+		           <div class="certificate">
+		                <ul class="mb30">
+		                    <li class="mb30"><img src="../img/receipt_txt2.gif" alt="cerificateLogo" class="cerificateLogo"></li>
+		                    <li class="mb10 mt50"><span class="redText">수강자명</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span id="student_name">testtest</span></li>
+		                    <li class="mb10 "><span class="redText">수강내역</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span id="type">화상영어</span> <span class="redText">&nbsp;과정&nbsp;</span><span id="product_name">화목 1:2 / T/TH 1:2 (20 min)</span></li>
+		                    <li class="mb10 "><span class="redText">결제금액</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span id="product_price">35,000</span><span>원</span> </li>
+		                    <li class="mb10 "><span class="redText">수강기간</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span id="class_date">2021.06.03~2121.06.29</span></li>
+		                    <li class="mb10 "><span class="redText">담당강사</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span id="teacher_name">Test Teachder2</span></li>
+		                    <li class="mb10 "><span class="redText">출석현황</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span>총</span><span id="totalCnt">0</span><span>회 /</span><span>출석</span><span id="presentCnt">0</span><span>회 /</span><span>결석</span><span id="absentCnt">0</span><span> /</span><span>잔여</span><span id="remainCnt">8</span><span> 출석률</span><span id="presentPercent">0</span><span>%</span></li>
+		                </ul>
+		                <div class=" certificate_script">
+		                    <div class="mb10"> 본 수강확인증은 <span class="redText" id="student_name2">testtest</span><span>회원님</span>께서 <span>사이트A</span> 에서 <br />
+		                        <span> 제공하는 화상영어 프로그램 수강을 증명하여 이에</span> <br/>
+		                       <span>증빙서류로 제출이 가능합니다.</span>  </div>
+		                    <div>
+		                        <div class="mb10"><span class="blackText">(주)새하이앤에스</span><img src="../img/" alt="signinImg"></div>
+		                        <span class="blackText">사업자 등록번호 : </span><span class="blackText">214-00-00000</span>
+		
+		                    </div>
+		                    <div ><span class="certificate_date transformToCenter1" id="printToday">2021.07.19</span></div>
+		                    <div class="mb10">본 영수증은 증빙서류로 회사에 제출이 가능합니다.</div>
+		                    <div class="mb10 transformToCenter" id="btnDiv">
+		                    	<a onclick="printBtn()">
+		                    		<img src="../img/btn_pring.gif" style="cursor: pointer;"/>
+		                    	</a>
+		                    	<a rel="modal:close"  id="#close-modal" onclick="closeBtn()" >
+		                    		<img src="../img/btn_close02.gif" style="cursor: pointer;"/>
+		                    	</a>
+		                    </div>
+		                </div>
+		
+		           </div>
+		        </div>
+		        
+		    		
+		    </div>
+			<!--  
+		    <div class="btnDiv" style="text-align: center; padding-top:20px;">			
+				<div class="btn-box2">
+					<div class="btn add" id="pp" onclick="printBtn()">프린트</div>
+				</div>
+			</div>
+			-->		    
+		  </div>
+		</div>
+	</div>
+	<!-- Modal End -->
+	
+
+	<!--   
+	<div id="ex7" class="modal">
+        <div class="container_certificate"> 
+           <div class="certificate">
+                <ul class="mb30">
+                    <li class="mb30"><img src="../img/receipt_txt2.gif" alt="cerificateLogo" class="cerificateLogo"></li>
+                    <li class="mb10 mt50"><span class="redText">수강자명</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span>testtest</span></li>
+                    <li class="mb10 "><span class="redText">수강내역</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span>화상영어</span> <span>English In Common 1-1과정</span></li>
+                    <li class="mb10 "><span class="redText">결제금액</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span>35,000</span><span>원</span> </li>
+                    <li class="mb10 "><span class="redText">수강기간</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span>2021.06.03~2121.06.29</span></li>
+                    <li class="mb10 "><span class="redText">담당강사</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span>Test Teachder2</span></li>
+                    <li class="mb10 "><span class="redText">출석현황</span><span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span><span>출석</span><span>0</span><span>회 /</span><span>결석</span><span>0</span><span>잔여</span><span>8</span><span>출석률</span><span>0</span><span>%</span></li>
+                </ul>
+                <div class=" certificate_script">
+                    <div class="mb10"> 본 수강확인증은 <span class="redText">testtest</span><span>회원님</span>께서 <span>사이트A</span> 에서 <br />
+                        <span> 제공하는 화상영어 프로그램 수강을 증명하여 이에</span> <br/>
+                       <span>증빙서류로 제출이 가능합니다.</span>  </div>
+                    <div>
+                        <div class="mb10"><span class="blackText">(주)새하이앤에스</span><img src="../img/" alt="signinImg"></div>
+                        <span class="blackText">사업자 등록번호</span><span class="blackText">214-00-00000</span>
+
+                    </div>
+                    <div ><span class="certificate_date transformToCenter1">2021.07.19</span></div>
+                    <div class="mb10">본 영수증은 증빙서류로 회사에 제출이 가능합니다.</div>
+                    <div class="mb10 transformToCenter"><a href="#" onclick=""><img src="../img/btn_pring.gif" /></a><a href="#" rel="modal:close"  id="#close-modal"><img src="../img/btn_close02.gif"/></a></div>
+                </div>
+
+           </div>
+        </div>
+      
+    </div>
+	-->
+
+
+     <div class="txtCaution">
+         <h5 class="mb30" style="padding-bottom: 0;">학습현황</h5>
+         <span class="mb10">출결 및 학습현황을 확인하실수 있습니다.</span>
+         <div class="mb10 w300"><span>수업 </span><span class="font_lightBlue">녹화파일은 한 달 동안만 회원에게 제공</span> <span>되고 </span> <span class="font_lightBlue">삭제</span><span>됩니다.</span></div>
+         <div class="mb30"><span>수업</span> <span class="font_lightBlue">시작 시각을 꼭 지켜</span><span>주시길 바랍니다.</span></div>
+         <div class="mb30 underline"></div>
+     </div>
+     
+     <div th:if="${existFlag} == 'Y' " >
+         <h3 class="mb10 title">수업중인 프로그램</h3>
+         <div class="selecter-wrap mb10">
+             <div class="">
+                 <select name="" id="" class="jcf-hidden" onchange="classChange(this)">
+                    <option th:each="classComboList : ${classComboList}" th:text="|${classComboList.title} &nbsp&nbsp[ ${classComboList.start_date} ~ ${classComboList.end_date} ]|" th:value="${classComboList.no}" th:selected="${classComboList.no} == ${classInfo.class_no}"></option>
+                 </select>
+             </div>
+         </div>
+         <table class="mb10" id="table">
+             <thead>
+                 <tr class="tr" id="tr">
+                     
+                         <th class="moFirstRow">수업시간</th>
+                         <th class="moFirstRow">강사</th>
+                         <th class="moFirstRow">교육과정</th>
+                         <th class="moFirstRow">교재보기</th>
+                     
+                         <th class="moSecRow">수업일수</th>
+                         <th class="moSecRow">수업시작시간</th>
+                         <th class="moSecRow">수업시간</th>
+                         <th class="moSecRow">수업상태</th>
+                         <th class="moSecRow">수강확인증</th>
+                    
+                 </tr>
+             </thead>
+             <tr>                 
+                 <td class="moFirstRow" th:text="|${classInfo.start_date} ~ ${classInfo.end_date}|">2021.04.26 ~ 20210.06.21</td>
+                 <td class="moFirstRow" th:text="${classInfo.teacher_name}">TestTeacher</td>
+                 <td class="moFirstRow" th:text="${classInfo.product_name}">I Can Speak</td>
+                 <td class="moFirstRow"><a th:if="${#maps.containsKey(classInfo, 'textbook_name')}" th:text="${classInfo.textbook_name}" th:onclick="viewTextbook([[${classInfo.textbook_no}]])" class="link">I Can Speak(Red) 1-1</a> </td>
+             
+                 <td class="moSecRow" th:text="|${classInfo.class_week} ${classInfo.product_count}회|">월,수 16회</td>
+                 <td class="moSecRow" th:text="${classInfo.class_time}">16:20</td>
+                 <td class="moSecRow" th:text="|${classInfo.product_running_time}분|">40분</td>
+                 <td class="moSecRow" th:text="${classInfo.status}">수업중</td>
+                 <!-- <td class="moSecRow"><a href="#ex7">View</a></td> -->                 
+                 <td class="moSecRow"><a class="link" th:onclick="viewBtn([[${classInfo}]])">View</a></td>             
+             </tr>
+         </table>
+         <div class="mb30">
+             <h6 class="fontW">·출결 클릭시 강사 코멘트 확인 가능합니다.</h6>
+             <h6 class="fontW">·녹화파일은 화상학습프로그램을 이용하여 재생됩니다.</h6>
+         </div>
+
+         <table id="table1">
+             <thead>
+                 <th>No</th>
+                 <th>수업일</th>
+                 <th>시간/분</th>
+                 <th>선생님</th>
+                 <th>수업 입장</th>
+                 <th>출결</th>
+                 <th>녹화파일</th>
+             </thead>
+             <tr th:if="${classLogCnt} == 0">
+					<td colspan="7">There is no data.</td>
+			 </tr>
+             <tr th:each="item : ${classLog}">
+             	<td th:text=${itemStat.count}>10</td>
+             	<td th:text="${#dates.format(item.study_date, 'yyyy.MM.dd')}">2021.08.26</td>
+             	<td th:text="${item.class_time}">16:20</td>
+             	<td th:text="${item.teacher_name}">Test Teacher</td>
+             	<td><span class="pupleBox" th:if="${item.todayFlag} == '1' and ${item.btnFlag} == '1' " th:onclick="videoClassBtn([[${item}]])" style="cursor:pointer;">수업 입장</span></td>             	
+             	<td>
+             		<a th:if="${item.present} == '1' " class="link" th:text="${item.present_txt}" th:onclick="reportBtn([[${item}]])"></a>
+             		<span th:unless="${item.present} == '1' " th:text="${item.present_txt}"></span>             	
+             	</td>
+             	<td><div class="btn recordPlayBtn" th:onclick="fileBtn([[${item}]])">다시 보기</div></td>
+             </tr>
+             
+         </table>
+     </div>     
+     
+     <!-- 수강중인 class 없음 -->
+     <div th:unless="${existFlag} == 'Y' " >
+     	<h3 class="mb10 title">수업중인 프로그램</h3>
+         <div class="selecter-wrap mb10">
+             <div class="">
+                 <select name="" id="" class="jcf-hidden">
+                     <option>-- 수업중인 프로그램이 없습니다 --</option>
+                 </select>
+             </div>
+         </div>
+         <table class="mb10" id="table">
+             <thead>
+                 <tr class="tr" id="tr">
+                     
+                         <th class="moFirstRow">수업시간</th>
+                         <th class="moFirstRow">강사</th>
+                         <th class="moFirstRow">교육과정</th>
+                         <th class="moFirstRow">교재보기</th>
+                     
+                         <th class="moSecRow">수업일수</th>
+                         <th class="moSecRow">수업시작시간</th>
+                         <th class="moSecRow">수업시간</th>
+                         <th class="moSecRow">수업상태</th>
+                         <th class="moSecRow">수강확인증</th>
+                    
+                 </tr>
+             </thead>
+             <tr>
+                 <td colspan="9">There is no data.</td>
+             </tr>
+         </table>
+         <div class="mb30">
+             <h6 class="fontW">·출결 클릭시 강사 코멘트 확인 가능합니다.</h6>
+             <h6 class="fontW">·녹화파일은 화상학습프로그램을 이용하여 재생됩니다.</h6>
+         </div>
+
+         <table id="table1">
+             <thead>
+                 <th>No</th>
+                 <th>수업일</th>
+                 <th>시간/분</th>
+                 <th>선생님</th>
+                 <th>수업 입장</th>
+                 <th>출결</th>
+                 <th>녹화파일</th>
+             </thead>
+             <tr><td colspan="7">There is no data.</td></tr>
+         </table>
+     </div>
+     
+     
+     
+		
+	
+<script type="text/javascript" th:src="@{/js/student/myClass.js}"></script>
+</th:block>
+</body>
+
+</html>
+
+

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+.divTitle {
+	height: 35px;
+    line-height: 35px;
+    padding-left: 10px;
+    margin: 5px 0px 3px 0px;
+    background-color: #85b8a6;
+}
+
+.btn {
+   	line-height: 30px;
+    height: 30px;
+    width: 120px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #E6E6E6;
+}
+
+#time_checkbox_div input[type='checkbox'] {
+	vertical-align: middle;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 0px !important; ">
+<th:block layout:fragment="userContent">
+		
+	<!-- 수강목록 -->
+	<div class="divTitle">
+		<span style="font-weight: 600;" th:text="|수강상세정보 - ${info.study_name} / ${info.product_name}|"></span>
+		<div class="btn" style="text-align:center; float: right; margin-right: 10px; margin-top: 3px;" th:onclick="userDetail_setTutor([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">배정내역</div>
+		<div class="btn" style="text-align:center; float: right; margin-right: 5px; margin-top: 3px;" th:onclick="userDetail_classLog([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">학습현황</div>
+		<div class="btn" style="text-align:center; float: right; margin-right: 5px; margin-top: 3px;" th:onclick="userDetail_info([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">수강상세정보</div>
+	</div>
+	<form id="setTutorForm" method="post">
+		<input type="hidden" name="class_no" th:value="${info.class_no}">
+		<input type="hidden" name="product_no" th:value="${info.product_no}">
+		<table>
+			<colgroup>
+				<col width="15%;">
+				<col width="35%;">
+				<col width="15%;">
+				<col width="35%;">
+			</colgroup>
+			<tr>
+				<th colspan="4">수업배정</th>
+			</tr>
+			<tr>
+				<td>language</td>
+				<td th:text="${info.product_language}"></td>
+				<td>course</td>
+				<td th:text="${info.study_name}"></td>
+			</tr>
+			<tr>
+				<td>type</td>
+				<td th:text="${info.product_name}"></td>
+				<td>search date</td>
+				<td><input type="date" name="search_date" th:value="${info.start_date}"></td>
+			</tr>
+			<tr>
+				<td>start date</td>
+				<td colspan="3" th:text="${info.start_date}"></td>
+			</tr>
+			<tr>
+				<td>time</td>
+				<td colspan="3">
+					<div id="time_checkbox_div">
+						<input type="checkbox" name="teacher_week" value="sun" id="sun" th:checked="${#strings.contains(info.product_week, 'sun')}"><label for="sun">일</label>
+						<input type="checkbox" name="teacher_week" value="mon" id="mon" th:checked="${#strings.contains(info.product_week, 'mon')}"><label for="mon">월</label>
+						<input type="checkbox" name="teacher_week" value="tue" id="tue" th:checked="${#strings.contains(info.product_week, 'tue')}"><label for="tue">화</label>
+						<input type="checkbox" name="teacher_week" value="wed" id="wed" th:checked="${#strings.contains(info.product_week, 'wed')}"><label for="wed">수</label>
+						<input type="checkbox" name="teacher_week" value="thu" id="thu" th:checked="${#strings.contains(info.product_week, 'thu')}"><label for="thu">목</label>
+						<input type="checkbox" name="teacher_week" value="fri" id="fri" th:checked="${#strings.contains(info.product_week, 'fri')}"><label for="fri">금</label>
+						<input type="checkbox" name="teacher_week" value="sat" id="sat" th:checked="${#strings.contains(info.product_week, 'sat')}"><label for="sat">토</label>
+					</div>
+					<div>
+						<select data-jcf='{"maxVisibleItems": 10}' id="start_time" name="start_time" style="width: 25%;" onchange="startTime(this)">
+							<option value="0">00시</option>
+							<option value="1">01시</option>
+							<option value="2">02시</option>
+							<option value="3">03시</option>
+							<option value="4">04시</option>
+							<option value="5">05시</option>
+							<option value="6">06시</option>
+							<option value="7">07시</option>
+							<option value="8">08시</option>
+							<option value="9">09시</option>
+							<option value="10">10시</option>
+							<option value="11">11시</option>
+							<option value="12">12시</option>
+							<option value="13">13시</option>
+							<option value="14">14시</option>
+							<option value="15">15시</option>
+							<option value="16">16시</option>
+							<option value="17">17시</option>
+							<option value="18">18시</option>
+							<option value="19">19시</option>
+							<option value="20">20시</option>
+							<option value="21">21시</option>
+							<option value="22">22시</option>
+							<option value="23">23시</option>
+						</select>
+						&nbsp;~&nbsp;
+						<select data-jcf='{"maxVisibleItems": 10}' id="end_time" name="end_time" style="width: 25%;" onchange="endTime(this)">
+							<option value="0">00시</option>
+							<option value="1">01시</option>
+							<option value="2">02시</option>
+							<option value="3">03시</option>
+							<option value="4">04시</option>
+							<option value="5">05시</option>
+							<option value="6">06시</option>
+							<option value="7">07시</option>
+							<option value="8">08시</option>
+							<option value="9">09시</option>
+							<option value="10">10시</option>
+							<option value="11">11시</option>
+							<option value="12">12시</option>
+							<option value="13">13시</option>
+							<option value="14">14시</option>
+							<option value="15">15시</option>
+							<option value="16">16시</option>
+							<option value="17">17시</option>
+							<option value="18">18시</option>
+							<option value="19">19시</option>
+							<option value="20">20시</option>
+							<option value="21">21시</option>
+							<option value="22">22시</option>
+							<option value="23">23시</option>
+						</select>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>tutor</td>
+				<td colspan="3">
+					<select id="center_no" name="center_no" style="width: 25%;" onchange="centerSel(this)">
+						<option value="0">-- 티칭센터 --</option>
+						<option th:each="c : ${center}" th:value="${c.center_no}" th:text="${c.center_name}"></option>
+					</select>
+					
+					<select id="teacher_group_no" name="teacher_group_no" style="width: 25%;" onchange="groupSel(this)">
+						<option value="0">-- 그룹 --</option>
+						<option th:each="g : ${group}" th:value="${g.teacher_group_no}" th:text="${g.teacher_group_name}"></option>
+					</select>
+					
+					<select id="user_teacher_no" name="user_teacher_no" style="width: 25%;">
+						<option value="0">-- 선택 --</option>
+					</select>
+					
+					<div class="btn" style="text-align:center; float: right;" onclick="searchTeacher()">조회</div>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="4">시간배정</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<table id="teacher_sel">
+						<colgroup>
+							<col width="20%">
+							<col width="70%">
+							<col width="10%">
+						</colgroup>
+						<tr>
+							<td>수업시간</td>
+							<td>[티칭센터] 선생님</td>
+							<td>선택</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="4">book setting</th>
+			</tr>
+			<tr>
+				<td>course</td>
+				<td colspan="3">
+					<select id="study_no" name="study_no" onchange="studySel(this)">
+						<option value="0">-- 선택 --</option>
+						<option th:each="s : ${study}" th:value="${s.study_no}" th:text="${s.study_name}"></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>book</td>
+				<td colspan="3">
+					<select id="textbook_no" name="textbook_no">
+						<option value="0">-- 선택 --</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</form>
+	
+	<div class="btn" style="text-align:center; float: right; margin: 20px 5px 0px 0px;" onclick="setTutor()">등록</div>
+	
+<script th:inline="javascript">
+</script>
+<script type="text/javascript" th:src="@{/js/admin/userDetail_settutor_class.js}"></script>
+</th:block>
+</body>
+
+</html>

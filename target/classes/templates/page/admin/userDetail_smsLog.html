@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/userLayout">
+<head>
+<title></title>
+
+
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 150px; /* Location of the box */
+  left: 0;
+  top: 0;
+  
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.3); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  /* width: 80%; */
+  width : 400px;
+  min-height : 200px;
+  /* height : 200px; */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* The Close Button */
+.close {  
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  padding-right: 15px;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 15px 0px 0px 15px;
+  background-color: #004080;
+  color: white;
+  /* font-size: 13px; */
+}
+
+.modal-body {padding: 10px;}
+
+
+</style>
+
+</head>
+<body style="padding-top: 50px !important; ">
+<th:block layout:fragment="userContent">
+	
+	<!-- 수강목록 -->
+	<div class="table-wrap">
+		<table class="result-table02" style="table-layout: fixed;">
+			<colgroup>
+				<col width="6%">
+				<col width="12%">
+				<col width="10%">
+				<col width="28%">
+				<col width="14%">
+				<col width="14%">
+				<col width="8%">
+				<col width="8%">						
+			</colgroup>
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>발송일</th>
+					<th>발송시간</th>
+					<th>내용</th>
+					<th>수신번호</th>						
+					<th>발신번호</th>
+					<th>타입</th>									
+					<th>상태</th>		
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${smsLogCnt} == 0">
+					<td colspan="7">There is no data.</td>
+				</tr>
+				<tr th:each="item : ${smsLogList}">
+					<td th:if="${#maps.containsKey(item, 'rownum')}" th:text="${#numbers.formatInteger(item.rownum, 1)}"></td>
+					<td th:unless="${#maps.containsKey(item, 'rownum')}">-</td>	
+					
+					<td th:text="${item.send_date}"></td>
+					
+					<td th:text="${item.send_time}"></td>
+					
+					<td th:if="${#maps.containsKey(item, 'content')}" th:onclick="contentDetail([[${item}]])"><pre style="white-space:nowrap; text-overflow:ellipsis; overflow:hidden; color:#4b82e3;" class="link" th:text="${item.content}"></pre></td>
+					
+					<td th:if="${#maps.containsKey(item, 'receipt_number')}" th:text="${item.receipt_number}"></td>
+					<td th:unless="${#maps.containsKey(item, 'receipt_number')}">-</td>
+					
+					<td th:if="${#maps.containsKey(item, 'send_number')}" th:text="${item.send_number}"></td>
+					<td th:unless="${#maps.containsKey(item, 'send_number')}">-</td>
+					
+					<td th:text="${item.type}"></td>
+					
+					<td th:onclick="statusDetail([[${item}]])"><span style="color:#4b82e3;" class="link" th:text="${item.status} == '1' ? '성공' : '실패'"></span></td>
+									
+				</tr>								
+			</tbody>
+		</table>
+		
+		
+		<th:block th:if="${smsLogCnt > 0}">		
+			<ul class="pagenate">
+				<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+					<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/smsLog(page=1, perPageNum=${cri.perPageNum}, user_student_no=${paramMap.user_student_no} )}"></a>
+				</li>
+				<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+					<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/smsLog(page=${cri.page}-1, perPageNum=${cri.perPageNum}, user_student_no=${paramMap.user_student_no} )}">　</a>
+				</li>
+				
+				<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+					<a class="page-link" th:href="@{/smsLog(page=${idx}, perPageNum=${cri.perPageNum}, user_student_no=${paramMap.user_student_no} )}" th:text="${idx}"></a>
+				</li>	
+											 				
+				<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+					<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/smsLog(page=${cri.page}+1, perPageNum=${cri.perPageNum}, user_student_no=${paramMap.user_student_no} )}">　</a>														
+				</li>				
+				<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+					<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/smsLog(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, user_student_no=${paramMap.user_student_no} )}">　</a>
+				</li>
+			</ul>
+		</th:block>	
+		
+	</div>	<!-- table-wrap -->
+
+	<!-- The Modal - 과제 불러오기 -->
+	<div id="modal" class="modal">
+		
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close">&times;</span>
+				<h5>Message</h5>
+			</div>
+
+			<div class="modal-body">
+				<textarea name="smsContent" id="smsContent" style="width:100%; min-height: 250px; background-color: white; border: 0px;" readonly></textarea>
+				<!-- <pre id="smsContent"></pre> -->
+				<div id="statusContent"></div>
+			</div>
+			
+		</div>
+
+	</div>	
+	<!-- Modal End -->
+
+
+		<script th:inline="javascript">
+	let paramMap = /*[[${paramMap}]]*/ null;
+</script>
+<script type="text/javascript" th:src="@{/js/admin/userDetail_smsLog.js}"></script>
+</th:block>
+</body>
+
+</html>

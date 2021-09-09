@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+.divTitle {
+	height: 35px;
+    line-height: 35px;
+    padding-left: 10px;
+    margin: 5px 0px 3px 0px;
+    background-color: #85b8a6;
+}
+
+.btn {
+   	line-height: 30px;
+    height: 30px;
+    width: 120px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #E6E6E6;
+}
+
+#status_box {
+	line-height: 44px;
+}
+#status_box input[type='radio'] {
+	height: 15px;
+	vertical-align: middle;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 0px !important; ">
+<th:block layout:fragment="userContent">
+		
+	<!-- 수강목록 -->
+	<div class="divTitle">
+		<span style="font-weight: 600;" th:text="|수강상세정보 - ${info.study_name} / ${info.product_name}|"></span>
+		<div class="btn" style="text-align:center; float: right; margin-right: 10px; margin-top: 3px;" th:onclick="userDetail_setTutor([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">배정내역</div>
+		<div class="btn" style="text-align:center; float: right; margin-right: 5px; margin-top: 3px;" th:onclick="userDetail_classLog([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">학습현황</div>
+		<div class="btn" style="text-align:center; float: right; margin-right: 5px; margin-top: 3px;" th:onclick="userDetail_info([[${info.flag}]], [[${info.no}]], [[${info.user_student_no}]])">수강상세정보</div>
+	</div>
+	<form id="logForm" method="post">
+		<div class="left-head-table custom02-table report mb10">
+			<div class="tr">
+				<div class="th">수업전화</div>
+				<div class="td">
+					<input type="hidden" name="flag" th:value="${info.flag}">
+					<input type="hidden" th:if="${info.flag} == 'class'" name="class_no" th:value="${info.class_no}">
+					<input type="hidden" th:if="${info.flag} == 'class'" name="class_student_no" th:value="${info.class_student_no}">
+					<input type="hidden" th:if="${info.flag} == 'leveltest'" name="leveltest_no" th:value="${info.no}">
+					<input type="text" name="class_phone" th:value="${info.class_phone}" oninput="removeChar(event)" maxlength="11">
+				</div>
+				
+				<th:block th:if="${info.flag} == 'class'">
+					<div class="th">수강기간</div>
+					<div class="td">
+						<input type="date" name="start_date" th:value="${info.start_date}"> ~ <input type="date" name="end_date" th:value="${info.end_date}">
+					</div>
+				</th:block>
+				<th:block th:if="${info.flag} == 'leveltest'">
+					<div class="th">레벨테스트일</div>
+					<div class="td">
+						<input type="date" name="start_date" th:value="${info.start_date}">
+					</div>
+				</th:block>
+			</div>
+			<div class="tr">
+				<div class="th">상태</div>
+				<div class="td">
+					<div id="status_box" th:if="${info.flag} == 'class'">
+						<input type="radio" id="class_status0" name="class_status" value="0" th:checked="${info.class_status} == 0" th:readonly="${info.isEnd} == 1"><label for="class_status0">대기</label>
+						<input type="radio" id="class_status1" name="class_status" value="1" th:checked="${info.class_status} == 1" th:readonly="${info.isEnd} == 1"><label for="class_status1">수업중</label>
+						<input type="radio" id="class_status2" name="class_status" value="2" th:checked="${info.class_status} == 2" th:readonly="${info.isEnd} == 1"><label for="class_status2">취소</label>
+					</div>
+					<div id="status_box" th:if="${info.flag} == 'leveltest'">
+						<input type="radio" id="leveltest_status0" name="leveltest_status" value="0" th:checked="${info.leveltest_status} == 0" th:readonly="${info.isEnd} == 1"><label for="leveltest_status0">대기</label>
+						<input type="radio" id="leveltest_status1" name="leveltest_status" value="1" th:checked="${info.leveltest_status} == 1" th:readonly="${info.isEnd} == 1"><label for="leveltest_status1">수업중</label>
+						<input type="radio" id="leveltest_status2" name="leveltest_status" value="2" th:checked="${info.leveltest_status} == 2" th:readonly="${info.isEnd} == 1"><label for="leveltest_status2">취소</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<th:block th:if="${info.flag} == 'class'">
+		<div class="btn" style="text-align:center; float: left; margin: 20px 5px 0px 0px;" th:onclick="deleteClass([[${info.product_personnel}]], [[${info.class_no}]], [[${info.class_student_no}]])">수강자 완전 삭제</div>
+	</th:block>
+	<th:block th:if="${info.flag} == 'leveltest'">
+		<div class="btn" style="text-align:center; float: left; margin: 20px 5px 0px 0px;" th:onclick="deleteLeveltest([[${info.no}]])">수강자 완전 삭제</div>
+	</th:block>
+	<div class="btn" style="text-align:center; float: right; margin: 20px 5px 0px 0px;" onclick="updateClassBtn()">Changing</div>
+	
+<script th:inline="javascript">
+</script>
+<script type="text/javascript" th:src="@{/js/admin/userDetail_info.js}"></script>
+</th:block>
+</body>
+
+</html>

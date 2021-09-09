@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/userLayout">
+<head>
+<title></title>
+
+
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+
+.divTitle {
+	height: 35px;
+    line-height: 35px;
+    padding-left: 10px;
+    margin: 5px 0px 3px 0px;
+    background-color: #85b8a6;
+}
+
+.btn {
+   	line-height: 30px;
+    height: 30px;
+    width: 120px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #E6E6E6;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 50px !important; ">
+<th:block layout:fragment="userContent">
+		
+	<!-- 수강목록, 수강상세정보 -->		
+	<!-- <p style="font-weight: 600; margin-bottom: 10px; font-size: 18px;">수강목록</p> -->
+
+	<!-- 수강목록 -->
+	<div class="divTitle">
+		<span style="font-weight: 600;">수강목록</span>
+		<div class="btn" th:onclick="makeClass([[${user.user_student_no}]])" style="text-align:center; float: right; margin-right: 10px; margin-top: 3px;">정규수업생성</div>
+		<div class="btn" th:onclick="makeLeveltest([[${user.user_student_no}]])" style="text-align:center; float: right; margin-right: 5px; margin-top: 3px;">레벨테스트생성</div>		
+	</div>
+	<div class="table-wrap">
+		<table class="result-table02">
+			<colgroup>
+				<col width="5%">
+				<col width="10%">
+				<col width="*%">
+				<col width="*%">
+				<col width="10%">
+				<col width="8%">
+				<col width="5%">
+				<col width="5%">
+				<col width="5%">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>site</th>
+					<th>course</th>
+					<th>term</th>
+					<th>tutor</th>
+					<th>condition</th>
+					<th>info</th>
+					<th>class</th>
+					<th>set tutor</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${classCnt} == 0">
+					<td colspan="9">There is no data.</td>
+				</tr>
+				<tr th:each="item : ${classList}">
+					<td th:if="${#maps.containsKey(item, 'rownum')}" th:text="${#numbers.formatInteger(item.rownum, 1)}"></td>
+					<td th:unless="${#maps.containsKey(item, 'rownum')}">-</td>	
+					
+					<td th:text="${item.site_name}"></td>					
+					<td th:text="|${item.study_name} / ${item.product_name}|"></td>					
+					<!-- <td th:text="|${item.start_date} ~ ${item.end_date}|"></td> -->
+					<td>
+						<span th:if="${#maps.containsKey(item, 'start_date')}" th:text="|${item.start_date} ~|"></span>
+						<span th:if="${#maps.containsKey(item, 'end_date')}" th:text="| ${item.end_date}|"></span>
+					</td>	
+									
+					<td th:if="${#maps.containsKey(item, 'center_name')}" th:text="|[${item.center_name}] ${item.teacher_name}|"></td>
+					<th:block th:unless="${#maps.containsKey(item, 'center_name')}">
+						<td th:if="${#maps.containsKey(item, 'teacher_group_name')}" th:text="|[${item.teacher_group_name}] ${item.teacher_name}|"></td>
+						<td th:unless="${#maps.containsKey(item, 'teacher_group_name')}"></td>
+					</th:block>
+					
+					<td><span class="state" th:text="${item.status}" th:classappend="${item.status} == '수업중' ? ing"></span></td>
+					
+					<td>
+						<div class="customTableBtn" id="infoBtn" th:onclick="infoBtn([[${item.flag}]], [[${item.no}]], [[${item.user_student_no}]])">정보</div>
+					</td>
+					<td>
+						<div class="customTableBtn" id="infoBtn" th:onclick="classLog([[${item.flag}]], [[${item.no}]], [[${item.user_student_no}]])">학습</div>
+					</td>
+					<td>
+						<div class="customTableBtn" id="infoBtn" th:onclick="setTutor([[${item.flag}]], [[${item.no}]], [[${item.user_student_no}]])">배정</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		
+		<th:block th:if="${classCnt > 0}">
+			<ul class="pagenate">
+				<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+					<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/userDetail(page=1, perPageNum=${cri.perPageNum}, no=${paramMap.no}, user_student_no=${paramMap.user_student_no}, flag=${paramMap.flag} )}"></a>
+				</li>
+				<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+					<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/userDetail(page=${cri.page}-1, perPageNum=${cri.perPageNum}, no=${paramMap.no}, user_student_no=${paramMap.user_student_no}, flag=${paramMap.flag} )}">　</a>
+				</li>
+				
+				<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+					<a class="page-link" th:href="@{/userDetail(page=${idx}, perPageNum=${cri.perPageNum}, no=${paramMap.no}, user_student_no=${paramMap.user_student_no}, flag=${paramMap.flag} )}" th:text="${idx}"></a>
+				</li>	
+											 				
+				<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+					<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/userDetail(page=${cri.page}+1, perPageNum=${cri.perPageNum}, no=${paramMap.no}, user_student_no=${paramMap.user_student_no}, flag=${paramMap.flag} )}">　</a>														
+				</li>				
+				<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+					<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/userDetail(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, no=${paramMap.no}, user_student_no=${paramMap.user_student_no}, flag=${paramMap.flag} )}">　</a>
+				</li>
+			</ul>
+		</th:block>	
+		
+	</div>	<!-- table-wrap -->
+	
+	<div class="detailInfoDiv" style="width: 100%; height: 100%;">
+		<iframe th:if="${info.flag} == 'normal'" width="100%" height="100%" frameborder="0" framespacing="0" marginheight="0" marginwidth="0" scrolling="yes" vspace="0"></iframe>
+		<iframe th:unless="${info.flag} == 'normal'" th:src="@{/userDetail/userDetail_info(flag=${info.flag}, no=${info.no}, user_student_no=${info.user_student_no})}" width="100%" height="100%" frameborder="0" framespacing="0" marginheight="0" marginwidth="0" scrolling="no" vspace="0"></iframe>
+	</div>
+		
+	<!-- 컨테이너 // -->
+	
+	
+<script th:inline="javascript">
+	let paramMap = /*[[${paramMap}]]*/ null;
+</script>
+<script type="text/javascript" th:src="@{/js/admin/userDetail.js}"></script>
+</th:block>
+</body>
+
+</html>

@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.edutem.lms.mapper.StudentMapper">
+	<!-- 학습현황 -->
+	<select id="selectClassComboByStudent" parameterType="hashmap" resultType="hashmap">
+		select 'class' as flag, c.class_no as no, p.product_name as title, c.start_date, c.end_date, c.class_no
+		from class c
+		inner join class_student cs on c.class_no = cs.class_no
+		inner join product p on c.product_no = p.product_no
+		where c.user_teacher_no is not null
+		and cs.user_student_no = #{user_student_no}
+		and c.class_status not in(2)
+	</select>
+	<select id="getClassInfo" parameterType="hashmap" resultType="hashmap">
+		select c.class_no, c.room_no
+			 , c.start_date, c.end_date, c.user_teacher_no, t.teacher_name, s.study_name
+			 , p.product_name, c.textbook_no, tb.textbook_name, p.product_week, p.product_count, p.product_type, p.product_language
+		     , format(p.product_price, 0) as product_price
+			 , c.class_time, p.product_running_time
+			 , if(c.class_status = 0, '대기', if(c.class_status = 2, '취소', if(c.class_status = 1, if(c.end_date <![CDATA[ < ]]> current_date(), '수업종료', if(c.start_date <![CDATA[ <= ]]> current_date(), '수업중', '수업예정')), ''))) as status
+			 , replace(replace(replace(replace(replace(replace(replace(replace(p.product_week, 'mon', '월'), 'tue', '화'), 'wed', '수') , 'thu', '목'), 'fri', '금'), 'sat', '토'), 'sun', '일'), '/', ',') as class_week     
+		     , us.student_name     
+		     
+		     , (select count(*) from class_score ia
+				inner join class_log ib on ia.class_log_no = ib.class_log_no
+				inner join class_student ic on ia.class_student_no = ic.class_student_no
+				where ib.class_no = #{class_no} and ic.user_student_no = #{user_student_no}) totalCnt      
+		     , (select count(*) from class_score ia
+				inner join class_log ib on ia.class_log_no = ib.class_log_no
+				inner join class_student ic on ia.class_student_no = ic.class_student_no
+				where ib.class_no = #{class_no} and ic.user_student_no = #{user_student_no} and ia.present = 0) remainCnt        
+		     , (select count(*) from class_score ia
+				inner join class_log ib on ia.class_log_no = ib.class_log_no
+				inner join class_student ic on ia.class_student_no = ic.class_student_no
+				where ib.class_no = #{class_no} and ic.user_student_no = #{user_student_no} and ia.present = 1) presentCnt
+		     , (select count(*) from class_score ia
+				inner join class_log ib on ia.class_log_no = ib.class_log_no
+				inner join class_student ic on ia.class_student_no = ic.class_student_no
+				where ib.class_no = #{class_no} and ic.user_student_no = #{user_student_no} and ia.present = 2) absentCnt 
+		from class c
+		inner join user_teacher t on c.user_teacher_no = t.user_teacher_no
+		left join textbook tb on c.textbook_no = tb.textbook_no
+		left join study_level sl on tb.study_level_no = sl.study_level_no
+		left join study s on sl.study_no = s.study_no
+		inner join product p on c.product_no = p.product_no
+		inner join user_student us on us.user_student_no = #{user_student_no}
+		where c.class_no = #{class_no}
+		
+		
+		<!--  
+		select c.class_no, c.room_no
+		     , c.start_date, c.end_date, c.user_teacher_no, t.teacher_name, s.study_name
+		     , p.product_name, c.textbook_no, tb.textbook_name, p.product_week, p.product_count
+		     , c.class_time, p.product_running_time
+		     , if(c.class_status = 0, '대기', if(c.class_status = 2, '취소', if(c.class_status = 1, if(c.end_date <![CDATA[ < ]]> current_date(), '수업종료', if(c.start_date <![CDATA[ <= ]]> current_date(), '수업중', '수업예정')), ''))) as status
+		     , replace(replace(replace(replace(replace(replace(replace(replace(p.product_week, 'mon', '월'), 'tue', '화'), 'wed', '수') , 'thu', '목'), 'fri', '금'), 'sat', '토'), 'sun', '일'), '/', ',') as class_week     
+		from class c
+		inner join user_teacher t on c.user_teacher_no = t.user_teacher_no
+		inner join textbook tb on c.textbook_no = tb.textbook_no
+		inner join study_level sl on tb.study_level_no = sl.study_level_no
+		inner join study s on sl.study_no = s.study_no
+		inner join product p on c.product_no = p.product_no
+		where c.class_no = #{class_no}
+		-->
+	</select>
+	<select id="selectClassLog" parameterType="hashmap" resultType="hashmap">
+		select c.class_no, c.room_no
+		     , a.class_score_no, a.class_log_no, a.class_student_no
+		     , cs.user_student_no
+		     , l.study_date, l.start_time as class_time, t.teacher_name
+			 , a.present, if(a.present = 1, '출석', if(a.present = 2, '결석', '대기')) as present_txt
+			 , a.study_status, c.class_status
+			 , if(l.study_date = current_date(), '1', '0') as todayFlag
+			 , case when c.class_status = 1 				<!-- 수업상태가 수업중 이면서 -->
+		            then if(a.study_status = 0, '1', '0') 	<!-- 학습상태가 대기인 경우에만 버튼이 보이도록 -->
+		            else '0' end btnFlag
+			 
+		from class_score a
+		inner join class_log l on a.class_log_no = l.class_log_no
+		inner join class c on l.class_no = c.class_no
+		inner join class_student cs on a.class_student_no = cs.class_student_no
+		inner join user_teacher t on l.user_teacher_no = t.user_teacher_no
+		
+		where c.class_no = #{class_no}
+		and cs.user_student_no = #{user_student_no}
+		order by l.study_date asc
+	</select>	
+	<insert id="insertClassVideoStudentLog" parameterType="hashmap">
+		  insert into class_video_student_log(class_score_no, login_no, in_time)
+		  values(#{class_score_no}, #{login_no}, now())
+	</insert>
+	<select id="selectLastAIClassVideoStudentLog" resultType="int">
+		  select auto_increment from information_schema.tables where table_name = 'class_video_student_log' and table_schema = 'SAEHALMSver31'
+	</select>
+	<update id="updateClassVideoStudentLog" parameterType="hashmap">
+		  update class_video_student_log
+		  set out_time = now()
+		  where class_video_student_log_no = #{class_video_student_log_no}
+	</update>
+	
+
+	<select id="getClassLogInfo" parameterType="hashmap" resultType="hashmap">
+		select a.class_score_no, a.class_log_no
+		     , s.user_student_no, s.student_name, l.user_teacher_no, t.teacher_name
+		     , l.study_date, p.product_name
+		     , ifnull(a.grammer, '') grammer, ifnull(a.speaking_fluency, '') as speaking_fluency
+     		 , ifnull(a.listening_comprehension, '') listening_comprehension, ifnull(a.pronunciation_intonation, '') as pronunciation_intonation
+     		 , ifnull(a.vocabulary, '') as vocabulary
+		     , a.today_topic, a.evaluation
+		from class_score a
+		inner join class_student cs on a.class_student_no = cs.class_student_no
+		inner join user_student s on cs.user_student_no = s.user_student_no
+		inner join class_log l on a.class_log_no = l.class_log_no
+		inner join user_teacher t on l.user_teacher_no = t.user_teacher_no
+		inner join class c on l.class_no = c.class_no
+		inner join product p on c.product_no = p.product_no
+		where a.class_score_no = #{class_score_no}
+				
+	</select>
+	
+		
+	<!-- 마이노트 무료레벨테스트 -->
+	<select id="selectLevelTestAll" parameterType="hashmap" resultType="hashmap">	
+		select t.* from ( 
+ 
+		   select @rownum:=@rownum+1 as rownum, sub.*  from (  
+		
+			  select base.* 
+				from (select l.leveltest_no, l.user_student_no, l.leveltest_language
+				           , l.study_date, l.class_time, l.user_teacher_no, t.teacher_name
+					       , l.leveltest_type, l.class_phone, l.leveltest_regdate
+					       , replace(replace(l.leveltest_type, 'Phone', '전화'), 'Video', '화상') as leveltest_type_txt
+					       , l.study_status, l.leveltest_status
+					  from leveltest l
+					  inner join user_teacher t on t.user_teacher_no = l.user_teacher_no
+			   ) base
+			   where 1=1
+			   and study_status != 2
+			   and leveltest_status != 2
+			   and user_student_no = #{user_student_no}	 
+				 
+		   ) sub
+		   where (@rownum := 0) = 0
+		   order by sub.study_date
+			
+		) t
+		order by t.rownum desc
+		limit #{cri.pageStart}, #{cri.perPageNum}		
+	</select>
+	<select id="countLevelTestAll" parameterType="hashmap" resultType="int">
+		select count(*) 
+		from leveltest l
+		inner join user_teacher t on t.user_teacher_no = l.user_teacher_no
+		where l.user_student_no = #{user_student_no}		
+	</select>	
+	<select id="getLevelInfo" parameterType="hashmap" resultType="hashmap">
+		select a.leveltest_no, a.user_student_no, s.student_name, a.user_teacher_no, t.teacher_name
+			 , a.leveltest_regdate, a.study_date, ifnull(sl.level_name, '-') as level_name     
+		     , a.class_time, date_format(date_add(str_to_date(a.class_time, "%H:%i"), interval 10 minute), "%H:%i") as class_endTime     
+		     , ifnull(a.grammer, '') grammer, ifnull(a.speaking_fluency, '') as speaking_fluency
+			 , ifnull(a.listening_comprehension, '') listening_comprehension, ifnull(a.pronunciation_intonation, '') as pronunciation_intonation
+			 , ifnull(a.vocabulary, '') as vocabulary
+		     , a.study_status
+		     
+		     , ifnull(a.comment_level, 'No Comment') as comment_level
+		     , ifnull(a.comment_grammer_vocabulary, 'No Comment') as comment_grammer_vocabulary
+		     , ifnull(a.comment_pronun_intonation, 'No Comment') as comment_pronun_intonation
+		     , ifnull(a.comment_listening, 'No Comment') as comment_listening
+		     , ifnull(a.evaluation, 'No Comment') as evaluation
+		from leveltest a
+		inner join user_student s on a.user_student_no = s.user_student_no
+		inner join user_teacher t on a.user_teacher_no = t.user_teacher_no
+		left join study_level sl on a.study_level_no = sl.study_level_no
+		where a.leveltest_no = #{leveltest_no}
+	</select>
+	
+
+	<!-- 수강신청 페이지  -->
+	<select id="selectStudentOne" parameterType="hashmap" resultType="hashmap">
+		select * from user_student where user_no=#{user_no}
+	</select>
+	<select id="selectSiteOne" parameterType="hashmap" resultType="hashmap">
+		select * from site where site_no=#{site_no}
+	</select>
+	<select id="selectScheduleClassSite" parameterType="hashmap" resultType="hashmap">
+		select * from schedule_class_site where site_no=#{site_no} and language_type=#{language} and #{today} between application_start_date and application_end_date
+	</select>
+	<select id="countStudyNotUsedSite" parameterType="hashmap" resultType="int">
+		select count(*) from study_not_used_site where site_no=#{site_no}
+	</select>
+	<select id="selectStudyLanguage" parameterType="hashmap" resultType="hashmap">
+		select * from study where study_language=#{language}
+	</select>
+	<select id="selectStudyLanguageLIMIT" parameterType="hashmap" resultType="hashmap">
+		select s.* from study s
+		inner join study_not_used_site snus on snus.study_no!=s.study_no
+		where s.study_language=#{language} and snus.site_no=#{site_no}
+	</select>
+	<select id="selectSiteProduct" parameterType="hashmap" resultType="hashmap">
+		select * from product where site_no=#{site_no}
+	</select>
+	<select id="selectTeacherLangAll" parameterType="hashmap" resultType="hashmap">
+		SELECT ut.* FROM user_teacher ut
+		left join teacher_group_member gm on gm.user_teacher_no=ut.user_teacher_no
+		left join teacher_group g on g.teacher_group_no=gm.teacher_group_no
+		left join center c on c.center_no=ut.center_no
+		left join site s on s.center_no=c.center_no or s.teacher_group_no=g.teacher_group_no
+		where s.site_no=#{site_no} and ut.teacher_language_type=#{language} and teacher_class_type='regular class' and teacher_open_status=1 and teacher_status=1
+		group by ut.user_teacher_no
+	</select>
+	<select id="selectTeacherOne" parameterType="hashmap" resultType="hashmap">
+		select * from user_teacher where user_teacher_no=#{user_teacher_no}
+	</select>
+	<select id="selectTextbookPriceOne" parameterType="hashmap" resultType="int">
+		select textbook_price from textbook where textbook_no=#{textbook_no}
+	</select>
+	<insert id="insertPayment" parameterType="hashmap">
+		insert into payment(payment_student, payment_teacher, payment_product, payment_study, payment_textbook, payment_book_status, payment_date, payment_time, payment_phone, payment_address, payment_regdate)
+		values(#{payment_student}, #{payment_teacher}, #{payment_product}, #{payment_study}, #{payment_textbook}, #{payment_book_status}, #{payment_date}, #{payment_time}, #{payment_phone}, #{payment_address}, now())
+	</insert>
+	
+	<!-- 회원가입 -->
+	<select id="selectSiteOneByCode" parameterType="hashmap" resultType="hashmap">
+		select * from site where site_code=#{site_code}
+	</select>
+	<insert id="insertUserStudent" parameterType="hashmap">
+		insert into user_student(user_no, site_no, student_type, student_type_status, student_name, student_eng_name, student_birth, student_birth_type, student_sex, student_grade, student_email, student_email_status, student_phone, student_phone_status, student_tel, student_address, student_profile, student_parent_name, student_parent_phone, student_parent_phone_status, student_invite, student_regdate)
+		values(#{user_no}, #{site_no}, #{student_type}, #{student_type_status}, #{student_name}, #{student_eng_name}, #{student_birth}, #{student_birth_type}, #{student_sex}, #{student_grade}, #{student_email}, #{student_email_status}, #{student_phone}, #{student_phone_status}, #{student_tel}, #{student_address}, #{student_profile}, #{student_parent_name}, #{student_parent_phone}, #{student_parent_phone_status}, #{student_invite}, now())
+	</insert>
+	
+	<!-- 마이노트 휴강 및 보강 신청 -->
+	<select id="selectPostponeByStudent" parameterType="hashmap" resultType="hashmap">	
+		select t.* from ( 
+ 
+		   select @rownum:=@rownum+1 as rownum, sub.*  from (  
+		
+			  select base.* 
+				from (select p.* 
+					  from postpone p					 				
+			   ) base
+			   where 1=1
+			   and user_student_no = #{user_student_no}	 
+				 
+		   ) sub
+		   where (@rownum := 0) = 0
+		   order by sub.postpone_regdate
+			
+		) t
+		order by t.rownum desc
+		limit #{cri.pageStart}, #{cri.perPageNum}		
+	</select>
+	<select id="countPostponeByStudent" parameterType="hashmap" resultType="int">
+		select count(*) 
+		from postpone p
+		where p.user_student_no = #{user_student_no}		
+	</select>
+	
+	<select id="getHolidayComboByClass" parameterType="hashmap" resultType="hashmap">
+		select l.*
+		from class_log l
+		where l.class_no = #{class_no}
+		and study_date >= DATE_ADD(current_date(), INTERVAL 2 DAY)
+	</select>
+	<insert id="insertPostpone" parameterType="hashmap">
+		insert into postpone(user_student_no, class_no, holiday_date, supplement_date, postpone_content, postpone_phone, postpone_status, postpone_regdate)
+		values(#{user_student_no}, #{class_no}, #{holiday_date}, #{supplement_date}, #{postpone_content}, #{postpone_phone}, 0, now())
+	</insert>
+	<update id="updatePostpone" parameterType="hashmap">
+		update postpone
+		set holiday_date = #{holiday_date}
+		  , supplement_date = #{supplement_date}
+		  , postpone_content = #{postpone_content}
+		  , postpone_phone = #{postpone_phone}
+		where postpone_no = #{postpone_no}
+	</update>
+	<select id="getPostpone" parameterType="hashmap" resultType="hashmap">	
+		select p.*, s.student_name, pd.product_name, c.start_date, c.end_date
+		from postpone p
+		inner join user_student s on p.user_student_no = s.user_student_no
+		inner join class c on p.class_no = c.class_no
+		inner join product pd on c.product_no = pd.product_no
+		where p.postpone_no = #{postpone_no}
+	</select>
+	
+	<!-- 회원정보 - 내 정보 수정 -->
+	<select id="getStudentInfo" parameterType="hashmap" resultType="hashmap">	
+		select s.*
+			 , u.id, u.pwd, st.site_name
+		from user_student s
+		inner join user u on u.user_no = s.user_no
+		inner join site st on s.site_no = st.site_no
+		where s.user_no = #{user_no}
+	</select>
+	<update id="updateUserByInfoModify" parameterType="hashmap">
+		update user 
+		set pwd = #{student_pwd}
+		where user_no = #{user_no}
+	</update>
+	<update id="updateUserStudentByInfoModify" parameterType="hashmap">
+		update user_student set		
+		student_name=#{student_name}, student_eng_name=#{student_eng_name}, student_birth=#{student_birth},
+		student_birth_type=#{student_birth_type}, student_sex=#{student_sex}, student_grade=#{student_grade},
+		student_email=#{student_email}, student_email_status=#{student_email_status}, student_phone=#{student_phone},
+		student_phone_status=#{student_phone_status}, student_tel=#{student_tel}, student_address=#{student_address},
+		student_profile=#{student_profile}, student_parent_name=#{student_parent_name},
+		student_parent_phone=#{student_parent_phone}, student_parent_phone_status=#{student_parent_phone_status},
+		student_invite=#{student_invite}
+		where user_no=#{user_no}
+	</update>
+	
+	
+	<!-- 무료레벨테스트 신청 -->
+	<select id="getTeacherComboByLanguageType" parameterType="hashmap" resultType="hashmap">	
+		select * from user_teacher where teacher_class_type like '%level test%' and teacher_language_type like #{language_type}
+	</select>
+	<select id="getSiteGroupNCenter" parameterType="hashmap" resultType="hashmap">
+		select site_no, site_name, ifnull(teacher_group_no, 0) as teacher_group_no, ifnull(center_no, 0) as center_no 	     
+		from site where site_no = #{site_no}
+	</select>
+	<select id="selectSiteTeachers" parameterType="hashmap" resultType="hashmap">
+		select * from (
+			select user_teacher_no, teacher_name 
+			from user_teacher
+			where center_no = #{center_no}
+			and teacher_language_type like concat('%', #{leveltest_language}, '%')
+			and teacher_open_status = 1
+			and teacher_status = 1
+			and teacher_class_type = 'level test'	  
+		
+			union all
+		
+			select t.user_teacher_no, t.teacher_name
+			from teacher_group g
+			inner join teacher_group_member m on g.teacher_group_no = m.teacher_group_no
+			inner join user_teacher t on m.user_teacher_no = t.user_teacher_no
+			where g.teacher_group_no = #{teacher_group_no}
+			and t.teacher_language_type like concat('%', #{leveltest_language}, '%')
+			and t.teacher_open_status = 1
+			and t.teacher_status = 1
+			and t.teacher_class_type = 'level test'	  
+		) z
+		group by z.user_teacher_no
+		order by z.teacher_name
+	</select>
+	<insert id="insertLeveltestByStudent" parameterType="hashmap">
+		insert into leveltest(room_no, user_student_no, user_teacher_no, leveltest_language, leveltest_type, study_date, class_time, class_phone, present, study_status, leveltest_status, leveltest_regdate)
+		values(#{room_no}, #{user_student_no}, #{user_teacher_no}, #{leveltest_language}, #{leveltest_type}, #{study_date}, #{class_time}, #{class_phone}, 0, 0, 0, now())
+	</insert>
+	<select id="countLevelAppAbleTerm" parameterType="hashmap" resultType="int">
+		<!-- select s.site_no, sc.language_type, sc.semester_ym
+		     , ifnull(s.level_application_start_date, sc.level_application_start_date) as level_application_start_date
+		     , ifnull(s.level_application_end_date, sc.level_application_end_date) as level_application_end_date -->
+		
+		select count(*)
+		from schedule_class sc 
+		left join (select ia.* from schedule_class_site ia		           
+		           where ia.site_no = #{site_no}
+		           ) s on s.language_type = sc.language_type and s.semester_ym = sc.semester_ym
+		where 1=1
+		and current_date() between ifnull(s.level_application_start_date, sc.level_application_start_date) and ifnull(s.level_application_end_date, sc.level_application_end_date)		
+	</select>
+	<select id="selectLevelAppDays" parameterType="hashmap" resultType="hashmap">
+		select sc.language_type, sc.semester_ym
+		     , ifnull(ifnull(s.level_application_start_date, sc.level_application_start_date), "") as level_application_start_date
+		     , ifnull(ifnull(s.level_application_end_date, sc.level_application_end_date), "") as level_application_end_date
+		from schedule_class sc 
+		left join (select ia.* from schedule_class_site ia		           
+				   where ia.site_no = #{site_no}
+				   ) s on s.language_type = sc.language_type and s.semester_ym = sc.semester_ym
+		where 1=1
+		and sc.language_type = #{leveltest_language}
+		order by semester_ym
+	</select>
+
+</mapper>

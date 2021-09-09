@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+
+
+
+<style type="text/css">
+.titleDiv {
+    text-align: center;
+    font-size: 21px;
+    font-weight: 600;
+    background: rgb(240, 243, 248);
+    height: 40px;
+    line-height: 40px;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 20px !important; ">
+	
+
+	<!--  컨테이너 -->		
+	<div style="width:95%; margin:0 auto;">
+		<form id="etcForm" method="post">
+			<input type="hidden" name="user_no" th:value="${user.user_no}" />
+					
+			<div class="titleDiv" th:text="|특이사항 상세보기 (${user.student_name})|"></div>
+			<div>
+				<textarea class="form-control" id="student_etc"  name="student_etc" th:if="${#maps.containsKey(user, 'student_etc')}" th:text="${user.student_etc}" style="width: 100%; height: 100px; padding: 10px;"></textarea>
+				<textarea class="form-control" id="student_etc"  name="student_etc" th:unless="${#maps.containsKey(user, 'student_etc')}" style="width: 100%; height: 100px; padding: 10px;"></textarea>
+			</div>	
+			
+			<div class="btn-box" style="text-align: center; margin-top: 10px;">
+				<div class="btn" th:onclick="updateEtc()">확인</div>
+				<div class="btn" th:onclick="clase()">닫기</div>
+			</div>
+		</form>		
+	</div>
+	<!-- 컨테이너 // -->
+	
+	
+<script th:inline="javascript">
+	let user = /*[[${user}]]*/ null;	
+</script>
+<script type="text/javascript" th:src="@{/js/admin/user_etcPopup.js}"></script>
+</body>
+
+</html>

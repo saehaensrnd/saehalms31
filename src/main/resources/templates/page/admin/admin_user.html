@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/admin/admin_user.js}"></script> 
+
+<style type ="text/css">
+	
+    
+    .search-div {width:100%; display: inline-flex;}
+	.search-div input {display: inline-block; width: 100%;}
+	
+	.btn-box {float: right;}
+	.btn-box button {width: 100px; height: 35px;}
+	
+	.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+	       text-align: left;       
+	       padding: 7px 20px;
+	}
+		
+	
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+	
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table" style="margin-bottom:7px;">
+		<div class="tr">
+			<div class="th">사이트</div>
+			<div class="td">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 10}' id="searchSite" name="searchSite">
+				   			<option value="all" th:selected="${cri.searchSite == 'all'}">전체</option>
+							<option th:each="siteList : ${siteList}" th:text="${siteList.site_name}" th:value="${siteList.site_no}" th:selected="${cri.searchSite} == ${siteList.site_no}"></option>
+				   		</select>
+					</div>	
+				</div>
+			</div>	
+			
+			<div class="th">구분</div>
+			<div class="td" style="border-right:0px; max-width:20%">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchType" name="searchType" >
+				   			<option value="all" th:selected="${cri.searchType == 'all'}">전체</option>							
+							<option value="site_name" th:selected="${cri.searchType == 'site_name'}">사이트명</option>
+							<option value="student_name" th:selected="${cri.searchType == 'student_name'}">회원명</option>
+							<option value="student_tel" th:selected="${cri.searchType == 'student_tel'}">유선전화</option>
+							<option value="student_phone" th:selected="${cri.searchType == 'student_phone'}">무선전화</option>
+							<option value="student_parent_name" th:selected="${cri.searchType == 'student_parent_name'}">보호자성명</option>
+							<option value="student_parent_phone" th:selected="${cri.searchType == 'student_parent_phone'}">보호자연락처</option>
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			
+			<div class="th">검색어</div>
+			<div class="td" style="border-right:0px;">
+				<div class="search-div">
+					<input type="text" id="keyword" name="keyword" th:value="${cri.keyword}" autocomplete="off">
+				</div>				
+			</div>	
+		</div>		
+		 
+		<div class="tr">
+			<div class="th">상태</div>
+			<div class="td" style="max-width:318px;">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 10}' id="searchStatus" name="searchStatus" >
+				   			<option value="all" th:selected="${cri.searchStatus == 'all'}">전체</option>
+				   			<option value="1" th:selected="${cri.searchStatus == '1'}">정상</option>
+				   			<option value="2" th:selected="${cri.searchStatus == '2'}">대기</option>
+				   			<option value="0" th:selected="${cri.searchStatus == '0'}">탈퇴</option>				   			
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			<div class="th">수업일</div>
+			<div class="td">
+				<div class="search-div" style="width:auto;">
+					<div class="fx-box">
+	                  <input type="" id="searchStartDate" name="searchStartDate" class="fx-item dateitem2" th:value="${cri.searchStartDate}" autocomplete="off" style="width:100px;"> <em>~</em> <input type="" id="searchEndDate" name="searchEndDate" class="fx-item dateitem2" th:value="${cri.searchEndDate}" autocomplete="off" >
+	                </div>
+				</div>
+				
+				<div class="selecter-wrap search-div" style="width:110px; float:right">
+					<select id="perPageNum" name="perPageNum" class="form-control" style="min-width:80px; width:80px; float:right;">
+						<option value="10" th:selected="${cri.perPageNum eq 10}">10</option>
+						<option value="50" th:selected="${cri.perPageNum == 50}">50</option>
+						<option value="100" th:selected="${cri.perPageNum == 100}">100</option>
+					</select>
+				</div>	
+			</div>
+			
+						
+		</div>
+		
+		
+	</div>
+	
+	<div class ="btnDiv" style="width:100%; margin-bottom:80px;">
+		<div class="searchBtn" style="background-color:rgb(239, 239, 239); color:black; float:right;" onclick="searchCancel()">검색취소</div>		
+		<div class="searchBtn" onclick="search()" style="float:right; margin-right:0px;">검색</div>
+				
+	</div>
+	
+	
+	
+	<!--  
+	<div class="left-head-table custom02-table" style="margin-bottom: 30px;">		
+		<div class="tr">
+			<div class="th">구분</div>
+			<div class="td" style="border-right:0px; max-width:20%">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchType" name="searchType" >
+				   			<option value="all" th:selected="${cri.searchType == 'all'}">전체</option>							
+							<option value="site_name" th:selected="${cri.searchType == 'site_name'}">사이트명</option>
+							<option value="student_name" th:selected="${cri.searchType == 'student_name'}">회원명</option>
+							<option value="student_tel" th:selected="${cri.searchType == 'student_tel'}">유선전화</option>
+							<option value="student_phone" th:selected="${cri.searchType == 'student_phone'}">무선전화</option>
+							<option value="student_parent_name" th:selected="${cri.searchType == 'student_parent_name'}">보호자성명</option>
+							<option value="student_parent_phone" th:selected="${cri.searchType == 'student_parent_phone'}">보호자연락처</option>
+				   		</select>
+					</div>	
+				</div>
+			</div>
+			
+			<div class="th">검색어</div>
+			<div class="td" style="border-right:0px;">
+				<div class="search-div">
+					<input type="text" id="keyword" name="keyword" th:value="${cri.keyword}" autocomplete="off" >
+					<div class="searchBtn" onclick="search()">검색</div>
+					
+					<div class="selecter-wrap search-div" style="width:150px; float:right">
+						<select id="perPageNum" name="perPageNum" class="form-control" style="min-width:80px; width:80px; float:right;">
+							<option value="10" th:selected="${cri.perPageNum eq 10}">10</option>
+							<option value="50" th:selected="${cri.perPageNum == 50}">50</option>
+							<option value="100" th:selected="${cri.perPageNum == 100}">100</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	-->
+
+	<div class="table-wrap">
+		<div class="table-item">
+			<span class="total" th:text="'Total : ' +${studentCnt}"></span>
+			<div class="btn-box">
+				<button style="width: 150px;" type="button" class="btn" th:onclick="insertLeveltest()">레벨테스트 등록</button>
+				<button type="button" class="btn" th:onclick="allSendBtn()">전체SMS</button>
+				<button type="button" class="btn" th:onclick="checkedSendBtn()">SMS</button>
+				<button type="button" class="btn" th:onclick="excelDownBtn([[${cri}]])">Excel</button>
+				<button type="button" class="btn" th:onclick="insertBtn([[${cri}]])">등록</button>
+			</div>
+		</div>
+		<table>
+			<colgroup>
+				<col width="5%">
+				<col width="5%">
+				<col width="*">
+				<col width="10%">
+				<col width="10%">
+				<col width="10%">
+				<col width="10%">
+				<col width="10%">
+				<col width="15%">
+				<col width="15%">
+				<col width="5%">
+				<col width="10%">
+			</colgroup>
+			<thead>
+				<tr>
+					<th><input type="checkbox" class="chk allCheck" id="all_check"></th>
+					<th>NO</th>
+					<th>Site</th>				
+					<th>Name</th>
+					<th>Land line</th>
+					<th>ID</th>
+					<th>Cell phone</th>
+					<th>Parent</th>
+					<th>Parent Tel</th>
+					<th>Register Date</th>
+					<th>Status</th>
+					<th>Secession</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${studentCnt} == 0">
+					<td colspan="12">There is no data.</td>				
+				</tr>
+				<tr th:each="s : ${student}">
+					<td><input type="checkbox" class="chk rowCheck" th:name="${s.user_student_no}"></td>
+					<td th:text="${#numbers.formatInteger(s.num, 0)}"></td>
+					<td th:text="${s.site_name}"></td>
+					
+					<td>
+						<a class="link" th:if="${s.student_blacklist_status} == '0' " th:onclick="openUserDetail([[${s.user_student_no}]])" th:text="${s.student_name}"></a>						
+						<a class="redLink" th:unless="${s.student_blacklist_status} == '0' " th:onclick="openUserDetail([[${s.user_student_no}]])" th:text="${s.student_name}"></a>
+					</td>
+<!-- 					<td> -->
+<!-- 						<a th:href="@{user/detail(user_student_no=${s.user_student_no})}" th:text="${s.student_name}" class="link" th:if="${s.student_blacklist_status} == '0'"></a> -->
+<!-- 						<a th:href="@{user/detail(user_student_no=${s.user_student_no})}" th:text="${s.student_name}" class="redLink" th:unless="${s.student_blacklist_status} == '0'"></a> -->
+<!-- 					</td> -->
+					
+					<td th:if="${#maps.containsKey(s, 'student_tel')}" th:text="${s.student_tel}"></td>
+					<td th:unless="${#maps.containsKey(s, 'student_tel')}"></td>
+					
+					<td th:text="${s.id}"></td>
+					
+					<td th:if="${#maps.containsKey(s, 'student_phone')}" th:text="${s.student_phone}"></td>
+					<td th:unless="${#maps.containsKey(s, 'student_phone')}"></td>
+					
+					<td th:if="${#maps.containsKey(s, 'student_parent_name')}" th:text="${s.student_parent_name}"></td>
+					<td th:unless="${#maps.containsKey(s, 'student_parent_name')}"></td>
+					
+					<td th:if="${#maps.containsKey(s, 'student_parent_phone')}" th:text="${s.student_parent_phone}"></td>
+					<td th:unless="${#maps.containsKey(s, 'student_parent_phone')}"></td>
+					
+					<td th:text="${#dates.format(s.student_regdate, 'yyyy-MM-dd')}"></td>
+					
+					<td th:if="${s.student_status} == 0">탈퇴</td>
+					<td th:if="${s.student_status} == 1">정상</td>
+					
+					<td style="padding:0px;">
+						<div class="customTableBtn" id="deleteBtn" th:if="${s.student_status} == 1" th:onclick="deleteBtn([[${s.user_student_no}]])">삭제</div>
+						<div class="customTableBtn" id="deleteBtn" th:if="${s.student_status} == 0" th:onclick="restoreBtn([[${s.user_student_no}]])">복구</div>
+					</td>
+				</tr>
+				
+			</tbody>
+		</table>
+				
+		<th:block th:if="${studentCnt > 0}">
+			<ul class="pagenate">
+				<li class="move prev_enter" th:classappend="${pageMaker.cri.page} == 1 ? disabled">
+					<a class="page-link" th:if="${pageMaker.cri.page} != 1" th:href="@{/admin/user(page=1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType=${cri.searchType}, searchSite=${cri.searchSite}, searchStatus=${cri.searchStatus}, searchStartDate=${cri.searchStartDate}, searchEndDate=${cri.searchEndDate} )}"></a>
+				</li>
+				<li class="move prev" th:classappend="${pageMaker.prev} == false ? disabled">
+					<a class="page-link" th:if="${pageMaker.prev} == true" th:href="@{/admin/user(page=${cri.page}-1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType=${cri.searchType}, searchSite=${cri.searchSite}, searchStatus=${cri.searchStatus}, searchStartDate=${cri.searchStartDate}, searchEndDate=${cri.searchEndDate} )}">　</a>
+				</li>
+				
+				<li class="page-item" th:each="idx : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}" th:classappend="${cri.page} == ${idx} ? active">
+					<a class="page-link" th:href="@{/admin/user(page=${idx}, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType=${cri.searchType}, searchSite=${cri.searchSite}, searchStatus=${cri.searchStatus}, searchStartDate=${cri.searchStartDate}, searchEndDate=${cri.searchEndDate} )}" th:text="${idx}"></a>
+				</li>	
+											 				
+				<li class="move next" th:classappend="${pageMaker.next} == false ? disabled">										
+					<a class="page-link" th:if="${pageMaker.next} == true" th:href="@{/admin/user(page=${cri.page}+1, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType=${cri.searchType}, searchSite=${cri.searchSite}, searchStatus=${cri.searchStatus}, searchStartDate=${cri.searchStartDate}, searchEndDate=${cri.searchEndDate} )}">　</a>														
+				</li>				
+				<li class="move next_enter" th:classappend="${pageMaker.lastPage} == ${pageMaker.cri.page} ? disabled">
+					<a class="page-link" th:if="${pageMaker.lastPage} != ${cri.page}" th:href="@{/admin/user(page=${pageMaker.lastPage}, perPageNum=${cri.perPageNum}, keyword=${cri.keyword}, searchType=${cri.searchType}, searchSite=${cri.searchSite}, searchStatus=${cri.searchStatus}, searchStartDate=${cri.searchStartDate}, searchEndDate=${cri.searchEndDate} )}">　</a>
+				</li>
+			</ul>
+		</th:block>	
+		
+	</div>
+</th:block>
+</body>
+
+</html>

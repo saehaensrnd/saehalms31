@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/reportLayout">
+<head>
+<title></title>
+
+
+<style type="text/css">
+.left-head-table.report .tr .th, .left-head-table.report .tr .td {
+    text-align: left;
+    padding: 7px 7px 7px 15px;
+    /* padding: 7px 40px; */
+}
+.selecter-wrap .jcf-unselectable {
+    width: 100%;    
+    height: 45px;           
+}
+
+.selecter-wrap .jcf-select-text {
+    line-height: 45px;
+ }
+
+.selecter-wrap .jcf-unselectable {       
+    margin-bottom: 0px;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 50px !important; ">
+<th:block layout:fragment="reportContent">
+		
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table" style="margin-bottom: 30px;">		
+		<div class="tr">
+			<div class="th">Textbook</div>
+			<div class="td" style="border-right:0px;">
+				<div class="selecter-wrap search-div">
+					<select data-jcf='{"maxVisibleItems": 10}' id="textbook_no2" name="textbook_no2" onchange="textbookChange2(this)">
+			   			<option value="">-- 선택 --</option>
+			   			<option th:each="textbookList : ${textbookList}" th:text="${textbookList.textbook_name}" th:value="${textbookList.textbook_no}" th:if="${#maps.containsKey(textbookParam, 'textbook_no')}" th:selected="${textbookParam.textbook_no} == ${textbookList.textbook_no}"></option>
+						<option th:each="textbookList : ${textbookList}" th:text="${textbookList.textbook_name}" th:value="${textbookList.textbook_no}" th:unless="${#maps.containsKey(textbookParam, 'textbook_no')}"></option>
+			   		</select>
+				</div>
+			</div>
+			
+			<div class="th">Unit</div>
+			<div class="td" style="border-right:0px;">
+				<div class="selecter-wrap search-div">
+					<select data-jcf='{"maxVisibleItems": 10}' id="textbook_topic_no2" name="textbook_topic_no2" onchange="topicChange2(this)">
+			   			<option value="">-- 선택 --</option>
+			   			<option th:each="textbookTopicList : ${textbookTopicList}" th:text="${textbookTopicList.topic_name}" th:value="${textbookTopicList.textbook_topic_no}" th:if="${#maps.containsKey(textbookParam, 'textbook_topic_no')}" th:selected="${textbookParam.textbook_topic_no} == ${textbookTopicList.textbook_topic_no}"></option>
+						<option th:each="textbookTopicList : ${textbookTopicList}" th:text="${textbookTopicList.topic_name}" th:value="${textbookTopicList.textbook_topic_no}" th:unless="${#maps.containsKey(textbookParam, 'textbook_topic_no')}"></option>
+			   		</select>
+				</div>
+			</div>
+		</div>
+	</div>	
+	
+	
+	<!-- online Book -->
+	<div class="page_div">
+		<div class="table-item">
+			<div class="btn-box">
+				<button type="button" class="btn" th:onclick="playBtn()" style="float: right; margin-bottom: 20px;">재생</button>
+			</div>
+		</div>
+		<!-- <iframe id="onlinebook_detail" th:src="@{/admin/onlineBookDetail(textbook_topic_no=${textbook_topic_no})}"></iframe> -->
+		<iframe id="onlinebook_detail" width="100%" height="800px" frameborder=0 framespacing=0 marginheight=0 marginwidth=0 scrolling=yes vspace=0></iframe>
+		<!--    width: 100%;
+    height: 800px;  -->
+	</div>
+		
+		
+	
+		
+
+	
+	<!-- 컨테이너 // -->
+	
+	
+<script th:inline="javascript">
+	let paramMap = /*[[${paramMap}]]*/ null;
+	let textbookParam = /*[[${textbookParam}]]*/ null;
+</script>
+<!-- <script type="text/javascript" th:src="@{/js/admin/userDetail.js}"></script> -->
+</th:block>
+</body>
+
+</html>

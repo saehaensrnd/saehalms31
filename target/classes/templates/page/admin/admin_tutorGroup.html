@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/tree/dtree.css}"/>
+<script type="text/javascript" th:src="@{/js/tree/dtree.js}"></script>
+
+
+<!-- <script type="text/javascript" src="../tree/js/jquery-1.4.4.min.js"></script> -->
+
+<style type="text/css">
+	input[type="checkbox"] {
+        -display:none;
+        margin-right: 5px;
+    }    
+    
+	input[type="checkbox"]:checked~ul {
+	       display:none;
+	}
+	a,a:hover{text-decoration:none;}
+	.leftbox{ width:450px; height:500px; padding:10px; overflow-y:auto;  border:1px solid #000000;} 
+	.rightbox{ width:450px; height:500px; padding:10px; overflow-y:auto;  border:1px solid #000000;}
+	.midbox{ width:120px; height:20px; display:inline-block; position:relative; top:-440px;}
+	.out_menu{ font-size:14px; }
+	.white_space{ padding: 0 95px; height:10px;}
+	.frame{display:inline-block;}
+	.Div_Layout{position:absolute;left:614px; top:27px;height:100px;text-align:center;padding:10px;background-color:#ffffff;z-index:3; width:450px;}	
+	
+	b {
+		font-size: 14px;
+	}
+	
+	.groupMember{
+		font-size: 14px;
+	}
+	
+	input[type="checkbox"] {
+	    border: 1px solid #dedede;
+	    height: 12px;
+	    padding: 5px 15px;
+	    /* font-family: "Droid Sans"; */
+	    outline: none;
+	    font-size: 1em;
+	    border-radius: 4px;
+	    background-color: #f1f2f4;
+	}
+	
+	.dTreeNode {
+		padding: 3px 0px 3px 0px;
+		font-size: 13px;
+	}
+	
+	#TCGReg {
+		border: 1px solid;
+    	height: 145px;
+	}
+	
+	.groupNameTag{
+		margin-left: 10px; cursor: pointer;
+		text-decoration: underline !important;
+	}
+	
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+	<input type="hidden" id=teacherGroupNo /> 
+	
+	<div class="frame">
+		<div class="out_menu">
+			<a href="javascript: d.openAll();">전체열기</a><span> | </span><a href="javascript: d.closeAll();">전체닫기</a><span class="white_space"></span>
+			<a href="javascript: CheckAll(true);">전체선택</a><span> | </span><a href="javascript: CheckAll(false);">전체선택해제</a>
+		</div>
+		
+		<div class="leftbox">
+			<div id="leftbox_item"></div>
+		</div>
+	</div>
+
+
+	<div class="midbox"><input type="button" value=">> 강사등록 >>" onclick="Regist_to_Sitegroup();" style="height:45px; width: 120px; font-size: 15px; cursor:pointer !important;"/></div>
+	<div class="frame">
+		<div class="out_menu">
+			<a href="javascript:d_group.openAll();">전체열기</a><span> | </span><a href="javascript:d_group.closeAll();">전체닫기</a><span class="white_space"></span>
+			<div style="float:right;">
+				&nbsp;<a href="javascript:Site_RegShow('objBtnReg');">강사그룹등록</a>
+			</div>
+		</div>
+		
+		<div class="rightbox">
+			<div id="TCGReg" class="Div_Layout" style="display:none;" >
+						<br /><br />
+						강사그룹 이름 :
+						<input type="text" id="SiteName" style="width:200px;" maxlength="20"/>
+						&nbsp;
+						<input type="button" id="objBtnReg" value="등록" onclick="site_Reg();" class="objBtn" style="cursor:pointer;"	/>
+						<input type="button" id="objBtnMod" value="수정" onclick="site_Mod();" class="objBtn"	style="display:none; cursor:pointer;"	/>					
+						<br /><br />
+						<a href="javascript:site_RegHide();" style="float:right;">닫기</a>
+			</div>
+			
+			<div id="rightbox_item"></div>
+		</div>
+	</div>
+		
+
+<script th:inline="javascript">
+	let centerArr = /*[[${centerArr}]]*/ null;
+	let groupArr = /*[[${groupArr}]]*/ null;
+
+	//let tempArr = /*[[${tempArr}]]*/ null;
+	//let tempArr1 = /*[[${tempArr1}]]*/ null;
+	//let tempArr_TC = /*[[${tempArr_TC}]]*/ null;
+	//let tempArr_TC1 = /*[[${tempArr_TC1}]]*/ null;
+	
+	
+	
+</script>		
+<script type="text/javascript" th:src="@{/js/admin/admin_tutorGroup.js}"></script>
+</th:block>
+</body>
+
+</html>

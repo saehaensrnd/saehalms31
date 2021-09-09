@@ -1,0 +1,60 @@
+
+/*----------------------------joinPage css-------------------------------------*/
+    input[value="중복확인"]{ max-width: 70px; min-width: 40px; text-align: center; background: #d3e7f2; color: #477fff; font-size: 10px; text-align: center; }
+    input[value="주소찾기"]{  max-width: 70px; min-width: 40px; background: #d3e7f2; color: #477fff; text-align: center; position: relative; top: 0px; left: -100px; font-size: 10px;}
+    .container_full{ width: 80%;  margin: 0 auto;}
+    .positionArea{ position: relative;}
+    .idCheckbtn{ position: absolute; top: 10px; left: 55px; }
+    .span_msg{ font-size: 14px; position: absolute; top: 30px; right: -50px; }
+    .free_submit{ max-width: 100%;}
+    input[type="submit"]{ color: #fff; background: #000; width: 178px; height: 58px; position: relative; left: 50%; transform: translateX(-50%);}
+    .checkbox{ max-width: 100%;}
+    .free_checkbox{  text-align: center;}
+    .text_join_mem{ font-size: 28px; padding: 26px 0; text-align: center;}
+    .move_left{ }
+    .free_left_border{ width: 28px; position: relative; left: -60px;}
+    .eqWidth{ width: 10%;}
+    .law1,.law2{  position:relative; top: -17px; }
+    .widControll{ width: 200px;}
+    .td{ width: 250px;}
+    #table{ max-width: 1320px; min-width: 280px;  margin: 0 auto;}
+    
+
+@media only screen and (max-width: 1024px){
+  .span_msg{ font-size: 8px; font-weight: 600; top: 25px; left: 0; }
+  .inputID{ max-width: 70%; position: relative; top: 0; left: -55px;}
+  .idCheckbtn{ left: -115px;}
+  input[value="중복확인"]{ left: -55px;}
+  input[value="주소찾기"]{ left: 0;}
+}
+@media only screen and (max-width: 768px){
+  .span_msg{ font-size: 8px; font-weight: 600; top: 25px; left: 20px; }
+  .inputID{ max-width: 60%; position: relative; top: 0; left: -65px;}
+  .idCheckbtn{ left: -115px;}
+  .move_left{ position: relative; left: 0px;}
+  input[value="주소찾기"]{ left: 0;}
+  .userInfo{ display: none;}
+  
+}
+@media only screen and (max-width: 480px){
+ body{ width: 92vw;  margin: 0 auto;}
+ input,select,textarea{ height: 32px; border-radius: 2px !important; max-width: 96%;} 
+ input[value="주소찾기"]{left: 40px;}
+ tr{ border-right: 1px solid #dedede !important; border-left: 1px solid #dedede !important;}
+ .join_table{ }
+ .join_table >th{ font-size: 10px !important;}
+ .join_table >td{ font-size: 10px;}
+ #table{ margin: 0 auto; }
+ #table tr th,#table tr td{ font-size: 10px; word-wrap: break-word; max-width: 90px; padding: 0 0px 0 0px;}
+ #table tr td select{ padding: 0 0 0 20px; margin: 0 0px 0 ; border-radius: 2px;}
+
+ .inputID{ left: -30px;}
+ .idCheckbtn{font-size: 12px; left: -65px; top: 7px; padding: 5px 6px;}
+ input[value="중복확인"]{ min-width: fit-content; left: -60px; top: 14px; text-align: center;}
+ .span_msg{ line-height: 12px; top: 30%; width: fit-content;  left: 5%; font-size: 6px; word-break: keep-all; }
+ td{ word-wrap: break-word; word-break: break-all;}
+ .free_left_border{ left: 0;}
+ .mr100{ margin: 0;}
+ .law1,.law2{  top: -12px; }
+  input{ }
+}

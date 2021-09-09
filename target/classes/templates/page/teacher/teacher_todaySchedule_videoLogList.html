@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" th:src="@{/js/jquery.datetimepicker.full.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery.datetimepicker.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+
+
+<style type="text/css">
+th:not(.calendar-table th) {
+    font-size: 16px;
+}
+
+.blueColor {
+	color : blue;
+}
+
+</style>
+
+</head>
+<body style="padding-top: 20px !important; ">
+	
+
+	<!--  컨테이너 -->		
+	<div style="width:95%; margin:0 auto;">		
+		<!-- <span th:text="|수업번호 : ${room_no}|"></span><br>
+		<span th:text="|수업날짜 : ${study_date}|"></span> -->
+		
+		<div th:text="|수업번호 : ${room_no}|" style="font-size: 19px; margin-bottom: 5px;"></div>
+		<div th:text="|수업날짜 : ${study_date}|" style="font-size: 19px; margin-bottom: 20px;"></div>
+			
+		<div class="timeTable" style="margin-top:10px;">
+			<div class="table-wrap">
+				<table class="result-table02" style="table-layout: fixed; overflow-wrap: break-word;">
+					<colgroup>
+						<col width="15%">
+						<col width="*%">
+						<col width="30%">
+						<col width="30%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>강사/학생</th>
+							<th>ID</th>
+							<th>입장</th>
+							<th>퇴장</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${classVideoLogList.size()} == 0">
+							<td colspan="4">There is no data.</td>
+						</tr>
+						<tr th:each="item : ${classVideoLogList}">
+							<td><span th:text="${item.role} == '2' ? '강사' : '학생' " th:classappend="${item.role} == '3' ? blueColor"></span></td>
+							<td th:text="${item.login_id}"></td>
+							<td th:if="${#maps.containsKey(item, 'in_time')}" th:text="${item.in_time}"></td>
+							<td th:unless="${#maps.containsKey(item, 'in_time')}"></td>
+							
+							<td th:if="${#maps.containsKey(item, 'out_time')}" th:text="${item.out_time}"></td>
+							<td th:unless="${#maps.containsKey(item, 'out_time')}"></td>
+															
+						</tr>								
+					</tbody>
+				</table>					
+			</div>
+		</div>  	
+		
+	</div>
+	<!-- 컨테이너 // -->
+	
+	
+<script th:inline="javascript">
+	let class_score_no = /*[[${class_score_no}]]*/ null;
+</script>
+<!-- <script type="text/javascript" th:src="@{/js/teacher/teacher_todaySchedule_fileList.js}"></script> -->
+</body>
+
+</html>

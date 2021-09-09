@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<!-- <link rel="stylesheet" th:href="@{/css/teacher.css}"> -->
+
+<style type="text/css">
+	.test td {
+		height: 40px !important;
+	}
+	
+	.possible {
+		background-color: #A9F5A9;
+	}
+	
+	.inClass {
+		background-color: #A9D0F5;
+	}		
+	
+	.LevelTest {
+		background-color: #F7D358;
+	}
+	
+	.link2 {
+		color: #4b82e3;
+		cursor: pointer;		
+	}	
+	
+	.searchBtn {
+		display: inline-block;
+	    line-height: 55px;
+	    width: 90px;
+	    text-align: center;
+	    background-color: #444;
+	    color: #ffff;
+	    vertical-align: top;
+	    border-radius: 4px;
+	    height: 45px;
+    	line-height: 45px;
+    	margin-left: 10px;
+    	cursor: pointer;
+    	margin-right:10px;
+	}
+	
+	.selecter-wrap .jcf-unselectable {       
+	    margin-bottom: 0px;
+	}
+	
+</style>
+
+</head>
+<body>
+<th:block layout:fragment="content">
+
+	<!-- 검색 테이블 -->
+	<div class="left-head-table custom02-table">
+		<div class="tr">
+			<div class="th">티칭센터</div>
+			<div class="td" style="border-right:0px; max-width:30%">
+				<div class="selecter-wrap">				
+					<div class="search-div">
+						<select data-jcf='{"maxVisibleItems": 7}' id="searchCenter" name="searchCenter" onchange="centerChange(this)">
+				   			<option value="">-- 선택 --</option>	
+				   			<option th:each="centerList : ${centerList}" th:text="${centerList.center_name}" th:value="${centerList.center_no}" th:selected="${centerList.center_no} == ${cri.searchCenter}"></option>
+				   		</select>
+					</div>	
+				</div>
+			</div>		
+			
+			<div class="th">선생님</div>
+			<div class="td" style="border-right:0px;">
+				<div class="selecter-wrap search-div" style="width:70%; float:left;">
+					<select data-jcf='{"maxVisibleItems": 7}' id="searchTeacher" name="searchTeacher" >
+				   			<option value="">-- 선택 --</option>	
+				   			<option th:each="teacherList : ${teacherList}" th:text="${teacherList.teacher_name}" th:value="${teacherList.user_teacher_no}" th:selected="${teacherList.user_teacher_no} == ${cri.searchTeacher}"></option>
+				   	</select>
+				</div>
+				<div class="searchBtn" th:onclick="search([[${cri}]])" style="width:100px; float:right;">검색</div>
+				
+			</div>		
+			
+				
+		</div>		
+	</div>
+	
+	<th:block th:if="${flag} == 'selected'">
+		<div style="height:70px; margin-top:40px;">
+			<span style="font-size: 25px; font-weight: 600; line-height:40px; float: left;" th:text="${period}"></span>
+			<div class="datebtn" th:onclick="prevBtn([[${cri}]])" th:text="Prev" style="width:80px; margin-left: 50px;"></div>
+			<div class="datebtn" th:onclick="nextBtn([[${cri}]])" th:text="Next" style="width:80px; margin-left: 7px;"></div>
+		</div>
+	</th:block>
+	
+	<p style="margin: 10px 0px 10px 0px;"> 
+		Tip: <span style="background-color:white; color: #000000">□</span> No Class &nbsp 
+	    <span style="background-color:#A9F5A9; color: #000000">　</span> Possible &nbsp
+	    <span style="background-color:#F7D358; color: #000000">　</span> Level Test &nbsp
+	    <span style="background-color:#A9D0F5; color: #000000">　</span> In Class
+	</p>
+	
+	
+	<div class="table-wrap">
+		<table class="result-table02 test">
+			<colgroup>
+				<col width="*%">
+				<col width="13%">
+				<col width="13%">
+				<col width="13%">
+				<col width="13%">
+				<col width="13%">
+				<col width="13%">
+				<col width="13%">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>수업시간</th>
+					<th th:text="|${weeklyDays.t0} 일|"></th>
+					<th th:text="|${weeklyDays.t1} 월|"></th>
+					<th th:text="|${weeklyDays.t2} 화|"></th>
+					<th th:text="|${weeklyDays.t3} 수|"></th>
+					<th th:text="|${weeklyDays.t4} 목|"></th>
+					<th th:text="|${weeklyDays.t5} 금|"></th>
+					<th th:text="|${weeklyDays.t6} 토|"></th>					
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:if="${flag} == 'selected'">
+					<tr th:if="${timeTableList.size()} == 0">
+						<td colspan="8">There is no data.</td>
+					</tr>
+					<tr th:each="item : ${timeTableList}">
+						<td th:if="${#maps.containsKey(item, 'time')}" th:text="${item.time}"></td>
+						<td th:class="|${item.state0}|" th:name="${item.lessonTime0}"><a th:id="${item.d0}" th:onclick="goDetail([[${item.classInfoList0}]], [[${item.d0}]], [[${item.levelTestInfoList0}]])" class="link2" th:text="${item.tdText0}"></a></td>
+						<td th:class="|${item.state1}|" th:name="${item.lessonTime1}"><a th:id="${item.d1}" th:onclick="goDetail([[${item.classInfoList1}]], [[${item.d1}]], [[${item.levelTestInfoList1}]])" class="link2" th:text="${item.tdText1}"></a></td>
+						<!-- <td th:class="|${item.state2} link|" th:id="${item.d2}" th:name="${item.lessonTime2}" th:onclick="goDetail([[${item.classInfoList2}]], [[${item.d2}]])" class="link"th:text="${item.tdText2}"></td> -->
+						<td th:class="|${item.state2}|" th:name="${item.lessonTime2}"><a th:id="${item.d2}" th:onclick="goDetail([[${item.classInfoList2}]], [[${item.d2}]], [[${item.levelTestInfoList2}]])" class="link2" th:text="${item.tdText2}"></a></td>
+						<td th:class="|${item.state3}|" th:name="${item.lessonTime3}"><a th:id="${item.d3}" th:onclick="goDetail([[${item.classInfoList3}]], [[${item.d3}]], [[${item.levelTestInfoList3}]])" class="link2" th:text="${item.tdText3}"></a></td>
+						<td th:class="|${item.state4}|" th:name="${item.lessonTime4}"><a th:id="${item.d4}" th:onclick="goDetail([[${item.classInfoList4}]], [[${item.d4}]], [[${item.levelTestInfoList4}]])" class="link2" th:text="${item.tdText4}"></a></td>
+						<td th:class="|${item.state5}|" th:name="${item.lessonTime5}"><a th:id="${item.d5}" th:onclick="goDetail([[${item.classInfoList5}]], [[${item.d5}]], [[${item.levelTestInfoList5}]])" class="link2" th:text="${item.tdText5}"></a></td>
+						<td th:class="|${item.state6}|" th:name="${item.lessonTime6}"><a th:id="${item.d6}" th:onclick="goDetail([[${item.classInfoList6}]], [[${item.d6}]], [[${item.levelTestInfoList6}]])" class="link2" th:text="${item.tdText6}"></a></td>
+													
+					</tr>
+				</th:block>			
+			</tbody>
+		</table>
+
+	</div>
+	<!-- 컨테이너 // -->
+	
+	
+	
+
+
+<script type="text/javascript" th:src="@{/js/admin/admin_teachersPage_weeklySchedule.js}"></script>
+</th:block>
+</body>
+
+</html>

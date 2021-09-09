@@ -1,0 +1,75 @@
+html, body, .container {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+
+.container {
+	position: relative;
+}
+.login-box {
+	width: 270px;
+	height: 270px;
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translate(-50%);
+	padding: 30px 50px;
+	/* background: #0abab5; */
+	/* border-radius: 30px; */
+	border-style: groove;
+}
+
+.login-box table {
+	width: 100%;
+}
+.login-box table td {
+	height: 30px;
+	font-size: 18px;
+}
+.login-box table td input {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	font-size: 16px;
+}
+
+.login-btn {
+	font-size: 12px;
+	margin-top: 65px;
+	width: 100px;
+	height: 35px;
+	background-color: #90E4FF;
+	border-style : none;
+	color : white;
+	position: absolute; 	
+	left: 35%; 
+			
+}
+
+.login-err {
+	color: red;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.login-title {
+	text-align: center;
+}
+
+
+input{
+	border: 1px solid #dedede; height: 45px; padding: 8px 15px; outline: none; font-size: 1em; border-radius: 4px; background-color: white;		
+}
+
+
+
+.title-box {
+	width: 100%;
+	height: auto;
+	position: absolute;
+	top: 11%;
+	left: 50%;
+	transform: translate(-50%);	
+}
+

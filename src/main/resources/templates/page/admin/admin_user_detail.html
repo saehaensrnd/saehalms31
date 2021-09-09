@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/layout">
+<head>
+<title></title>
+<script type="text/javascript" th:src="@{/js/ckeditor/ckeditor.js}"></script>
+<script type="text/javascript" th:src="@{/js/admin/admin_user_detail.js}"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<style type="text/css">
+.shareChk {
+	width: 60px;
+	height: 20px;
+	position: relative;
+	left: 12px;
+}
+
+.selecter-wrap .jcf-unselectable {
+	width: 100%;
+	height: 45px;
+}
+
+.selecter-wrap .jcf-select-text {
+	line-height: 45px;
+}
+
+.selecter-wrap .jcf-unselectable {
+	margin-bottom: 0px;
+}
+
+input[type='radio'] {
+	float: left;
+}
+
+.radio_label {
+	margin-right: 20px;
+	font-size: 18px;
+	float: left;
+}
+
+.redpoint {
+	color: red;
+	margin-right: 3px;
+}
+
+#zip_code {
+	width: 200px;
+	float: left;
+}
+#postcode_btn {
+	width: 150px;
+	float: left;
+	margin-left: 20px;
+	background: white;
+}
+</style>
+</head>
+<body>
+	<th:block layout:fragment="content">
+
+		<!-- insert form -->
+		<th:block th:if="${flag == 'insert'}">
+			<form id="student_form">
+				<table class="customer-insert table table-bordered">
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>업체</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<div class="selecter-wrap search-div">
+								<select id="site_no" name="site_no" class="form-control" style="width: 200px;">
+									<option th:each="s : ${site}" th:value="${s.site_no}" th:text="${s.site_name}"></option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>회원분류</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_type" name="student_type" class="form-control">
+									<option value="일반회원">일반회원</option>
+									<option value="일반기초수급자">일반기초수급자</option>
+									<option value="모부자">모부자</option>
+									<option value="단체회원">단체회원</option>
+									<option value="단체기초수급">단체기초수급</option>
+									<option value="차상위계층">차상위계층</option>
+								</select>
+							</div>
+						</td>
+						
+						<td class="grayColor">회원분류 승인</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_type_status" name="student_type_status" class="form-control">
+									<option value="1">승인</option>
+									<option value="0">미승인</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>회원명</td>
+						<td style="padding: 10px;"><input type="text" name="student_name" id="student_name"></td>
+						
+						<td class="grayColor"><span class="redpoint">*</span>회원 영문명</td>
+						<td style="padding: 10px;"><input type="text" name="student_eng_name" id="student_eng_name" oninput="onlyEnglish(event)"></td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>아이디</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<input type="text" id="student_id" name="student_id" style="width: calc( 100% - 105px );" oninput="changeID()">
+							<button type="button" class="btn btn_black" onclick="checkID()" style="padding: 0;">중복확인</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>비밀번호</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3"><input type="password" id="student_pwd" name="student_pwd"></td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>비밀번호 확인</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3"><input type="password" id="student_pwd2" name="student_pwd2"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">생년월일</td>
+						<td style="padding: 10px;"><input type="date" name="student_birth" id="student_birth" value="2000-01-01"></td>
+						
+						<td class="grayColor">양력음력여부</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="sun_birth" name="student_birth_type" value="0"><label class="radio_label" for="sun_birth">양력</label>
+							<input type="radio" id="moon_birth" name="student_birth_type" value="1"><label class="radio_label" for="moon_birth">음력</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">학년</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_grade" name="student_grade" class="form-control">
+									<option value="유아">유아</option>
+									<option value="초1">초1</option>
+									<option value="초2">초2</option>
+									<option value="초3">초3</option>
+									<option value="초4">초4</option>
+									<option value="초5">초5</option>
+									<option value="초6">초6</option>
+									<option value="중1">중1</option>
+									<option value="중2">중2</option>
+									<option value="중3">중3</option>
+									<option value="고1">고1</option>
+									<option value="고2">고2</option>
+									<option value="고3">고3</option>
+									<option value="성인">성인</option>
+								</select>
+							</div>
+						</td>
+						
+						<td class="grayColor">성별</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="male" name="student_sex" value="0"><label for="male" class="radio_label">M</label>
+							<input type="radio" id="female" name="student_sex" value="1"><label for="female" class="radio_label">F</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">이메일</td>
+						<td style="padding: 10px;"><input type="email" name="student_email" id="student_email"></td>
+						
+						<td class="grayColor">이메일 수신여부</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="email_ok" name="student_email_status" value="1"><label for="email_ok" class="radio_label">예</label>
+							<input type="radio" id="email_no" name="student_email_status" value="0"><label for="email_no" class="radio_label">아니오</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>휴대폰 번호</td>
+						<td style="padding: 10px;"><input type="text" name="student_phone" id="student_phone" maxlength="11" oninput="removeChar(event)"></td>
+						
+						<td class="grayColor">SMS 수신여부</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="sms_ok" name="student_phone_status" value="1"><label for="sms_ok" class="radio_label">예</label>
+							<input type="radio" id="sms_no" name="student_phone_status" value="0"><label for="sms_no" class="radio_label">아니오</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">전화번호</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3"><input type="text" id="student_tel" name="student_tel" maxlength="11" oninput="removeChar(event)"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">주소</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<input type="text" id="zip_code" name="zip_code" readonly="readonly">
+							<input type="button" id="postcode_btn" onclick="daumPostCode()" value="주소찾기">
+							<input type="text" id="address" name="address" readonly="readonly">
+							<input type="text" id="address_detail" name="address_detail" placeholder="상세주소">
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">사진</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3"><input type="file" id="profile" name="profile"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">특이사항</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+			      			<textarea name="student_etc" id="student_etc" style="width:100%;"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">보호자명</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3"><input type="text" id="student_parent_name" name="student_parent_name"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">보호자 휴대폰</td>
+						<td style="padding: 10px;"><input type="text" name="student_parent_phone" id="student_parent_phone" maxlength="11" oninput="removeChar(event)"></td>
+						
+						<td class="grayColor">부모SMS수신</td>
+						<td style="padding: 10px;">
+							<input type="radio" id="p_sms_ok" name="student_parent_phone_status" value="1"><label for="p_sms_ok" class="radio_label">예</label>
+							<input type="radio" id="p_sms_no" name="student_parent_phone_status" value="0"><label for="p_sms_no" class="radio_label">아니오</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">등록경로</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_invite" name="student_invite" class="form-control">
+									<option value="신문광고">신문광고</option>
+									<option value="인터넷광고">인터넷광고</option>
+									<option value="잡지광고">잡지광고</option>
+									<option value="지인소개">지인소개</option>
+									<option value="대교지국">대교지국</option>
+									<option value="라디오광고">라디오광고</option>
+									<option value="기타">기타</option>
+								</select>
+							</div>
+						</td>
+						
+						<td class="grayColor"><span class="redpoint">*</span>상태</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_status" name="student_status" class="form-control">
+									<option value="1">정상</option>
+									<option value="2">대기</option>
+									<option value="0">탈퇴</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+			<div style="margin: 20px 0px 20px 0px;">
+				<div class="btn-box">
+					<button type="button" class="btn btn_black" th:onclick=goList([[${cri}]])>목록</button>
+					<div style="float: right;">
+						<button type="button" id="insertBtn" class="btn add" style="margin: 0px;" onclick="userInsert()">등록</button>
+					</div>
+				</div>
+			</div>
+		</th:block>
+		<!-- </form> -->
+
+
+
+		<!-- update form -->
+		<th:block th:if="${flag == 'update'}">
+			<form id="student_form">
+				<table class="customer-insert table table-bordered">
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>업체</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<input type="hidden" name="user_no" th:value="${student.user_no}">
+							<input type="hidden" name="user_student_no" th:value="${student.user_student_no}">
+							<div class="selecter-wrap search-div">
+								<select id="site_no" name="site_no" class="form-control" style="width: 200px;">
+									<option th:each="s : ${site}" th:value="${s.site_no}" th:text="${s.site_name}" th:selected="${s.site_no} == ${student.site_no}"></option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>회원분류</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_type" name="student_type" class="form-control">
+									<option value="일반회원" th:selected="${student.student_type} == '일반회원'">일반회원</option>
+									<option value="일반기초수급자" th:selected="${student.student_type} == '일반기초수급자'">일반기초수급자</option>
+									<option value="모부자" th:selected="${student.student_type} == '모부자'">모부자</option>
+									<option value="단체회원" th:selected="${student.student_type} == '단체회원'">단체회원</option>
+									<option value="단체기초수급" th:selected="${student.student_type} == '단체기초수급'">단체기초수급</option>
+									<option value="차상위계층" th:selected="${student.student_type} == '차상위계층'">차상위계층</option>
+								</select>
+							</div>
+						</td>
+						
+						<td class="grayColor">회원분류 승인</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_type_status" name="student_type_status" class="form-control">
+									<option value="1" th:selected="${student.student_type_status} == 1">승인</option>
+									<option value="0" th:selected="${student.student_type_status} == 0">미승인</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>회원명</td>
+						<td style="padding: 10px;"><input type="text" name="student_name" id="student_name" th:value="${student.student_name}"></td>
+						
+						<td class="grayColor"><span class="redpoint">*</span>회원 영문명</td>
+						<td style="padding: 10px;"><input type="text" name="student_eng_name" id="student_eng_name" oninput="onlyEnglish(event)" th:value="${student.student_eng_name}"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">생년월일</td>
+						<td style="padding: 10px;">
+							<input type="date" name="student_birth" id="student_birth" th:value="${student.student_birth}" th:if="${#maps.containsKey(student, 'student_birth')}">
+							<input type="date" name="student_birth" id="student_birth" value="2000-01-01" th:unless="${#maps.containsKey(student, 'student_birth')}">
+						</td>
+						
+						<td class="grayColor">양력음력여부</td>
+						<td style="padding: 10px;">
+							<th:block th:if="${#maps.containsKey(student, 'student_birth_type')}">
+								<input type="radio" id="sun_birth" name="student_birth_type" value="0" th:checked="${student.student_birth_type} == 0"><label class="radio_label" for="sun_birth">양력</label>
+								<input type="radio" id="moon_birth" name="student_birth_type" value="1" th:checked="${student.student_birth_type} == 1"><label class="radio_label" for="moon_birth">음력</label>
+							</th:block>
+							<th:block th:unless="${#maps.containsKey(student, 'student_birth_type')}">
+								<input type="radio" id="sun_birth" name="student_birth_type" value="0"><label class="radio_label" for="sun_birth">양력</label>
+								<input type="radio" id="moon_birth" name="student_birth_type" value="1"><label class="radio_label" for="moon_birth">음력</label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">학년</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_grade" name="student_grade" class="form-control">
+									<option value="유아" th:selected="${student.student_grade} == '유아'">유아</option>
+									<option value="초1" th:selected="${student.student_grade} == '초1'">초1</option>
+									<option value="초2" th:selected="${student.student_grade} == '초2'">초2</option>
+									<option value="초3" th:selected="${student.student_grade} == '초3'">초3</option>
+									<option value="초4" th:selected="${student.student_grade} == '초4'">초4</option>
+									<option value="초5" th:selected="${student.student_grade} == '초5'">초5</option>
+									<option value="초6" th:selected="${student.student_grade} == '초6'">초6</option>
+									<option value="중1" th:selected="${student.student_grade} == '중1'">중1</option>
+									<option value="중2" th:selected="${student.student_grade} == '중2'">중2</option>
+									<option value="중3" th:selected="${student.student_grade} == '중3'">중3</option>
+									<option value="고1" th:selected="${student.student_grade} == '고1'">고1</option>
+									<option value="고2" th:selected="${student.student_grade} == '고2'">고2</option>
+									<option value="고3" th:selected="${student.student_grade} == '고3'">고3</option>
+									<option value="성인" th:selected="${student.student_grade} == '성인'">성인</option>
+								</select>
+							</div>
+						</td>
+						
+						<td class="grayColor">성별</td>
+						<td style="padding: 10px;">
+							<th:block th:if="${#maps.containsKey(student, 'student_sex')}">
+								<input type="radio" id="male" name="student_sex" value="0" th:checked="${student.student_sex} == 0"><label for="male" class="radio_label">M</label>
+								<input type="radio" id="female" name="student_sex" value="1" th:checked="${student.student_sex} == 1"><label for="female" class="radio_label">F</label>
+							</th:block>
+							<th:block th:unless="${#maps.containsKey(student, 'student_sex')}">
+								<input type="radio" id="male" name="student_sex" value="0"><label for="male" class="radio_label">M</label>
+								<input type="radio" id="female" name="student_sex" value="1"><label for="female" class="radio_label">F</label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">이메일</td>
+						<td style="padding: 10px;">
+							<input type="email" name="student_email" id="student_email" th:value="${student.student_email}" th:if="${#maps.containsKey(student, 'student_email')}">
+							<input type="email" name="student_email" id="student_email" th:unless="${#maps.containsKey(student, 'student_email')}">
+						</td>
+						
+						<td class="grayColor">이메일 수신여부</td>
+						<td style="padding: 10px;">
+							<th:block th:if="${#maps.containsKey(student, 'student_email_status')}">
+								<input type="radio" id="email_ok" name="student_email_status" value="1" th:checked="${student.student_email_status} == 1"><label for="email_ok" class="radio_label">예</label>
+								<input type="radio" id="email_no" name="student_email_status" value="0" th:checked="${student.student_email_status} == 0"><label for="email_no" class="radio_label">아니오</label>
+							</th:block>
+							<th:block th:unless="${#maps.containsKey(student, 'student_email_status')}">
+								<input type="radio" id="email_ok" name="student_email_status" value="1"><label for="email_ok" class="radio_label">예</label>
+								<input type="radio" id="email_no" name="student_email_status" value="0"><label for="email_no" class="radio_label">아니오</label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor"><span class="redpoint">*</span>휴대폰 번호</td>
+						<td style="padding: 10px;"><input type="text" name="student_phone" id="student_phone" oninput="removeChar(event)" maxlength="11" th:value="${student.student_phone}"></td>
+						
+						<td class="grayColor">SMS 수신여부</td>
+						<td style="padding: 10px;">
+							<th:block th:if="${#maps.containsKey(student, 'student_phone_status')}">
+								<input type="radio" id="sms_ok" name="student_phone_status" value="1" th:checked="${student.student_phone_status} == 1"><label for="sms_ok" class="radio_label">예</label>
+								<input type="radio" id="sms_no" name="student_phone_status" value="0" th:checked="${student.student_phone_status} == 0"><label for="sms_no" class="radio_label">아니오</label>
+							</th:block>
+							<th:block th:unless="${#maps.containsKey(student, 'student_phone_status')}">
+								<input type="radio" id="sms_ok" name="student_phone_status" value="1"><label for="sms_ok" class="radio_label">예</label>
+								<input type="radio" id="sms_no" name="student_phone_status" value="0"><label for="sms_no" class="radio_label">아니오</label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">전화번호</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<input type="text" id="student_tel" name="student_tel" oninput="removeChar(event)" maxlength="11" th:value="${student.student_tel}" th:if="${#maps.containsKey(student, 'student_tel')}">
+							<input type="text" id="student_tel" name="student_tel" oninput="removeChar(event)" maxlength="11" th:unless="${#maps.containsKey(student, 'student_tel')}">
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">주소</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<input type="text" id="zip_code" name="zip_code" readonly="readonly" th:value="${zip_code}">
+							<input type="button" id="postcode_btn" onclick="daumPostCode()" value="주소찾기">
+							<input type="text" id="address" name="address" readonly="readonly" th:value="${address}">
+							<input type="text" id="address_detail" name="address_detail" placeholder="상세주소" th:value="${address_detail}">
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">사진</td>
+						<td>
+							<img width="100px" th:unless="${student.student_profile} == ''" th:src="|https://saeha.s3.ap-northeast-2.amazonaws.com/user_student_profile/${student.student_profile}|">
+							<input type="hidden" th:unless="${student.student_profile} == ''" name="student_profile" th:value="${student.student_profile}">
+						</td>
+						<td class="txt-left" style="padding: 10px;" colspan="2"><input type="file" id="profile" name="profile"></td>
+					</tr>
+					<tr>
+						<td class="grayColor">특이사항</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+			      			<textarea name="student_etc" id="student_etc" style="width:100%;" th:utext="${student.student_etc}" th:if="${#maps.containsKey(student, 'student_etc')}"></textarea>
+			      			<textarea name="student_etc" id="student_etc" style="width:100%;" th:unless="${#maps.containsKey(student, 'student_etc')}"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">보호자명</td>
+						<td class="txt-left" style="padding: 10px;" colspan="3">
+							<input type="text" id="student_parent_name" name="student_parent_name" th:value="${student.student_parent_name}" th:if="${#maps.containsKey(student, 'student_parent_name')}">
+							<input type="text" id="student_parent_name" name="student_parent_name" th:unless="${#maps.containsKey(student, 'student_parent_name')}">
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">보호자 휴대폰</td>
+						<td style="padding: 10px;">
+							<input type="text" name="student_parent_phone" id="student_parent_phone" oninput="removeChar(event)" maxlength="11" th:value="${student.student_parent_phone}" th:if="${#maps.containsKey(student, 'student_parent_phone')}">
+							<input type="text" name="student_parent_phone" id="student_parent_phone" oninput="removeChar(event)" maxlength="11" th:unless="${#maps.containsKey(student, 'student_parent_phone')}">
+						</td>
+						
+						<td class="grayColor">부모SMS수신</td>
+						<td style="padding: 10px;">
+							<th:block th:if="${#maps.containsKey(student, 'student_parent_phone_status')}">
+								<input type="radio" id="p_sms_ok" name="student_parent_phone_status" value="1" th:checked="${student.student_parent_phone_status} == 1"><label for="p_sms_ok" class="radio_label">예</label>
+								<input type="radio" id="p_sms_no" name="student_parent_phone_status" value="0" th:checked="${student.student_parent_phone_status} == 0"><label for="p_sms_no" class="radio_label">아니오</label>
+							</th:block>
+							<th:block th:unless="${#maps.containsKey(student, 'student_parent_phone_status')}">
+								<input type="radio" id="p_sms_ok" name="student_parent_phone_status" value="1"><label for="p_sms_ok" class="radio_label">예</label>
+								<input type="radio" id="p_sms_no" name="student_parent_phone_status" value="0"><label for="p_sms_no" class="radio_label">아니오</label>
+							</th:block>
+						</td>
+					</tr>
+					<tr>
+						<td class="grayColor">등록경로</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_invite" name="student_invite" class="form-control">
+									<option value="신문광고" th:selected="${student.student_invite} == '신문광고'">신문광고</option>
+									<option value="인터넷광고" th:selected="${student.student_invite} == '인터넷광고'">인터넷광고</option>
+									<option value="잡지광고" th:selected="${student.student_invite} == '잡지광고'">잡지광고</option>
+									<option value="지인소개" th:selected="${student.student_invite} == '지인소개'">지인소개</option>
+									<option value="대교지국" th:selected="${student.student_invite} == '대교지국'">대교지국</option>
+									<option value="라디오광고" th:selected="${student.student_invite} == '라디오광고'">라디오광고</option>
+									<option value="기타" th:selected="${student.student_invite} == '기타'">기타</option>
+								</select>
+							</div>
+						</td>
+						
+						<td class="grayColor"><span class="redpoint">*</span>상태</td>
+						<td style="padding: 10px;">
+							<div class="selecter-wrap search-div">
+								<select id="student_status" name="student_status" class="form-control">
+									<option value="1" th:selected="${student.student_status} == 1">정상</option>
+									<option value="2" th:selected="${student.student_status} == 2">대기</option>
+									<option value="0" th:selected="${student.student_status} == 0">탈퇴</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+			<div style="margin: 20px 0px 20px 0px;">
+				<div class="btn-box">
+					<button type="button" class="btn btn_black" th:onclick=goList([[${cri}]])>목록</button>
+					<div style="float: right;">
+						<button type="button" id="updateBtn" class="btn add" style="margin: 0px;" onclick="updateBtn()">수정</button>
+					</div>
+				</div>
+			</div>
+		</th:block>
+		<!-- </form> -->
+		
+	</th:block>
+	
+</body>
+
+</html>
