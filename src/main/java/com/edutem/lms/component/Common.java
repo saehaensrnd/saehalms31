@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class Common {
 	// BBB 화상 API
-	public static final String mainUrl = "https://23rnd.saehaens.com/bigbluebutton/api/";
-	public static final String salt = "PLrzEeP1S9oEnINQPEss7fWcTyyLdyIIBp1TjujDWk";
+	// BBB 화상 API
+	//public static final String mainUrl = "https://23rnd.saehaens.com/bigbluebutton/api/";
+	public static final String mainUrl = "https://netstudy.saehaens.com/bigbluebutton/api/";
+	//public static final String salt = "PLrzEeP1S9oEnINQPEss7fWcTyyLdyIIBp1TjujDWk";
+	public static final String  salt = "3sEMifRf3JGg7jgYrlEjpEbPwp81LJVSpx9URn9BhY";
 	///////////////////////////////////////////////////////////////////////////////////////
 	
 	private final static String COOLSMS_API_KEY = "NCS619TEQZOPH24F";
