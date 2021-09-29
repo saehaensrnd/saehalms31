@@ -57,27 +57,13 @@ public class SaehaLmsController {
 	private S3Wrapper s3Wrapper;
 	
 
-	//@RequestMapping("/")
-	//public ModelAndView index() {
-//		
-//		
-//		ModelAndView mav = new ModelAndView();
-//		//edutem개발
-//		//mav.setViewName("redirect:home");
-//		mav.setViewName("redirect:home");
-//		
-//	return mav;
-//	}
+	@RequestMapping("/")
+	public ModelAndView index() {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("redirect:home");
+		return mav;
+	}
 	
-	 @RequestMapping("/") // 
-	 public ModelAndView index() { 
-		 
-		 ModelAndView mav = new ModelAndView(); 
-		 mav.setViewName("page/common/home");  
-		 
-	 return mav;
-	  }
-	 	
 	// 학생로그인 페이지 loginProcessing 사용
 	@RequestMapping("/login")
 	public ModelAndView login(@RequestParam Map<String, Object> paramMap, HttpSession session) {
@@ -127,11 +113,17 @@ public class SaehaLmsController {
 		//user = adminMapper.selectUserById(paramMap);
 		user = adminMapper.selectUserByStudent(paramMap);
 		
+		String returnPrint = "<script>alert('아이디 또는 비밀번호가 일치하지 않습니다.'); history.go(-1);</script>";
+		
 		// 암호화된 비밀번호 - 입력받은 비밀번호 pwd가 동일한 형식의 hashCode인지..	 id / password
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		if(!encoder.matches(password, user.get("pwd").toString())) {
-			// 비밀번호가 동일하지 않다면			
-			user = new HashMap<String, Object>();	// 아이디 비밀번호 불일치 -> 초기화 
+		if(!MapUtils.isEmpty(user)) {
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			if(!encoder.matches(password, user.get("pwd").toString())) {
+				// 비밀번호가 동일하지 않다면			
+				user = new HashMap<String, Object>();	// 아이디 비밀번호 불일치 -> 초기화 
+			}
+		} else {
+			returnPrint = "<script>alert('존재하지 않는 아이디입니다.'); history.go(-1);</script>";
 		}
 		
 		
@@ -149,21 +141,20 @@ public class SaehaLmsController {
 				// System.out.println(session.getMaxInactiveInterval());
 
 				mav.setViewName("redirect:home");
-				//mav.setViewName("redirect:/login");
 
 			} else {
 				// 로그인 실패
 				res.setContentType("text/html; charset=UTF-8");
 				PrintWriter out = res.getWriter();
 
-				out.println("<script>alert('아이디 또는 비밀번호가 일치하지 않습니다.'); history.go(-1);</script>");
+				//out.println("<script>alert('아이디 또는 비밀번호가 일치하지 않습니다.'); history.go(-1);</script>");
+				out.println(returnPrint);
 				out.flush();
 			}
 		} catch (Exception e) {
 			//e.printStackTrace();
 		}
-		
-		System.out.println("mav :" + mav);
+
 		return mav;
 	}
 	
@@ -178,11 +169,18 @@ public class SaehaLmsController {
 		Map<String, Object> user = new HashMap<String, Object>();
 		user = adminMapper.selectUserByAdmin(paramMap);
 		
+		System.out.println(user);
+		String returnPrint = "<script>alert('아이디 또는 비밀번호가 일치하지 않습니다.'); history.go(-1);</script>";
+		
 		// 암호화된 비밀번호 - 입력받은 비밀번호 pwd가 동일한 형식의 hashCode인지..	 id / password
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		if(!encoder.matches(password, user.get("pwd").toString())) {
-			// 비밀번호가 동일하지 않다면			
-			user = new HashMap<String, Object>();	// 아이디 비밀번호 불일치 -> 초기화 
+		if(!MapUtils.isEmpty(user)) {
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			if(!encoder.matches(password, user.get("pwd").toString())) {
+				// 비밀번호가 동일하지 않다면			
+				user = new HashMap<String, Object>();	// 아이디 비밀번호 불일치 -> 초기화 
+			}
+		} else {
+			returnPrint = "<script>alert('존재하지 않는 아이디입니다.'); history.go(-1);</script>";
 		}
 		
 		try {
@@ -197,15 +195,15 @@ public class SaehaLmsController {
 				// 세션 시간 설정 (초단위) 1000시간
 				session.setMaxInactiveInterval(3600000);
 
-				//mav.setViewName("redirect:home");
-				//mav.setViewName("redirect:/adminLogin");
+				mav.setViewName("redirect:home");
 
 			} else {
 				// 로그인 실패
 				res.setContentType("text/html; charset=UTF-8");
 				PrintWriter out = res.getWriter();
 
-				out.println("<script>alert('아이디 또는 비밀번호가 일치하지 않습니다.'); history.go(-1);</script>");
+				out.println(returnPrint);
+				//out.println("<script>alert('아이디 또는 비밀번호가 일치하지 않습니다.'); history.go(-1);</script>");
 				out.flush();
 			}
 		} catch (Exception e) {
@@ -247,12 +245,7 @@ public class SaehaLmsController {
 		ModelAndView mav = new ModelAndView();
 
 		if (session.getAttribute("login_no") == null) {
-			
-			
-			//mav.setViewName("redirect:/login");
 			mav.setViewName("redirect:login");
-			
-			
 		} else {
 			String userRole = session.getAttribute("role_name").toString();
 
@@ -273,51 +266,5 @@ public class SaehaLmsController {
 
 		return mav;
 	}
-	
-	
-	@RequestMapping("home1")
-	public ModelAndView home1(HttpSession session) {
-		ModelAndView mav = new ModelAndView();
-
-		if (session.getAttribute("login_no") == null) {
-			
-			
-			//mav.setViewName("redirect:/login");
-			mav.setViewName("redirect:login");
-			
-			
-		} else {
-			String userRole = session.getAttribute("role_name").toString();
-
-			// ROLE_ADMIN : 슈퍼관리자
-			// ROLE_TEACHER : 강사관리자
-			// ROLE_STUDENT : 학생			
-
-			if (("ROLE_ADMIN").equals(userRole)) {	// 슈퍼관리자 최초 로그인 시 이동페이지: 회원정보 
-				mav.setViewName("redirect:admin/user");
-			} else if (("ROLE_TEACHER").equals(userRole)) {
-				mav.setViewName("redirect:teacher/todaySchedule"); // 강사관리자 최초 로그인 시 이동페이지: TodaySchedule
-
-			} else if (("ROLE_STUDENT").equals(userRole)) {	 // 학생 최초 로그인 시 이동페이지: 학습현황
-				mav.setViewName("redirect:student/myClass"); 
-
-			}
-		}
-
-		return mav;
-	}
-	
-//	public ModelAndView home1(HttpSession session) {
-//		ModelAndView mav= new ModelAndView();
-//		
-//		if(session.getAttribute("")== null) {
-//			
-//			mav.setViewName("page/common/home");
-//		}
-//		
-//		return mav;
-//	}
-	
-	
 
 }
