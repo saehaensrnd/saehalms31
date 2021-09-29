@@ -49,7 +49,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 	            return true;
 	        } else {
 	              try { 
-	                  response.sendRedirect("/login"); 
+	                  //response.sendRedirect("/login"); 
+	            	  response.sendRedirect("/login");
 	              } catch (IOException e) {
 	                  //e.printStackTrace(); 
 	              }
@@ -73,7 +74,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 	            return true;
 	        } else {
 	              try { 
-	                  response.sendRedirect("/login"); 
+	                  //response.sendRedirect("/login");
+	                  response.sendRedirect("/login");
 	              } catch (IOException e) {
 	                  //e.printStackTrace(); 
 	              }

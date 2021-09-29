@@ -32,11 +32,11 @@
 			<li th:if="${session.role_name == 'ROLE_ADMIN'}">	
 				<p class="drop-trigger active">사이트관리</p>
 				<ul class="sub">
-					<!--<li><a th:href="@{/admin/site}" th:classappend="${#strings.contains(URL, '/admin/site')}? active">사이트정보조회</a></li>
+					<li><a th:href="@{/admin/site}" th:classappend="${#strings.contains(URL, '/admin/site')}? active">사이트정보조회</a></li>
 					<li><a th:href="@{/admin/center}" th:classappend="${#strings.contains(URL, '/admin/center')}? active">티칭센터 정보조회</a></li>
 					<li><a th:href="@{/admin/teacher}" th:classappend="${#strings.contains(URL, '/admin/teacher')}? active">강사정보조회</a></li>
 					<li><a th:href="@{/admin/weeklySchedule}" th:classappend="${#strings.contains(URL, '/admin/weeklySchedule')}? active">선생님별 주간수업일정</a></li>
-					<li><a th:href="@{/admin/tutorGroup}" th:classappend="${#strings.contains(URL, '/admin/tutorGroup')}? active">강사그룹관리</a></li>	-->				
+					<li><a th:href="@{/admin/tutorGroup}" th:classappend="${#strings.contains(URL, '/admin/tutorGroup')}? active">강사그룹관리</a></li>				
 				</ul>
 			</li>
 			<li th:if="${session.role_name == 'ROLE_ADMIN'}">	

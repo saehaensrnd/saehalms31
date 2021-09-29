@@ -16,6 +16,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         LoginInterceptor loginIntercepter = new LoginInterceptor();
         registry.addInterceptor(loginIntercepter)
                 .addPathPatterns("/**")
+                .excludePathPatterns("/")
                 .excludePathPatterns("/css/**","/img/**","/js/**")
                 .excludePathPatterns("/login", "/api/**", "/student/join/**", "/adminLogin")                
                 .excludePathPatterns("/logout")

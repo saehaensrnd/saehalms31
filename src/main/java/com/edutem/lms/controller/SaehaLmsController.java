@@ -57,13 +57,27 @@ public class SaehaLmsController {
 	private S3Wrapper s3Wrapper;
 	
 
-	@RequestMapping("/")
-	public ModelAndView index() {
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("redirect:home");
-		return mav;
-	}
+	//@RequestMapping("/")
+	//public ModelAndView index() {
+//		
+//		
+//		ModelAndView mav = new ModelAndView();
+//		//edutem개발
+//		//mav.setViewName("redirect:home");
+//		mav.setViewName("redirect:home");
+//		
+//	return mav;
+//	}
 	
+	 @RequestMapping("/") // 
+	 public ModelAndView index() { 
+		 
+		 ModelAndView mav = new ModelAndView(); 
+		 mav.setViewName("page/common/home");  
+		 
+	 return mav;
+	  }
+	 	
 	// 학생로그인 페이지 loginProcessing 사용
 	@RequestMapping("/login")
 	public ModelAndView login(@RequestParam Map<String, Object> paramMap, HttpSession session) {
@@ -135,6 +149,7 @@ public class SaehaLmsController {
 				// System.out.println(session.getMaxInactiveInterval());
 
 				mav.setViewName("redirect:home");
+				//mav.setViewName("redirect:/login");
 
 			} else {
 				// 로그인 실패
@@ -147,7 +162,8 @@ public class SaehaLmsController {
 		} catch (Exception e) {
 			//e.printStackTrace();
 		}
-
+		
+		System.out.println("mav :" + mav);
 		return mav;
 	}
 	
@@ -181,7 +197,8 @@ public class SaehaLmsController {
 				// 세션 시간 설정 (초단위) 1000시간
 				session.setMaxInactiveInterval(3600000);
 
-				mav.setViewName("redirect:home");
+				//mav.setViewName("redirect:home");
+				//mav.setViewName("redirect:/adminLogin");
 
 			} else {
 				// 로그인 실패
@@ -230,7 +247,12 @@ public class SaehaLmsController {
 		ModelAndView mav = new ModelAndView();
 
 		if (session.getAttribute("login_no") == null) {
+			
+			
+			//mav.setViewName("redirect:/login");
 			mav.setViewName("redirect:login");
+			
+			
 		} else {
 			String userRole = session.getAttribute("role_name").toString();
 
@@ -251,5 +273,51 @@ public class SaehaLmsController {
 
 		return mav;
 	}
+	
+	
+	@RequestMapping("home1")
+	public ModelAndView home1(HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+
+		if (session.getAttribute("login_no") == null) {
+			
+			
+			//mav.setViewName("redirect:/login");
+			mav.setViewName("redirect:login");
+			
+			
+		} else {
+			String userRole = session.getAttribute("role_name").toString();
+
+			// ROLE_ADMIN : 슈퍼관리자
+			// ROLE_TEACHER : 강사관리자
+			// ROLE_STUDENT : 학생			
+
+			if (("ROLE_ADMIN").equals(userRole)) {	// 슈퍼관리자 최초 로그인 시 이동페이지: 회원정보 
+				mav.setViewName("redirect:admin/user");
+			} else if (("ROLE_TEACHER").equals(userRole)) {
+				mav.setViewName("redirect:teacher/todaySchedule"); // 강사관리자 최초 로그인 시 이동페이지: TodaySchedule
+
+			} else if (("ROLE_STUDENT").equals(userRole)) {	 // 학생 최초 로그인 시 이동페이지: 학습현황
+				mav.setViewName("redirect:student/myClass"); 
+
+			}
+		}
+
+		return mav;
+	}
+	
+//	public ModelAndView home1(HttpSession session) {
+//		ModelAndView mav= new ModelAndView();
+//		
+//		if(session.getAttribute("")== null) {
+//			
+//			mav.setViewName("page/common/home");
+//		}
+//		
+//		return mav;
+//	}
+	
+	
 
 }
